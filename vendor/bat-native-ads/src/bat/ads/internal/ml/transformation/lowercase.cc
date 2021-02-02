@@ -7,8 +7,8 @@
 #include <memory>
 #include <string>
 
-#include "bat/ads/internal/ml/transformation/lowercase.h"
 #include "bat/ads/internal/ml/data/text_data.h"
+#include "bat/ads/internal/ml/transformation/lowercase.h"
 
 namespace ads {
 namespace ml {
@@ -20,7 +20,6 @@ Lowercase::~Lowercase() = default;
 
 std::shared_ptr<data::Data> Lowercase::Get(
     const std::shared_ptr<data::Data>& input_data) {
-
   if (input_data->GetType() != data::DataType::TEXT_DATA) {
     return std::make_shared<data::Data>(data::TextData(""));
   }
@@ -29,10 +28,8 @@ std::shared_ptr<data::Data> Lowercase::Get(
       *std::static_pointer_cast<data::TextData>(input_data);
 
   std::string lowercase_text = text_data.GetText();
-  std::transform(lowercase_text.begin(),
-      lowercase_text.end(),
-      lowercase_text.begin(),
-      ::tolower);
+  std::transform(lowercase_text.begin(), lowercase_text.end(),
+                 lowercase_text.begin(), ::tolower);
 
   return std::make_shared<data::Data>(data::TextData(lowercase_text));
 }

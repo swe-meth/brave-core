@@ -24,7 +24,6 @@ class BatAdsMLToolsUtilTest : public UnitTestBase {
   ~BatAdsMLToolsUtilTest() override = default;
 };
 
-
 TEST_F(BatAdsMLToolsUtilTest, SoftmaxTest) {
   const double kEps = 1e-8;
 
@@ -62,9 +61,9 @@ TEST_F(BatAdsMLToolsUtilTest, ExtendedSoftmaxTest) {
   ASSERT_TRUE(std::fabs(sm_1["c2"] - sm_2["c2"]) < kEps);
   ASSERT_TRUE(std::fabs(sm_1["c3"] - sm_2["c3"]) < kEps);
 
-  EXPECT_TRUE(std::fabs(sm_1["c1"] - 0.09003057) < kEps
-      && std::fabs(sm_1["c2"] - 0.24472847) < kEps
-      && std::fabs(sm_1["c3"] - 0.66524095) < kEps);
+  EXPECT_TRUE(std::fabs(sm_1["c1"] - 0.09003057) < kEps &&
+              std::fabs(sm_1["c2"] - 0.24472847) < kEps &&
+              std::fabs(sm_1["c3"] - 0.66524095) < kEps);
 }
 
 }  // namespace ml_tools

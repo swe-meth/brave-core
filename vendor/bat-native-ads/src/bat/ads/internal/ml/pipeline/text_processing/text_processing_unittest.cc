@@ -45,12 +45,9 @@ TEST_F(BatAdsPipelineTest, BuildSimplePipeline) {
   transformations.push_back(hashed_ngrams);
 
   std::map<std::string, data_point::DataPoint> weights = {
-      {"class_1",
-          data_point::DataPoint(std::vector<double>{1.0, 2.0, 3.0})},
-      {"class_2",
-          data_point::DataPoint(std::vector<double>{3.0, 2.0, 1.0})},
-      {"class_3",
-          data_point::DataPoint(std::vector<double>{2.0, 2.0, 2.0})}};
+      {"class_1", data_point::DataPoint(std::vector<double>{1.0, 2.0, 3.0})},
+      {"class_2", data_point::DataPoint(std::vector<double>{3.0, 2.0, 1.0})},
+      {"class_3", data_point::DataPoint(std::vector<double>{2.0, 2.0, 2.0})}};
 
   std::map<std::string, double> biases = {
       {"class_1", 0.0}, {"class_2", 0.0}, {"class_3", 0.0}};
@@ -59,8 +56,7 @@ TEST_F(BatAdsPipelineTest, BuildSimplePipeline) {
   linear_svm::LinearSVM linear_svm(weights, biases);
   pipeline::Pipeline pipeline = pipeline::Pipeline(transformations, linear_svm);
 
-  auto data_point_3 = data_point::DataPoint(
-      std::vector<double>{1.0, 0.0, 0.0});
+  auto data_point_3 = data_point::DataPoint(std::vector<double>{1.0, 0.0, 0.0});
   auto data_point_3_res = pipeline.Apply(data_point_3);
   ASSERT_EQ(expected_len, data_point_3_res.size());
 
@@ -86,8 +82,8 @@ TEST_F(BatAdsPipelineTest, TestLoadFromJson) {
       "This is a spam email.", "Another spam trying to sell you viagra",
       "Message from mom with no real subject",
       "Another messase from mom with no real subject", "Yadayada"};
-  std::vector<std::string> train_labels = {"spam", "spam", "ham",
-      "ham", "junk"};
+  std::vector<std::string> train_labels = {"spam", "spam", "ham", "ham",
+                                           "junk"};
 
   for (size_t i = 0; i < train_texts.size(); i++) {
     auto preds = pipeline.Apply(data_point::DataPoint(train_texts[i]));
@@ -98,5 +94,5 @@ TEST_F(BatAdsPipelineTest, TestLoadFromJson) {
   }
 }
 
-}  // namespace ml_tools
+}  // namespace ml
 }  // namespace ads

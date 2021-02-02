@@ -77,9 +77,9 @@ TEST_F(BatAdsDataPointTest, DenseDenseProduct) {
   auto res_5x5 = dense_data_point_5 * dense_data_point_5;
   auto res_3x1 = dense_data_point_3 * dense_data_point_3_1;
 
-  EXPECT_TRUE(std::fabs(14.0 - res_3x3) < kEps
-      && std::fabs(55.0 - res_5x5) < kEps
-      && std::fabs(6.0 - res_3x1) < kEps);
+  EXPECT_TRUE(std::fabs(14.0 - res_3x3) < kEps &&
+              std::fabs(55.0 - res_5x5) < kEps &&
+              std::fabs(6.0 - res_3x1) < kEps);
 }
 
 TEST_F(BatAdsDataPointTest, SparseSparseProduct) {
@@ -96,8 +96,8 @@ TEST_F(BatAdsDataPointTest, SparseSparseProduct) {
   auto res_3x3 = sparse_data_point_3 * sparse_data_point_3;  // = 5
   auto res_5x5 = sparse_data_point_5 * sparse_data_point_5;  // = 14
 
-  EXPECT_TRUE(std::fabs(5.0 - res_3x3) < kEps
-      && std::fabs(14.0 - res_5x5) < kEps);
+  EXPECT_TRUE(std::fabs(5.0 - res_3x3) < kEps &&
+              std::fabs(14.0 - res_5x5) < kEps);
 }
 
 TEST_F(BatAdsDataPointTest, SparseDenseProduct) {
@@ -122,10 +122,10 @@ TEST_F(BatAdsDataPointTest, SparseDenseProduct) {
   auto mixed_res_3x3_2 = sparse_data_point_3 * dense_data_point_3;  // = 7
   auto mixed_res_5x5_2 = sparse_data_point_5 * dense_data_point_5;  // = 2
 
-  EXPECT_TRUE(std::fabs(mixed_res_3x3_1 - mixed_res_3x3_2) < kEps
-      && std::fabs(mixed_res_5x5_1 - mixed_res_5x5_2) < kEps
-      && std::fabs(7.0 - mixed_res_3x3_1) < kEps
-      && std::fabs(2.0 - mixed_res_5x5_2) < kEps);
+  EXPECT_TRUE(std::fabs(mixed_res_3x3_1 - mixed_res_3x3_2) < kEps &&
+              std::fabs(mixed_res_5x5_1 - mixed_res_5x5_2) < kEps &&
+              std::fabs(7.0 - mixed_res_3x3_1) < kEps &&
+              std::fabs(2.0 - mixed_res_5x5_2) < kEps);
 }
 
 TEST_F(BatAdsDataPointTest, NonsenseProduct) {
@@ -153,12 +153,9 @@ TEST_F(BatAdsDataPointTest, NonsenseProduct) {
   auto wrong_strd = string_data_point * dense_data_point_5;
   auto wrong_strs = string_data_point * sparse_data_point_3;
 
-  EXPECT_TRUE(std::isnan(wrong_dd)
-      && std::isnan(wrong_ss)
-      && std::isnan(wrong_sd)
-      && std::isnan(wrong_ds)
-      && std::isnan(wrong_strd)
-      && std::isnan(wrong_strs));
+  EXPECT_TRUE(std::isnan(wrong_dd) && std::isnan(wrong_ss) &&
+              std::isnan(wrong_sd) && std::isnan(wrong_ds) &&
+              std::isnan(wrong_strd) && std::isnan(wrong_strs));
 }
 
 }  // namespace ml_tools

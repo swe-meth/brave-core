@@ -11,10 +11,10 @@
 #include <string>
 #include <vector>
 
+#include "bat/ads/internal/ml/data/text_data.h"
 #include "bat/ads/internal/ml/ml_static_values.h"
 #include "bat/ads/internal/ml/transformation/crc.h"
 #include "bat/ads/internal/ml/transformation/hash_vectorizer.h"
-#include "bat/ads/internal/ml/data/text_data.h"
 
 namespace ads {
 namespace ml {
@@ -22,17 +22,15 @@ namespace transformation {
 
 HashVectorizer::~HashVectorizer() = default;
 
-HashVectorizer::HashVectorizer(
-    int bucket_count,
-    const std::vector<int>& subgrams) {
+HashVectorizer::HashVectorizer(int bucket_count,
+                               const std::vector<int>& subgrams) {
   for (size_t i = 0; i < subgrams.size(); i++) {
     substring_sizes_.push_back(subgrams[i]);
   }
   bucket_count_ = bucket_count;
 }
 
-HashVectorizer::HashVectorizer(
-    const HashVectorizer& hash_vectorizer) {
+HashVectorizer::HashVectorizer(const HashVectorizer& hash_vectorizer) {
   bucket_count_ = hash_vectorizer.GetBucketCount();
   substring_sizes_ = hash_vectorizer.GetSubstringSizes();
 }
@@ -45,10 +43,10 @@ int HashVectorizer::GetBucketCount() const {
   return bucket_count_;
 }
 
-int HashVectorizer::GetHash(
-    const std::string& substring) {
+int HashVectorizer::GetHash(const std::string& substring) {
   auto* u8str = substring.c_str();
-  auto rtn = CRC::Calculate(u8str, strlen(u8str), CRC::CRC_32()) % bucket_count_;
+  auto rtn =
+      CRC::Calculate(u8str, strlen(u8str), CRC::CRC_32()) % bucket_count_;
   return rtn;
 }
 

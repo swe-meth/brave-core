@@ -16,25 +16,20 @@ namespace transformation {
 
 class HashVectorizer {
  public:
-  HashVectorizer(
-      const HashVectorizer& other);
+  HashVectorizer(const HashVectorizer& other);
 
-  HashVectorizer(
-      int n_buckets,
-      const std::vector<int>& subgrams);
+  HashVectorizer(int n_buckets, const std::vector<int>& subgrams);
 
   ~HashVectorizer();
 
-  std::map<unsigned, double> GetFrequencies(
-      const std::string& html);
+  std::map<unsigned, double> GetFrequencies(const std::string& html);
 
   std::vector<unsigned> GetSubstringSizes() const;
 
   int GetBucketCount() const;
 
  private:
-  int GetHash(
-      const std::string& text);
+  int GetHash(const std::string& text);
 
   std::vector<unsigned> substring_sizes_;
   int bucket_count_;

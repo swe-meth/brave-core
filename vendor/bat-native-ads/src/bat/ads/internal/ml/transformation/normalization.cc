@@ -14,7 +14,8 @@ namespace ads {
 namespace ml {
 namespace transformation {
 
-Normalization::Normalization() : Transformation(TransformationType::NORMALIZATION) {}
+Normalization::Normalization()
+    : Transformation(TransformationType::NORMALIZATION) {}
 
 Normalization::~Normalization() = default;
 
@@ -27,7 +28,7 @@ std::shared_ptr<data::Data> Normalization::Get(
 
   std::shared_ptr<data::VectorData> vector_data =
       std::static_pointer_cast<data::VectorData>(input_data);
- 
+
   vector_data->Normalize();
   return vector_data;
 }

@@ -19,20 +19,17 @@ namespace model {
 
 Linear::Linear() {}
 
-Linear::Linear(
-    const std::map<std::string, data::VectorData>& weights,
-    const std::map<std::string, double>& biases) {
+Linear::Linear(const std::map<std::string, data::VectorData>& weights,
+               const std::map<std::string, double>& biases) {
   weights_ = weights;
   biases_ = biases;
 }
 
-Linear::Linear(
-    const Linear& linear_model) = default;
+Linear::Linear(const Linear& linear_model) = default;
 
 Linear::~Linear() = default;
 
-std::map<std::string, double> Linear::Predict(
-    const data::VectorData& x) {
+std::map<std::string, double> Linear::Predict(const data::VectorData& x) {
   std::map<std::string, double> rtn;
   for (auto kv : weights_) {
     rtn[kv.first] = kv.second * x + biases_[kv.first];
@@ -40,16 +37,14 @@ std::map<std::string, double> Linear::Predict(
   return rtn;
 }
 
-std::map<std::string, double> Linear::TopPredictions(
-    const data::VectorData& x,
-    int top_count) {
+std::map<std::string, double> Linear::TopPredictions(const data::VectorData& x,
+                                                     int top_count) {
   std::map<std::string, double> pred_map = Predict(x);
   std::map<std::string, double> pred_map_softmax = Softmax(pred_map);
   std::vector<std::pair<double, std::string>> pred_order;
   pred_order.reserve(pred_map_softmax.size());
   for (auto pred_it = pred_map_softmax.begin();
-      pred_it != pred_map_softmax.end();
-      pred_it++) {
+       pred_it != pred_map_softmax.end(); pred_it++) {
     pred_order.push_back(std::make_pair(pred_it->second, pred_it->first));
   }
   std::sort(pred_order.rbegin(), pred_order.rend());

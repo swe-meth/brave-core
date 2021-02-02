@@ -36,8 +36,7 @@ class BatAdsHashingExtractorTest : public UnitTestBase {
   ~BatAdsHashingExtractorTest() override = default;
 };
 
-void run_hashing_extractor_test_case(
-    const std::string& test_case_name) {
+void run_hashing_extractor_test_case(const std::string& test_case_name) {
   const double kEps = 1e-7;
 
   const base::Optional<std::string> opt_value =

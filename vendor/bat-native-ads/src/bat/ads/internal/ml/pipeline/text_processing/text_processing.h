@@ -29,8 +29,7 @@ class TextProcessing {
 
   TextProcessing();
 
-  TextProcessing(
-      const TextProcessing& pipeline);
+  TextProcessing(const TextProcessing& pipeline);
 
   TextProcessing(
       const std::vector<transformation::TransformationPtr>& transformations,
@@ -40,8 +39,7 @@ class TextProcessing {
 
   bool IsInitialized();
 
-  bool FromJson(
-      const std::string& json);
+  bool FromJson(const std::string& json);
 
   std::map<std::string, double> Apply(
       const std::shared_ptr<data::Data>& input_data);
@@ -49,35 +47,26 @@ class TextProcessing {
   const std::map<std::string, double> GetTopPredictions(
       const std::string& content);
 
-  const std::map<std::string, double> ClassifyPage(
-      const std::string& content);
+  const std::map<std::string, double> ClassifyPage(const std::string& content);
 
  private:
   void GetReverseCategories();
 
-  bool ParseClassifier(
-      base::Value* classifier);
+  bool ParseClassifier(base::Value* classifier);
 
-  bool ParseTransformations(
-      base::Value* transformations);
+  bool ParseTransformations(base::Value* transformations);
 
-  bool GetVersionFromJSON(
-      base::DictionaryValue* dictionary);
+  bool GetVersionFromJSON(base::DictionaryValue* dictionary);
 
-  bool GetTimestampFromJSON(
-      base::DictionaryValue* dictionary);
+  bool GetTimestampFromJSON(base::DictionaryValue* dictionary);
 
-  bool GetLocaleFromJSON(
-      base::DictionaryValue* dictionary);
+  bool GetLocaleFromJSON(base::DictionaryValue* dictionary);
 
-  bool GetTransformationsFromJSON(
-      base::DictionaryValue* dictionary);
+  bool GetTransformationsFromJSON(base::DictionaryValue* dictionary);
 
-  bool GetClassifierFromJSON(
-      base::DictionaryValue* dictionary);
+  bool GetClassifierFromJSON(base::DictionaryValue* dictionary);
 
-  bool GetTransformationsFromList(
-      base::ListValue List);
+  bool GetTransformationsFromList(base::ListValue List);
 
   bool is_initialized_;
   uint16_t version_;
@@ -88,7 +77,7 @@ class TextProcessing {
 };
 
 }  // namespace pipeline
-}  // namespace ml_tools
+}  // namespace ml
 }  // namespace ads
 
 #endif  // BAT_ADS_INTERNAL_ML_PIPELINE_TEXT_PROCESSING_H_  // NOLINT

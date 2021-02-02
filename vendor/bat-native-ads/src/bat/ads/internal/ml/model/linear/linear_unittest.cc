@@ -27,12 +27,9 @@ class BatAdsLinearSVMTest : public UnitTestBase {
 
 TEST_F(BatAdsLinearSVMTest, ThreeClassesPredictionTest) {
   std::map<std::string, data_point::DataPoint> weights = {
-      {"class_1",
-          data_point::DataPoint(std::vector<double>{1.0, 0.0, 0.0})},
-      {"class_2",
-          data_point::DataPoint(std::vector<double>{0.0, 1.0, 0.0})},
-      {"class_3",
-          data_point::DataPoint(std::vector<double>{0.0, 0.0, 1.0})}};
+      {"class_1", data_point::DataPoint(std::vector<double>{1.0, 0.0, 0.0})},
+      {"class_2", data_point::DataPoint(std::vector<double>{0.0, 1.0, 0.0})},
+      {"class_3", data_point::DataPoint(std::vector<double>{0.0, 0.0, 1.0})}};
 
   std::map<std::string, double> biases = {
       {"class_1", 0.0}, {"class_2", 0.0}, {"class_3", 0.0}};
@@ -54,18 +51,15 @@ TEST_F(BatAdsLinearSVMTest, ThreeClassesPredictionTest) {
   auto class3_data_point =
       data_point::DataPoint(std::vector<double>{0.0, 1.0, 2.0});
   auto res3 = linear_svm.Predict(class3_data_point);
-  EXPECT_TRUE(res3["class_3"] > res3["class_1"]
-      && res3["class_3"] > res3["class_2"]);
+  EXPECT_TRUE(res3["class_3"] > res3["class_1"] &&
+              res3["class_3"] > res3["class_2"]);
 }
 
 TEST_F(BatAdsLinearSVMTest, BiasesPredictionTest) {
   std::map<std::string, data_point::DataPoint> weights = {
-      {"class_1",
-          data_point::DataPoint(std::vector<double>{1.0, 0.0, 0.0})},
-      {"class_2",
-          data_point::DataPoint(std::vector<double>{0.0, 1.0, 0.0})},
-      {"class_3",
-          data_point::DataPoint(std::vector<double>{0.0, 0.0, 1.0})}};
+      {"class_1", data_point::DataPoint(std::vector<double>{1.0, 0.0, 0.0})},
+      {"class_2", data_point::DataPoint(std::vector<double>{0.0, 1.0, 0.0})},
+      {"class_3", data_point::DataPoint(std::vector<double>{0.0, 0.0, 1.0})}};
 
   std::map<std::string, double> biases = {
       {"class_1", 0.5}, {"class_2", 0.25}, {"class_3", 1.0}};
@@ -74,15 +68,15 @@ TEST_F(BatAdsLinearSVMTest, BiasesPredictionTest) {
 
   auto avg_point = data_point::DataPoint(std::vector<double>{1.0, 1.0, 1.0});
   auto res = biased_svm.Predict(avg_point);
-  EXPECT_TRUE(res["class_3"] > res["class_1"]
-      && res["class_3"] > res["class_2"]
-      && res["class_1"] > res["class_2"]);
+  EXPECT_TRUE(res["class_3"] > res["class_1"] &&
+              res["class_3"] > res["class_2"] &&
+              res["class_1"] > res["class_2"]);
 }
 
 TEST_F(BatAdsLinearSVMTest, BinaryClassifierPredictionTest) {
   std::map<std::string, data_point::DataPoint> weights = {
       {"the_only_class",
-          data_point::DataPoint(std::vector<double>{0.3, 0.2, 0.25})},
+       data_point::DataPoint(std::vector<double>{0.3, 0.2, 0.25})},
   };
 
   std::map<std::string, double> biases = {
@@ -101,22 +95,16 @@ TEST_F(BatAdsLinearSVMTest, BinaryClassifierPredictionTest) {
   auto res_1 = linear_svm.Predict(data_point_1);
   ASSERT_EQ(res_1.size(), static_cast<size_t>(1));
 
-  EXPECT_TRUE(res_0["the_only_class"] < 0.5
-      && res_1["the_only_class"] > 0.5);
+  EXPECT_TRUE(res_0["the_only_class"] < 0.5 && res_1["the_only_class"] > 0.5);
 }
 
 TEST_F(BatAdsLinearSVMTest, TopPredictionsTest) {
   std::map<std::string, data_point::DataPoint> weights = {
-      {"class_1",
-          data_point::DataPoint(std::vector<double>{1.0, 0.5, 0.8})},
-      {"class_2",
-          data_point::DataPoint(std::vector<double>{0.3, 1.0, 0.7})},
-      {"class_3",
-          data_point::DataPoint(std::vector<double>{0.6, 0.9, 1.0})},
-      {"class_4",
-          data_point::DataPoint(std::vector<double>{0.7, 1.0, 0.8})},
-      {"class_5",
-          data_point::DataPoint(std::vector<double>{1.0, 0.2, 1.0})}};
+      {"class_1", data_point::DataPoint(std::vector<double>{1.0, 0.5, 0.8})},
+      {"class_2", data_point::DataPoint(std::vector<double>{0.3, 1.0, 0.7})},
+      {"class_3", data_point::DataPoint(std::vector<double>{0.6, 0.9, 1.0})},
+      {"class_4", data_point::DataPoint(std::vector<double>{0.7, 1.0, 0.8})},
+      {"class_5", data_point::DataPoint(std::vector<double>{1.0, 0.2, 1.0})}};
 
   std::map<std::string, double> biases = {{"class_1", 0.21},
                                           {"class_2", 0.22},

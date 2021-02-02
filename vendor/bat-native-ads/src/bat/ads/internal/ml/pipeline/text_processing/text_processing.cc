@@ -5,12 +5,12 @@
 
 #include <memory>
 
-#include "bat/ads/internal/ml/pipeline/text_processing/text_processing.h"
 #include "bat/ads/internal/ml/data/vector_data.h"
-#include "bat/ads/internal/ml/transformation/transformation.h"
-#include "bat/ads/internal/ml/transformation/lowercase.h"
+#include "bat/ads/internal/ml/pipeline/text_processing/text_processing.h"
 #include "bat/ads/internal/ml/transformation/hashed_ngrams.h"
+#include "bat/ads/internal/ml/transformation/lowercase.h"
 #include "bat/ads/internal/ml/transformation/normalization.h"
+#include "bat/ads/internal/ml/transformation/transformation.h"
 
 #include "base/json/json_reader.h"
 #include "base/values.h"
@@ -34,20 +34,19 @@ TextProcessing::TextProcessing() : is_initialized_(false) {
   transformations_ = {};
 }
 
-TextProcessing::TextProcessing (
-    const TextProcessing& text_proc) = default;
+TextProcessing::TextProcessing(const TextProcessing& text_proc) = default;
 
 TextProcessing::~TextProcessing() = default;
 
 TextProcessing::TextProcessing(
     const std::vector<transformation::TransformationPtr>& transformations,
-    const model::Linear& linear_model) : is_initialized_(true) {
+    const model::Linear& linear_model)
+    : is_initialized_(true) {
   transformations_ = transformations;
   linear_model_ = linear_model;
 }
 
-bool TextProcessing::FromJson(
-    const std::string& json) {
+bool TextProcessing::FromJson(const std::string& json) {
   base::Optional<base::Value> root = base::JSONReader::Read(json);
   if (!root) {
     return false;
@@ -101,8 +100,7 @@ bool TextProcessing::FromJson(
   return true;
 }
 
-bool TextProcessing::ParseTransformations(
-    base::Value* transformations) {
+bool TextProcessing::ParseTransformations(base::Value* transformations) {
   if (!transformations->is_list()) {
     return false;
   }
@@ -122,11 +120,13 @@ bool TextProcessing::ParseTransformations(
     }
     if (parsed_transformation_type.compare("TO_LOWER") == 0) {
       transformation_sequence.push_back(
-          std::make_shared<transformation::Lowercase>(transformation::Lowercase()));
+          std::make_shared<transformation::Lowercase>(
+              transformation::Lowercase()));
     }
     if (parsed_transformation_type.compare("NORMALIZE") == 0) {
       transformation_sequence.push_back(
-          std::make_shared<transformation::Normalization>(transformation::Normalization()));
+          std::make_shared<transformation::Normalization>(
+              transformation::Normalization()));
     }
     if (parsed_transformation_type.compare("HASHED_NGRAMS") == 0) {
       const base::Value* transformation_params =
@@ -159,8 +159,7 @@ bool TextProcessing::ParseTransformations(
   return true;
 }
 
-bool TextProcessing::ParseClassifier(
-    base::Value* classifier) {
+bool TextProcessing::ParseClassifier(base::Value* classifier) {
   std::vector<std::string> classes;
   base::Value* classifier_type = classifier->FindKey("classifier_type");
 
@@ -225,8 +224,7 @@ bool TextProcessing::ParseClassifier(
   return true;
 }
 
-bool TextProcessing::GetVersionFromJSON(
-    base::DictionaryValue* dictionary) {
+bool TextProcessing::GetVersionFromJSON(base::DictionaryValue* dictionary) {
   auto* version_value = dictionary->FindKey("version");
   if (!version_value) {
     return false;
@@ -235,8 +233,7 @@ bool TextProcessing::GetVersionFromJSON(
   return true;
 }
 
-bool TextProcessing::GetTimestampFromJSON(
-    base::DictionaryValue* dictionary) {
+bool TextProcessing::GetTimestampFromJSON(base::DictionaryValue* dictionary) {
   auto* timestamp_value = dictionary->FindKey("timestamp");
   if (!timestamp_value) {
     return false;
@@ -246,8 +243,7 @@ bool TextProcessing::GetTimestampFromJSON(
   return true;
 }
 
-bool TextProcessing::GetLocaleFromJSON(
-    base::DictionaryValue* dictionary) {
+bool TextProcessing::GetLocaleFromJSON(base::DictionaryValue* dictionary) {
   auto* locale_value = dictionary->FindKey("locale");
   if (!locale_value) {
     return false;

@@ -20,13 +20,11 @@ class TextData : public Data {
  public:
   TextData();
 
-  TextData(
-      const TextData& text_data);
+  TextData(const TextData& text_data);
 
   TextData& operator=(const TextData& text_data);
 
-  explicit TextData(
-      const std::string& text);
+  explicit TextData(const std::string& text);
 
   ~TextData() override;
 

@@ -15,11 +15,9 @@ namespace ads {
 namespace ml {
 namespace transformation {
 
-Transformation::Transformation(const TransformationType& type)
-    : type_(type) {}
+Transformation::Transformation(const TransformationType& type) : type_(type) {}
 
-Transformation::Transformation(
-    const Transformation& t) = default;
+Transformation::Transformation(const Transformation& t) = default;
 
 Transformation::~Transformation() = default;
 
@@ -52,7 +50,8 @@ TransformationType Transformation::GetType() const {
 // data_point::DataPoint Transformation::GetNGrams(
 //     const data_point::DataPoint& datapoint) {
 //   auto hashed_vector = hash_vectorizer.GetFrequencies(datapoint.data_text);
-//   return data_point::DataPoint(hashed_vector, hash_vectorizer.GetBucketCount());
+//   return data_point::DataPoint(hashed_vector,
+//   hash_vectorizer.GetBucketCount());
 // }
 
 // data_point::DataPoint Transformation::GetNormalized(

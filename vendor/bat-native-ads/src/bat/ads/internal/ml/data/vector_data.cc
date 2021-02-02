@@ -5,8 +5,8 @@
 
 #include <limits>
 #include <map>
-#include <vector>
 #include <stdexcept>
+#include <vector>
 
 #include "bat/ads/internal/ml/data/vector_data.h"
 
@@ -16,8 +16,8 @@ namespace data {
 
 VectorData::VectorData() : Data(DataType::VECTOR_DATA) {}
 
-VectorData::VectorData(
-    const VectorData& vector_data) : Data(DataType::VECTOR_DATA) {
+VectorData::VectorData(const VectorData& vector_data)
+    : Data(DataType::VECTOR_DATA) {
   dimension_count_ = vector_data.GetDimensionCount();
   data_ = vector_data.GetRawData();
 }
@@ -30,13 +30,14 @@ VectorData& VectorData::operator=(const VectorData& vector_data) {
 
 VectorData::~VectorData() = default;
 
-VectorData::VectorData(
-    int dimension_count,
-    const std::map<unsigned, double>& data)
-    : Data(DataType::VECTOR_DATA), dimension_count_(dimension_count), data_(data) {}
+VectorData::VectorData(int dimension_count,
+                       const std::map<unsigned, double>& data)
+    : Data(DataType::VECTOR_DATA),
+      dimension_count_(dimension_count),
+      data_(data) {}
 
-VectorData::VectorData(
-    const std::vector<double>& data) : Data(DataType::VECTOR_DATA) {
+VectorData::VectorData(const std::vector<double>& data)
+    : Data(DataType::VECTOR_DATA) {
   dimension_count_ = static_cast<int>(data.size());
   for (int i = 0; i < dimension_count_; ++i) {
     data_[i] = data[i];
@@ -45,16 +46,12 @@ VectorData::VectorData(
 
 void VectorData::Normalize() {
   double vector_length = 0.0;
-  for (auto data_it = data_.begin();
-      data_it != data_.end();
-      data_it++) {
+  for (auto data_it = data_.begin(); data_it != data_.end(); data_it++) {
     vector_length += data_it->second * data_it->second;
   }
   vector_length = sqrt(vector_length);
   if (vector_length > 1e-7) {
-    for (auto data_it = data_.begin();
-        data_it != data_.end();
-        data_it++) {
+    for (auto data_it = data_.begin(); data_it != data_.end(); data_it++) {
       data_it->second /= vector_length;
     }
   }
@@ -68,9 +65,7 @@ std::map<unsigned, double> VectorData::GetRawData() const {
   return data_;
 }
 
-double operator*(
-    const VectorData& a,
-    const VectorData& b) {
+double operator*(const VectorData& a, const VectorData& b) {
   if (!a.dimension_count_ || !b.dimension_count_) {
     return std::numeric_limits<double>::quiet_NaN();
   }

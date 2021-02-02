@@ -6,28 +6,25 @@
 #include <algorithm>
 #include <string>
 
-#include "bat/ads/internal/ml/transformation/hashed_ngrams.h"
 #include "bat/ads/internal/ml/data/text_data.h"
 #include "bat/ads/internal/ml/data/vector_data.h"
+#include "bat/ads/internal/ml/transformation/hashed_ngrams.h"
 
 namespace ads {
 namespace ml {
 namespace transformation {
 
-HashedNGrams::HashedNGrams (
-    const HashedNGrams& hashed_ngrams)
+HashedNGrams::HashedNGrams(const HashedNGrams& hashed_ngrams)
     : Transformation(TransformationType::HASHED_NGRAMS) {
   hash_vectorizer = hashed_ngrams.hash_vectorizer;
 }
 
 HashedNGrams::~HashedNGrams() = default;
 
-HashedNGrams::HashedNGrams(
-    int bucket_count,
-    const std::vector<int>& subgrams)
+HashedNGrams::HashedNGrams(int bucket_count, const std::vector<int>& subgrams)
     : Transformation(TransformationType::HASHED_NGRAMS) {
-  hash_vectorizer = std::make_shared<HashVectorizer>(
-      HashVectorizer(bucket_count, subgrams));
+  hash_vectorizer =
+      std::make_shared<HashVectorizer>(HashVectorizer(bucket_count, subgrams));
 }
 
 std::shared_ptr<data::Data> HashedNGrams::Get(

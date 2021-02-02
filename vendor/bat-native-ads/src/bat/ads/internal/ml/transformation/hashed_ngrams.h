@@ -17,17 +17,13 @@ namespace transformation {
 
 class HashedNGrams : public Transformation {
  public:
-  HashedNGrams(
-      const HashedNGrams& hashed_ngrams);
+  HashedNGrams(const HashedNGrams& hashed_ngrams);
 
-  HashedNGrams(
-      int bucket_count,
-      const std::vector<int>& subgrams);
+  HashedNGrams(int bucket_count, const std::vector<int>& subgrams);
 
   ~HashedNGrams() override;
 
-  explicit HashedNGrams(
-      const std::string& parameters);
+  explicit HashedNGrams(const std::string& parameters);
 
   std::shared_ptr<data::Data> Get(
       const std::shared_ptr<data::Data>& input_data) override;

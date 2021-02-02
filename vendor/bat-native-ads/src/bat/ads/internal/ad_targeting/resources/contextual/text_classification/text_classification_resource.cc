@@ -24,8 +24,8 @@ TextClassification::TextClassification() {
 TextClassification::~TextClassification() = default;
 
 bool TextClassification::IsInitialized() const {
-  return text_processing_pipeline_
-      && text_processing_pipeline_->IsInitialized();
+  return text_processing_pipeline_ &&
+         text_processing_pipeline_->IsInitialized();
 }
 
 void TextClassification::LoadForLocale(

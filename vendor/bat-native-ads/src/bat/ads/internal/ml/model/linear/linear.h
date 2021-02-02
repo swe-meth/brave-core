@@ -20,24 +20,19 @@ class Linear {
  public:
   Linear();
 
-  Linear(
-      const Linear& other);
+  Linear(const Linear& other);
 
-  explicit Linear(
-      const std::string& model);
+  explicit Linear(const std::string& model);
 
-  Linear(
-      const std::map<std::string, data::VectorData>& weights,
-      const std::map<std::string, double>& biases);
+  Linear(const std::map<std::string, data::VectorData>& weights,
+         const std::map<std::string, double>& biases);
 
   ~Linear();
 
-  std::map<std::string, double> Predict(
-      const data::VectorData& x);
+  std::map<std::string, double> Predict(const data::VectorData& x);
 
-  std::map<std::string, double> TopPredictions(
-      const data::VectorData& x,
-      int top_count = -1);
+  std::map<std::string, double> TopPredictions(const data::VectorData& x,
+                                               int top_count = -1);
 
  private:
   std::map<std::string, data::VectorData> weights_;

@@ -27,8 +27,7 @@ class Transformation {
  public:
   Transformation(const TransformationType& type);
 
-  Transformation(
-    const Transformation& t);
+  Transformation(const Transformation& t);
 
   virtual ~Transformation();
 

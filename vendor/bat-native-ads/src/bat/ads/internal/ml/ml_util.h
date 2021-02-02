@@ -13,8 +13,7 @@
 namespace ads {
 namespace ml {
 
-std::map<std::string, double> Softmax(
-    const std::map<std::string, double>& y);
+std::map<std::string, double> Softmax(const std::map<std::string, double>& y);
 
 }  // namespace ml
 }  // namespace ads

@@ -20,23 +20,17 @@ class VectorData : public Data {
  public:
   VectorData();
 
-  VectorData(
-      const VectorData& vector_data);
+  VectorData(const VectorData& vector_data);
 
-  VectorData(
-      const std::vector<double>& data);
+  VectorData(const std::vector<double>& data);
 
   VectorData& operator=(const VectorData& vector_data);
 
-  VectorData(
-    int dimension_count,
-    const std::map<unsigned, double>& data);
+  VectorData(int dimension_count, const std::map<unsigned, double>& data);
 
   ~VectorData() override;
 
-  friend double operator*(
-      const VectorData& a,
-      const VectorData& b);
+  friend double operator*(const VectorData& a, const VectorData& b);
 
   void Normalize();
 
