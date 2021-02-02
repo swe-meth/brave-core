@@ -10,31 +10,29 @@
 #include <utility>
 #include <vector>
 
-#include "bat/ads/internal/ml_tools/linear_svm/linear_svm.h"
+#include "bat/ads/internal/ml/ml_util.h"
+#include "bat/ads/internal/ml/model/linear/linear.h"
 
 namespace ads {
-namespace ml_tools {
-namespace linear_svm {
+namespace ml {
+namespace model {
 
-LinearSVM::LinearSVM() {}
+Linear::Linear() {}
 
-LinearSVM::LinearSVM(
-    const std::map<std::string, data_point::DataPoint>& weights,
+Linear::Linear(
+    const std::map<std::string, data::VectorData>& weights,
     const std::map<std::string, double>& biases) {
   weights_ = weights;
   biases_ = biases;
 }
 
-LinearSVM::LinearSVM(
-    const LinearSVM &other) {
-  weights_ = other.weights_;
-  biases_ = other.biases_;
-}
+Linear::Linear(
+    const Linear& linear_model) = default;
 
-LinearSVM::~LinearSVM() = default;
+Linear::~Linear() = default;
 
-std::map<std::string, double> LinearSVM::Predict(
-    const data_point::DataPoint& x) {
+std::map<std::string, double> Linear::Predict(
+    const data::VectorData& x) {
   std::map<std::string, double> rtn;
   for (auto kv : weights_) {
     rtn[kv.first] = kv.second * x + biases_[kv.first];
@@ -42,11 +40,11 @@ std::map<std::string, double> LinearSVM::Predict(
   return rtn;
 }
 
-std::map<std::string, double> LinearSVM::TopPredictions(
-    const data_point::DataPoint& x,
+std::map<std::string, double> Linear::TopPredictions(
+    const data::VectorData& x,
     int top_count) {
   std::map<std::string, double> pred_map = Predict(x);
-  std::map<std::string, double> pred_map_softmax = softmax(pred_map);
+  std::map<std::string, double> pred_map_softmax = Softmax(pred_map);
   std::vector<std::pair<double, std::string>> pred_order;
   pred_order.reserve(pred_map_softmax.size());
   for (auto pred_it = pred_map_softmax.begin();
@@ -65,6 +63,6 @@ std::map<std::string, double> LinearSVM::TopPredictions(
   return top_pred;
 }
 
-}  // namespace linear_svm
-}  // namespace ml_tools
+}  // namespace model
+}  // namespace ml
 }  // namespace ads

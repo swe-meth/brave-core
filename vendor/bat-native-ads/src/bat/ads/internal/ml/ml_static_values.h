@@ -7,7 +7,7 @@
 #define BAT_ADS_INTERNAL_ML_TOOLS_ML_TOOLS_STATIC_VALUES_H_  // NOLINT
 
 namespace ads {
-namespace ml_tools {
+namespace ml {
 
 static const int kMinimumWordsToClassify = 20;
 static const int kMaximumWordsToClassify = 1234;
@@ -15,7 +15,7 @@ static const int kMaximumHtmlLengthToClassify = (1 << 20);
 static const int kMaxSubLen = 6;
 static const int kNumBuckets = 10000;
 
-}  // namespace ml_tools
+}  // namespace ml
 }  // namespace ads
 
 #endif  // BAT_ADS_INTERNAL_ML_TOOLS_ML_TOOLS_STATIC_VALUES_H_  // NOLINT

@@ -11,47 +11,44 @@
 #include <string>
 #include <vector>
 
-#include "bat/ads/internal/ml_tools/ml_tools_static_values.h"
-#include "bat/ads/internal/ml_tools/transformation/crc.h"
-#include "bat/ads/internal/ml_tools/transformation/hashing_extractor.h"
+#include "bat/ads/internal/ml/ml_static_values.h"
+#include "bat/ads/internal/ml/transformation/crc.h"
+#include "bat/ads/internal/ml/transformation/hash_vectorizer.h"
+#include "bat/ads/internal/ml/data/text_data.h"
 
 namespace ads {
-namespace ml_tools {
+namespace ml {
 namespace transformation {
 
 HashVectorizer::~HashVectorizer() = default;
 
-HashVectorizer::HashVectorizer() {
-  substring_sizes_.resize(kMaxSubLen);
-  for (int i = 0; i < kMaxSubLen; ++i) {
-    substring_sizes_[i] = i + 1;
-  }
-  num_buckets_ = kNumBuckets;
-}
-
 HashVectorizer::HashVectorizer(
-    int n_buckets,
+    int bucket_count,
     const std::vector<int>& subgrams) {
   for (size_t i = 0; i < subgrams.size(); i++) {
     substring_sizes_.push_back(subgrams[i]);
   }
-  num_buckets_ = n_buckets;
+  bucket_count_ = bucket_count;
 }
 
 HashVectorizer::HashVectorizer(
-    const HashVectorizer& other) {
-  substring_sizes_ = other.substring_sizes_;
-  num_buckets_ = other.num_buckets_;
+    const HashVectorizer& hash_vectorizer) {
+  bucket_count_ = hash_vectorizer.GetBucketCount();
+  substring_sizes_ = hash_vectorizer.GetSubstringSizes();
 }
 
-int HashVectorizer::GetBucketCount() {
-  return num_buckets_;
+std::vector<unsigned> HashVectorizer::GetSubstringSizes() const {
+  return substring_sizes_;
+}
+
+int HashVectorizer::GetBucketCount() const {
+  return bucket_count_;
 }
 
 int HashVectorizer::GetHash(
     const std::string& substring) {
   auto* u8str = substring.c_str();
-  auto rtn = CRC::Calculate(u8str, strlen(u8str), CRC::CRC_32()) % num_buckets_;
+  auto rtn = CRC::Calculate(u8str, strlen(u8str), CRC::CRC_32()) % bucket_count_;
   return rtn;
 }
 
@@ -64,17 +61,18 @@ std::map<unsigned, double> HashVectorizer::GetFrequencies(
   }
   // get hashes of substrings for each of the substring lengths defined:
   for (auto const& substring_size : substring_sizes_) {
-    if (substring_size <= data.length()) {
-      for (size_t i = 0; i <= (data.length() - substring_size); i++) {
-        auto ss = data.substr(i, substring_size);
-        auto idx = GetHash(ss);
-        ++frequencies[idx];
-      }
+    if (substring_size > data.length()) {
+      break;
+    }
+    for (size_t i = 0; i < data.length() - substring_size + 1; ++i) {
+      auto ss = data.substr(i, substring_size);
+      auto idx = GetHash(ss);
+      ++frequencies[idx];
     }
   }
   return frequencies;
 }
 
 }  // namespace transformation
-}  // namespace ml_tools
+}  // namespace ml
 }  // namespace ads

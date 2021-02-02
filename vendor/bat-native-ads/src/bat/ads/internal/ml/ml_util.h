@@ -3,20 +3,20 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef BAT_ADS_INTERNAL_ML_TOOLS_ML_TOOLS_UTIL_H_
-#define BAT_ADS_INTERNAL_ML_TOOLS_ML_TOOLS_UTIL_H_
+#ifndef BAT_ADS_INTERNAL_ML_ML_UTIL_H_
+#define BAT_ADS_INTERNAL_ML_ML_UTIL_H_
 
 #include <cmath>
 #include <map>
 #include <string>
 
 namespace ads {
-namespace ml_tools {
+namespace ml {
 
-std::map<std::string, double> softmax(
+std::map<std::string, double> Softmax(
     const std::map<std::string, double>& y);
 
-}  // namespace ml_tools
+}  // namespace ml
 }  // namespace ads
 
-#endif  // BAT_ADS_INTERNAL_ML_TOOLS_ML_TOOLS_UTIL_H_
+#endif  // BAT_ADS_INTERNAL_ML_ML_UTIL_H_

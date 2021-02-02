@@ -9,43 +9,43 @@
 #include <map>
 #include <string>
 
-#include "bat/ads/internal/ml_tools/data_point/data_point.h"
-#include "bat/ads/internal/ml_tools/ml_tools_util.h"
+#include "bat/ads/internal/ml/data/data.h"
+#include "bat/ads/internal/ml/data/vector_data.h"
 
 namespace ads {
-namespace ml_tools {
-namespace linear_svm {
+namespace ml {
+namespace model {
 
-class LinearSVM {
+class Linear {
  public:
-  LinearSVM();
+  Linear();
 
-  LinearSVM(
-      const LinearSVM& other);
+  Linear(
+      const Linear& other);
 
-  explicit LinearSVM(
+  explicit Linear(
       const std::string& model);
 
-  LinearSVM(
-      const std::map<std::string, data_point::DataPoint>& weights,
+  Linear(
+      const std::map<std::string, data::VectorData>& weights,
       const std::map<std::string, double>& biases);
 
-  ~LinearSVM();
+  ~Linear();
 
   std::map<std::string, double> Predict(
-      const data_point::DataPoint& x);
+      const data::VectorData& x);
 
   std::map<std::string, double> TopPredictions(
-      const data_point::DataPoint& x,
+      const data::VectorData& x,
       int top_count = -1);
 
  private:
-  std::map<std::string, data_point::DataPoint> weights_;
+  std::map<std::string, data::VectorData> weights_;
   std::map<std::string, double> biases_;
 };
 
-}  // namespace linear_svm
-}  // namespace ml_tools
+}  // namespace model
+}  // namespace ml
 }  // namespace ads
 
 #endif  // BAT_ADS_INTERNAL_ML_TOOLS_LINEAR_SVM_LINEAR_SVM_H_  // NOLINT

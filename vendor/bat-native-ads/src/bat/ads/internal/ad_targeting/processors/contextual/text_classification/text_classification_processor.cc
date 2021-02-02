@@ -7,6 +7,7 @@
 
 #include "bat/ads/internal/client/client.h"
 #include "bat/ads/internal/logging.h"
+#include "bat/ads/internal/ml/pipeline/text_processing/text_processing.h"
 
 namespace ads {
 namespace ad_targeting {
@@ -47,10 +48,10 @@ void TextClassification::Process(
     return;
   }
 
-  UserModel* user_model = resource_->get();
+  ml::pipeline::TextProcessing* text_proc_pipeline = resource_->get();
 
   const TextClassificationProbabilitiesMap probabilities =
-      user_model->ClassifyPage(text);
+      text_proc_pipeline->ClassifyPage(text);
 
   if (probabilities.empty()) {
     BLOG(1, "Text not classified as not enough content");

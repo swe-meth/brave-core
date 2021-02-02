@@ -3,44 +3,53 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef BAT_ADS_INTERNAL_ML_TOOLS_PIPELINE_PIPELINE_H_  // NOLINT
-#define BAT_ADS_INTERNAL_ML_TOOLS_PIPELINE_PIPELINE_H_  // NOLINT
+#ifndef BAT_ADS_INTERNAL_ML_PIPELINE_TEXT_PROCESSING_H_  // NOLINT
+#define BAT_ADS_INTERNAL_ML_PIPELINE_TEXT_PROCESSING_H_  // NOLINT
 
 #include <cstdint>
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
 #include "base/values.h"
 
-#include "bat/ads/internal/ml_tools/data_point/data_point.h"
-#include "bat/ads/internal/ml_tools/linear_svm/linear_svm.h"
-#include "bat/ads/internal/ml_tools/transformation/transformation.h"
+#include "bat/ads/internal/ml/data/data.h"
+#include "bat/ads/internal/ml/data/text_data.h"
+#include "bat/ads/internal/ml/model/linear/linear.h"
+#include "bat/ads/internal/ml/transformation/transformation.h"
 
 namespace ads {
-namespace ml_tools {
+namespace ml {
 namespace pipeline {
 
-class Pipeline {
+class TextProcessing {
  public:
-  Pipeline();
+  static TextProcessing* CreateInstance();
 
-  Pipeline(
-      const Pipeline& pipeline);
+  TextProcessing();
 
-  Pipeline(
-      const std::vector<transformation::Transformation>& transformations,
-      const linear_svm::LinearSVM& classifier);
+  TextProcessing(
+      const TextProcessing& pipeline);
 
-  ~Pipeline();
+  TextProcessing(
+      const std::vector<transformation::TransformationPtr>& transformations,
+      const model::Linear& linear_model);
+
+  ~TextProcessing();
+
+  bool IsInitialized();
 
   bool FromJson(
       const std::string& json);
 
   std::map<std::string, double> Apply(
-      const data_point::DataPoint& inp);
+      const std::shared_ptr<data::Data>& input_data);
 
-  std::map<std::string, double> GetTopPredictions(
+  const std::map<std::string, double> GetTopPredictions(
+      const std::string& content);
+
+  const std::map<std::string, double> ClassifyPage(
       const std::string& content);
 
  private:
@@ -70,15 +79,16 @@ class Pipeline {
   bool GetTransformationsFromList(
       base::ListValue List);
 
+  bool is_initialized_;
   uint16_t version_;
   std::string timestamp_;
   std::string locale_;
-  std::vector<transformation::Transformation> transformations_;
-  linear_svm::LinearSVM classifier_;
+  std::vector<transformation::TransformationPtr> transformations_;
+  model::Linear linear_model_;
 };
 
 }  // namespace pipeline
 }  // namespace ml_tools
 }  // namespace ads
 
-#endif  // BAT_ADS_INTERNAL_ML_TOOLS_PIPELINE_PIPELINE_H_  // NOLINT
+#endif  // BAT_ADS_INTERNAL_ML_PIPELINE_TEXT_PROCESSING_H_  // NOLINT

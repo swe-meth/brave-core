@@ -10,16 +10,13 @@
 #include <string>
 
 #include "bat/ads/internal/ad_targeting/resources/resource.h"
-#include "bat/ads/internal/user_model/user_model.h"
+#include "bat/ads/internal/ml/pipeline/text_processing/text_processing.h"
 
 namespace ads {
-
-using user_model::UserModel;
-
 namespace ad_targeting {
 namespace resource {
 
-class TextClassification : public Resource<UserModel*> {
+class TextClassification : public Resource<ml::pipeline::TextProcessing*> {
  public:
   TextClassification();
 
@@ -33,10 +30,10 @@ class TextClassification : public Resource<UserModel*> {
   void LoadForId(
       const std::string& locale);
 
-  UserModel* get() const override;
+  ml::pipeline::TextProcessing* get() const override;
 
  private:
-  std::unique_ptr<UserModel> user_model_;
+  std::unique_ptr<ml::pipeline::TextProcessing> text_processing_pipeline_;
 };
 
 }  // namespace resource

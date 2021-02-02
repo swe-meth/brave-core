@@ -8,10 +8,10 @@
 #include <iostream>
 #include <vector>
 
-#include "bat/ads/internal/ml_tools/data_point/data_point.h"
-#include "bat/ads/internal/ml_tools/linear_svm/linear_svm.h"
-#include "bat/ads/internal/ml_tools/pipeline/pipeline.h"
-#include "bat/ads/internal/ml_tools/transformation/transformation.h"
+#include "bat/ads/internal/ml/data_point/data_point.h"
+#include "bat/ads/internal/ml/linear_svm/linear_svm.h"
+#include "bat/ads/internal/ml/pipeline/pipeline.h"
+#include "bat/ads/internal/ml/transformation/transformation.h"
 
 #include "bat/ads/internal/unittest_base.h"
 #include "bat/ads/internal/unittest_util.h"
@@ -19,7 +19,7 @@
 // npm run test -- brave_unit_tests --filter=BatAds*
 
 namespace ads {
-namespace ml_tools {
+namespace ml {
 
 namespace {
 

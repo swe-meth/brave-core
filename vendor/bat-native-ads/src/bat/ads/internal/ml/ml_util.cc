@@ -9,12 +9,12 @@
 #include <map>
 #include <string>
 
-#include "bat/ads/internal/ml_tools/ml_tools_util.h"
+#include "bat/ads/internal/ml/ml_util.h"
 
 namespace ads {
-namespace ml_tools {
+namespace ml {
 
-std::map<std::string, double> softmax(
+std::map<std::string, double> Softmax(
     const std::map<std::string, double>& y) {
   double maximum = -std::numeric_limits<double>::infinity();
   for (auto const& x : y) {
@@ -33,5 +33,5 @@ std::map<std::string, double> softmax(
   return rtn;
 }
 
-}  // namespace ml_tools
+}  // namespace ml
 }  // namespace ads
