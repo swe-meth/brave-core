@@ -12,7 +12,6 @@
 #include "brave/common/brave_paths.h"
 #include "brave/components/ipfs/features.h"
 #include "brave/components/ipfs/ipfs_constants.h"
-#include "brave/components/ipfs/ipfs_gateway.h"
 #include "brave/components/ipfs/ipfs_service.h"
 #include "brave/components/ipfs/ipfs_utils.h"
 #include "brave/components/ipfs/pref_names.h"
@@ -122,6 +121,54 @@ class IpfsServiceBrowserTest : public InProcessBrowserTest {
             "/ip6/::/udp/4001/quic"
           ]
         }
+    })");
+
+    return http_response;
+  }
+
+  std::unique_ptr<net::test_server::HttpResponse> HandleGetRepoStats(
+      const net::test_server::HttpRequest& request) {
+    const GURL gurl = request.GetURL();
+    std::string queryStr;
+    base::StrAppend(&queryStr, {kRepoStatsHumanReadableParamName, "=",
+                                kRepoStatsHumanReadableParamValue});
+    if (gurl.path_piece() != kRepoStatsPath && gurl.query_piece() != queryStr) {
+      return nullptr;
+    }
+
+    auto http_response =
+        std::make_unique<net::test_server::BasicHttpResponse>();
+    http_response->set_code(net::HTTP_OK);
+    http_response->set_content_type("application/json");
+    http_response->set_content(R"({
+          "NumObjects": 113,
+          "RepoPath": "/some/path/to/repo",
+          "RepoSize": 123456789,
+          "StorageMax": 9000000000,
+          "Version": "fs-repo@10"
+    })");
+
+    return http_response;
+  }
+
+  std::unique_ptr<net::test_server::HttpResponse> HandleGetNodeInfo(
+      const net::test_server::HttpRequest& request) {
+    const GURL gurl = request.GetURL();
+    if (gurl.path_piece() != kNodeInfoPath) {
+      return nullptr;
+    }
+
+    auto http_response =
+        std::make_unique<net::test_server::BasicHttpResponse>();
+    http_response->set_code(net::HTTP_OK);
+    http_response->set_content_type("application/json");
+    http_response->set_content(R"({
+      "Addresses": ["111.111.111.111"],
+      "AgentVersion": "1.2.3.4",
+      "ID": "idididid",
+      "ProtocolVersion": "5.6.7.8",
+      "Protocols": ["one", "two"],
+      "PublicKey": "public_key"
     })");
 
     return http_response;
@@ -258,6 +305,47 @@ class IpfsServiceBrowserTest : public InProcessBrowserTest {
     EXPECT_EQ(config.swarm, std::vector<std::string>{});
   }
 
+  void OnGetRepoStatsSuccess(bool success, const RepoStats& stats) {
+    if (wait_for_request_) {
+      wait_for_request_->Quit();
+    }
+    EXPECT_TRUE(success);
+    EXPECT_EQ(stats.objects, uint64_t(113));
+    EXPECT_EQ(stats.size, uint64_t(123456789));
+    EXPECT_EQ(stats.storage_max, uint64_t(9000000000));
+    EXPECT_EQ(stats.path, "/some/path/to/repo");
+    ASSERT_EQ(stats.version, "fs-repo@10");
+  }
+
+  void OnGetRepoStatsFail(bool success, const RepoStats& stats) {
+    if (wait_for_request_) {
+      wait_for_request_->Quit();
+    }
+    EXPECT_FALSE(success);
+    EXPECT_EQ(stats.objects, uint64_t(0));
+    EXPECT_EQ(stats.size, uint64_t(0));
+    EXPECT_EQ(stats.storage_max, uint64_t(0));
+    EXPECT_EQ(stats.path, "");
+    ASSERT_EQ(stats.version, "");
+  }
+
+  void OnGetNodeInfoSuccess(bool success, const NodeInfo& info) {
+    if (wait_for_request_) {
+      wait_for_request_->Quit();
+    }
+
+    EXPECT_EQ(info.id, "idididid");
+    ASSERT_EQ(info.version, "1.2.3.4");
+  }
+
+  void OnGetNodeInfoFail(bool success, const NodeInfo& info) {
+    if (wait_for_request_) {
+      wait_for_request_->Quit();
+    }
+    EXPECT_EQ(info.id, "");
+    ASSERT_EQ(info.version, "");
+  }
+
   void WaitForRequest() {
     if (wait_for_request_) {
       return;
@@ -312,6 +400,42 @@ IN_PROC_BROWSER_TEST_F(IpfsServiceBrowserTest, GetAddressesConfigServerError) {
   ipfs_service()->GetAddressesConfig(
       base::BindOnce(&IpfsServiceBrowserTest::OnGetAddressesConfigFail,
                      base::Unretained(this)));
+  WaitForRequest();
+}
+
+IN_PROC_BROWSER_TEST_F(IpfsServiceBrowserTest, GetRepoStatsServerSuccess) {
+  ResetTestServer(base::BindRepeating(
+      &IpfsServiceBrowserTest::HandleGetRepoStats, base::Unretained(this)));
+  ipfs_service()->GetRepoStats(base::BindOnce(
+      &IpfsServiceBrowserTest::OnGetRepoStatsSuccess, base::Unretained(this)));
+  WaitForRequest();
+}
+
+IN_PROC_BROWSER_TEST_F(IpfsServiceBrowserTest, GetRepoStatsServerError) {
+  ResetTestServer(
+      base::BindRepeating(&IpfsServiceBrowserTest::HandleRequestServerError,
+                          base::Unretained(this)));
+
+  ipfs_service()->GetRepoStats(base::BindOnce(
+      &IpfsServiceBrowserTest::OnGetRepoStatsFail, base::Unretained(this)));
+  WaitForRequest();
+}
+
+IN_PROC_BROWSER_TEST_F(IpfsServiceBrowserTest, GetNodeInfoServerSuccess) {
+  ResetTestServer(base::BindRepeating(
+      &IpfsServiceBrowserTest::HandleGetNodeInfo, base::Unretained(this)));
+  ipfs_service()->GetNodeInfo(base::BindOnce(
+      &IpfsServiceBrowserTest::OnGetNodeInfoSuccess, base::Unretained(this)));
+  WaitForRequest();
+}
+
+IN_PROC_BROWSER_TEST_F(IpfsServiceBrowserTest, GetNodeInfoServerError) {
+  ResetTestServer(
+      base::BindRepeating(&IpfsServiceBrowserTest::HandleRequestServerError,
+                          base::Unretained(this)));
+
+  ipfs_service()->GetNodeInfo(base::BindOnce(
+      &IpfsServiceBrowserTest::OnGetNodeInfoFail, base::Unretained(this)));
   WaitForRequest();
 }
 

@@ -196,6 +196,12 @@
       <message name="IDS_WIDEVINE_DONT_ASK_AGAIN_CHECKBOX" desc="Checkbox for prevent showing widevine install prompt">
         Don't ask again
       </message>
+      <message name="IDS_SETTINGS_ENABLE_WIDEVINE_TITLE" desc="Text fragment for enabling widevine component. 'Widevine' is the name of a plugin and should not be translated.">
+        Enable Widevine
+      </message>
+      <message name="IDS_SETTINGS_ENABLE_WIDEVINE_DESC" desc="Text fragment for enabling widevine component. 'Widevine' is the name of a plugin and should not be translated.">
+        Use Widevine digital rights management (DRM) component to view protected streaming video and other content in the browser.
+      </message>
       <message name="IDS_SETTINGS_ASK_WIDEVINE_INSTALL_DESC" desc="Text fragment for asking widevine install or not">
         Ask when a site wants to install Widevine on your computer.
       </message>
@@ -923,7 +929,60 @@ By installing this extension, you are agreeing to the Google Widevine Terms of U
         <message name="IDS_BRAVE_AVATAR_LABEL_89" desc="The label for the avatar_bonbon_ninja.png avatar.">
             Avatar Bonbon Ninja
         </message>
+        <!-- Brave default browser dialog -->
+        <message name="IDS_BRAVE_DEFAULT_BROWSER_DIALOG_HEADER_TEXT" desc="The header text for default browser dialog">
+          Set Brave as your default browser
+        </message>
+        <message name="IDS_BRAVE_DEFAULT_BROWSER_DIALOG_CONTENTS_TEXT" desc="The contents for default browser dialog">
+          Brave browser is currently not set as your default browser.
+Set Brave as your default to keep browsing the web faster -
+up to 6x faster on major news sites.
+        </message>
+        <message name="IDS_BRAVE_DEFAULT_BROWSER_DIALOG_OK_BUTTON_LABEL" desc="The text for default browser dialog ok button">
+          Set as default
+        </message>
+        <message name="IDS_BRAVE_DEFAULT_BROWSER_DIALOG_CANCEL_BUTTON_LABEL" desc="The text for default browser dialog cancel button">
+          Not now
+        </message>
       </if>
+
+      <!-- Sidebar -->
+      <if expr="enable_sidebar">
+        <message name="IDS_SIDEBAR_ITEM_CONTEXT_MENU_REMOVE" desc="Menu for removing an item from sidebar">
+          Remove
+        </message>
+        <message name="IDS_SIDEBAR_ADD_ITEM_BUBBLE_TITLE" desc="Title of sidebar add item bubble">
+          Add to Sidebar
+        </message>
+        <message name="IDS_SIDEBAR_SHOW_OPTION_TITLE" desc="Title of sidebar show option menu">
+          Show Sidebar
+        </message>
+        <message name="IDS_SIDEBAR_SHOW_OPTION_ALWAYS" desc="Label for always show sidebar option">
+          Always
+        </message>
+        <message name="IDS_SIDEBAR_SHOW_OPTION_MOUSEOVER" desc="Label for show sidebar on mousee over option">
+          On mouseover
+        </message>
+        <message name="IDS_SIDEBAR_SHOW_OPTION_ONCLICK" desc="Label for show sidebar on click option">
+          On click
+        </message>
+        <message name="IDS_SIDEBAR_SHOW_OPTION_NEVER" desc="Label for show sidebar on click option">
+          Never
+        </message>
+        <message name="IDS_SETTINGS_APPEARANCE_SETTINGS_SIDEBAR_ENABLED_DESC" desc="Label for show sidebar option in settings">
+          Enabled
+        </message>
+        <message name="IDS_SETTINGS_APPEARANCE_SETTINGS_SIDEBAR_DISABLED_DESC" desc="Label for show sidebar option in settings">
+          Disabled
+        </message>
+        <message name="IDS_SIDEBAR_ADDED_FEEDBACK_TITLE_1" desc="Label for first row text in item added feedback bubble">
+          Added
+        </message>
+        <message name="IDS_SIDEBAR_ADDED_FEEDBACK_TITLE_2" desc="Label for second row text in item added feedback bubble">
+          Right-click to remove
+        </message>
+      </if>
+
       <!-- P3A -->
       <message name="IDS_BRAVE_CONFIRM_P3A_INFO_BAR" desc="Text that shows on the info bar where user acknowledges the P3A message">
         Brave uses completely private product analytics to estimate the overall usage of certain features
@@ -1027,6 +1086,19 @@ By installing this extension, you are agreeing to the Google Widevine Terms of U
       <message name="IDS_SETTINGS_RESET_REWARDS_DATA" desc="The label for opening rewards manage wallet dialog">
         Reset Brave Rewards data...
       </message>
+      <!--First-run dialog messages -->
+      <message name="IDS_FR_ENABLE_LOGGING_BRAVE" desc="Label for checkbox to ask whether to send usage stats to brave">
+          Help improve Brave by sending crash reports and
+completely anonymised, private product analytics.
+      </message>
+      <message name="IDS_FR_CUSTOMIZE_DEFAULT_BROWSER_BRAVE" desc="Default browser checkbox label">
+        Set Brave as your default browser
+      </message>
+      <if expr="is_macosx">
+        <message name="IDS_FIRSTRUN_DLG_MAC_OPTIONS_SEND_USAGE_STATS_LABEL_BRAVE" desc="Label for checkbox to ask whether to send usage stats to Google">
+          Help improve <ph name="PRODUCT_NAME">$1<ex>Brave</ex></ph> by sending crash reports and completely anonymised, private product analytics.
+        </message>
+      </if>
     </messages>
   </release>
 </grit>

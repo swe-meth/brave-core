@@ -4,11 +4,13 @@ import("//brave/components/brave_rewards/browser/buildflags/buildflags.gni")
 import("//brave/components/brave_wallet/buildflags/buildflags.gni")
 import("//brave/components/brave_wayback_machine/buildflags/buildflags.gni")
 import("//brave/components/ipfs/buildflags/buildflags.gni")
+import("//brave/components/sidebar/buildflags/buildflags.gni")
 import("//brave/components/speedreader/buildflags.gni")
 import("//brave/components/tor/buildflags/buildflags.gni")
 import("//build/config/features.gni")
 import("//chrome/common/features.gni")
 import("//components/gcm_driver/config.gni")
+import("//third_party/widevine/cdm/widevine.gni")
 
 source_set("favicon_source") {
   # Remove when https://github.com/brave/brave-browser/issues/10614 is resolved
@@ -53,6 +55,8 @@ source_set("ui") {
 
   if (!is_android) {
     sources += [
+      "brave_browser.cc",
+      "brave_browser.h",
       "brave_browser_command_controller.cc",
       "brave_browser_command_controller.h",
       "brave_browser_content_setting_bubble_model_delegate.cc",
@@ -65,6 +69,7 @@ source_set("ui") {
       "brave_view_ids.h",
       "browser_commands.cc",
       "browser_commands.h",
+      "browser_dialogs.h",
       "content_settings/brave_autoplay_blocked_image_model.cc",
       "content_settings/brave_autoplay_blocked_image_model.h",
       "content_settings/brave_autoplay_content_setting_bubble_model.cc",
@@ -73,6 +78,8 @@ source_set("ui") {
       "content_settings/brave_content_setting_image_models.h",
       "omnibox/brave_omnibox_client_impl.cc",
       "omnibox/brave_omnibox_client_impl.h",
+      "startup/default_brave_browser_prompt.cc",
+      "startup/default_brave_browser_prompt.h",
       "toolbar/brave_app_menu_model.cc",
       "toolbar/brave_app_menu_model.h",
       "toolbar/brave_recent_tabs_sub_menu_model.h",
@@ -117,6 +124,8 @@ source_set("ui") {
     sources += [
       "views/bookmarks/bookmark_bar_instructions_view.cc",
       "views/bookmarks/bookmark_bar_instructions_view.h",
+      "views/brave_default_browser_dialog_view.cc",
+      "views/brave_default_browser_dialog_view.h",
       "views/brave_layout_provider.cc",
       "views/brave_layout_provider.h",
       "views/download/brave_download_item_view.cc",
@@ -220,6 +229,7 @@ source_set("ui") {
     "//brave/components/brave_shields/browser",
     "//brave/components/brave_wallet/buildflags:buildflags",
     "//brave/components/brave_wayback_machine:buildflags",
+    "//brave/components/cosmetic_filters/resources/data:generated_resources",
     "//brave/components/crypto_dot_com/browser/buildflags:buildflags",
     "//brave/components/l10n/browser",
     "//brave/components/l10n/common",
@@ -227,6 +237,7 @@ source_set("ui") {
     "//brave/components/ntp_background_images/common",
     "//brave/components/ntp_widget_utils/browser",
     "//brave/components/p3a:buildflags",
+    "//brave/components/sidebar/buildflags",
     "//brave/components/tor:pref_names",
     "//brave/components/vector_icons",
     "//brave/components/webcompat_reporter/browser",
@@ -271,6 +282,38 @@ source_set("ui") {
     deps += [
       "//brave/components/ipfs",
       "//brave/components/ipfs_ui:generated_resources",
+    ]
+  }
+
+  if (enable_sidebar) {
+    deps += [
+      "//brave/browser/ui/sidebar",
+      "//brave/components/sidebar",
+    ]
+
+    sources += [
+      "views/frame/brave_contents_layout_manager.cc",
+      "views/frame/brave_contents_layout_manager.h",
+      "views/sidebar/bubble_border_with_arrow.cc",
+      "views/sidebar/bubble_border_with_arrow.h",
+      "views/sidebar/sidebar_add_item_bubble_delegate_view.cc",
+      "views/sidebar/sidebar_add_item_bubble_delegate_view.h",
+      "views/sidebar/sidebar_bubble_background.cc",
+      "views/sidebar/sidebar_bubble_background.h",
+      "views/sidebar/sidebar_button_view.cc",
+      "views/sidebar/sidebar_button_view.h",
+      "views/sidebar/sidebar_container_view.cc",
+      "views/sidebar/sidebar_container_view.h",
+      "views/sidebar/sidebar_control_view.cc",
+      "views/sidebar/sidebar_control_view.h",
+      "views/sidebar/sidebar_item_added_feedback_bubble.cc",
+      "views/sidebar/sidebar_item_added_feedback_bubble.h",
+      "views/sidebar/sidebar_item_view.cc",
+      "views/sidebar/sidebar_item_view.h",
+      "views/sidebar/sidebar_items_contents_view.cc",
+      "views/sidebar/sidebar_items_contents_view.h",
+      "views/sidebar/sidebar_items_scroll_view.cc",
+      "views/sidebar/sidebar_items_scroll_view.h",
     ]
   }
 
@@ -323,6 +366,12 @@ source_set("ui") {
         "webui/settings/brave_default_extensions_handler.cc",
         "webui/settings/brave_default_extensions_handler.h",
       ]
+
+      deps += [ "//third_party/widevine/cdm:buildflags" ]
+
+      if (enable_widevine) {
+        deps += [ "//brave/browser/widevine" ]
+      }
     }
 
     if (brave_rewards_enabled) {
@@ -382,6 +431,15 @@ source_set("ui") {
       "//brave/components/brave_rewards/resources:tip_generated_resources",
       "//brave/vendor/bat-native-ledger:headers",
     ]
+  }
+
+  if (enable_tor) {
+    sources += [
+      "webui/tor_internals_ui.cc",
+      "webui/tor_internals_ui.h",
+    ]
+
+    deps += [ "//brave/components/tor/resources:internals_generated_resources" ]
   }
 
   if (brave_wallet_enabled) {

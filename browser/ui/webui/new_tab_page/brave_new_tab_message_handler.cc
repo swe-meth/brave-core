@@ -50,8 +50,7 @@ using ntp_background_images::ViewCounterServiceFactory;
 #endif
 
 #if BUILDFLAG(ENABLE_TOR)
-#include "brave/browser/tor/tor_profile_service_factory.h"
-#include "brave/components/tor/tor_profile_service.h"
+#include "brave/components/tor/tor_launcher_factory.h"
 #endif
 
 namespace {
@@ -203,16 +202,14 @@ BraveNewTabMessageHandler* BraveNewTabMessageHandler::Create(
 BraveNewTabMessageHandler::BraveNewTabMessageHandler(Profile* profile)
     : profile_(profile) {
 #if BUILDFLAG(ENABLE_TOR)
-  if (profile->IsTor()) {
-    tor_profile_service_ = TorProfileServiceFactory::GetForContext(profile);
-  }
+  tor_launcher_factory_ = TorLauncherFactory::GetInstance();
 #endif
 }
 
 BraveNewTabMessageHandler::~BraveNewTabMessageHandler() {
 #if BUILDFLAG(ENABLE_TOR)
-  if (tor_profile_service_)
-    tor_profile_service_->RemoveObserver(this);
+  if (tor_launcher_factory_)
+    tor_launcher_factory_->RemoveObserver(this);
 #endif
 }
 
@@ -274,13 +271,18 @@ void BraveNewTabMessageHandler::RegisterMessages() {
           &BraveNewTabMessageHandler::HandleTodayInteractionBegin,
           base::Unretained(this)));
   web_ui()->RegisterMessageCallback(
-      "todayOnCardVisits",
-      base::BindRepeating(&BraveNewTabMessageHandler::HandleTodayOnCardVisits,
+      "todayOnCardVisit",
+      base::BindRepeating(&BraveNewTabMessageHandler::HandleTodayOnCardVisit,
                           base::Unretained(this)));
   web_ui()->RegisterMessageCallback(
       "todayOnCardViews",
       base::BindRepeating(&BraveNewTabMessageHandler::HandleTodayOnCardViews,
                           base::Unretained(this)));
+  web_ui()->RegisterMessageCallback(
+      "todayOnPromotedCardView",
+      base::BindRepeating(
+          &BraveNewTabMessageHandler::HandleTodayOnPromotedCardView,
+          base::Unretained(this)));
 }
 
 void BraveNewTabMessageHandler::OnJavascriptAllowed() {
@@ -354,16 +356,16 @@ void BraveNewTabMessageHandler::OnJavascriptAllowed() {
 #endif
 
 #if BUILDFLAG(ENABLE_TOR)
-  if (tor_profile_service_)
-    tor_profile_service_->AddObserver(this);
+  if (tor_launcher_factory_)
+    tor_launcher_factory_->AddObserver(this);
 #endif
 }
 
 void BraveNewTabMessageHandler::OnJavascriptDisallowed() {
   pref_change_registrar_.RemoveAll();
 #if BUILDFLAG(ENABLE_TOR)
-  if (tor_profile_service_)
-    tor_profile_service_->RemoveObserver(this);
+  if (tor_launcher_factory_)
+    tor_launcher_factory_->RemoveObserver(this);
 #endif
 }
 
@@ -395,7 +397,7 @@ void BraveNewTabMessageHandler::HandleGetTorProperties(
   AllowJavascript();
 #if BUILDFLAG(ENABLE_TOR)
   auto data = GetTorPropertiesDictionary(
-      tor_profile_service_ ? tor_profile_service_->IsTorConnected() : false,
+      tor_launcher_factory_ ? tor_launcher_factory_->IsTorConnected() : false,
       "");
 #else
   auto data = GetTorPropertiesDictionary(false, "");
@@ -565,7 +567,7 @@ void BraveNewTabMessageHandler::HandleTodayInteractionBegin(
                              base::size(kSessionCountBuckets) + 1);
 }
 
-void BraveNewTabMessageHandler::HandleTodayOnCardVisits(
+void BraveNewTabMessageHandler::HandleTodayOnCardVisit(
     const base::ListValue* args) {
   // Argument should be how many cards visited in this session.
   // We need the front-end to give us this since this class
@@ -587,6 +589,19 @@ void BraveNewTabMessageHandler::HandleTodayOnCardVisits(
   int answer = it_count - kBuckets;
   UMA_HISTOGRAM_EXACT_LINEAR("Brave.Today.WeeklyMaxCardVisitsCount", answer,
                              base::size(kBuckets) + 1);
+  // Record ad click if a promoted card was read.
+  if (args->GetSize() < 4) {
+    return;
+  }
+  std::string item_id = args->GetList()[1].GetString();
+  std::string creative_instance_id = args->GetList()[2].GetString();
+  bool is_promoted = args->GetList()[3].GetBool();
+  if (is_promoted && !item_id.empty() && !creative_instance_id.empty()) {
+    auto* ads_service_ = brave_ads::AdsServiceFactory::GetForProfile(profile_);
+    ads_service_->OnPromotedContentAdEvent(
+        item_id, creative_instance_id,
+        ads::mojom::BraveAdsPromotedContentAdEventType::kClicked);
+  }
 }
 
 void BraveNewTabMessageHandler::HandleTodayOnCardViews(
@@ -607,6 +622,19 @@ void BraveNewTabMessageHandler::HandleTodayOnCardViews(
   int answer = it_count - kBuckets;
   UMA_HISTOGRAM_EXACT_LINEAR("Brave.Today.WeeklyMaxCardViewsCount", answer,
                              base::size(kBuckets) + 1);
+}
+
+void BraveNewTabMessageHandler::HandleTodayOnPromotedCardView(
+    const base::ListValue* args) {
+  // Argument should be how many cards viewed in this session.
+  std::string creative_instance_id = args->GetList()[0].GetString();
+  std::string item_id = args->GetList()[1].GetString();
+  if (!item_id.empty() && !creative_instance_id.empty()) {
+    auto* ads_service_ = brave_ads::AdsServiceFactory::GetForProfile(profile_);
+    ads_service_->OnPromotedContentAdEvent(
+        item_id, creative_instance_id,
+        ads::mojom::BraveAdsPromotedContentAdEventType::kViewed);
+  }
 }
 
 void BraveNewTabMessageHandler::OnPrivatePropertiesChanged() {

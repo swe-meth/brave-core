@@ -155,6 +155,7 @@ test("brave_unit_tests") {
     "//brave/components/ntp_background_images/common",
     "//brave/components/ntp_widget_utils/browser",
     "//brave/components/p3a",
+    "//brave/components/sidebar:unit_tests",
     "//brave/components/tor:tor_unit_tests",
     "//brave/components/tor/buildflags",
     "//brave/components/weekly_storage",
@@ -349,7 +350,9 @@ test("brave_unit_tests") {
       # TODO(keur): Reminder to move this out when we migrate
       # stats browser tests into unit tests.
       "//brave/browser/brave_stats:stats_updater",
+      "//brave/components/brave_ads/browser:testutil",
       "//brave/components/brave_stats/browser",
+      "//brave/vendor/bat-native-ads",
     ]
 
     if (!is_android) {
@@ -505,6 +508,8 @@ static_library("browser_test_support") {
     "base/brave_test_launcher_delegate.cc",
     "base/brave_test_launcher_delegate.h",
   ]
+
+  deps = [ "//chrome/browser" ]
 }
 
 static_library("browser_tests_runner") {
@@ -612,11 +617,14 @@ if (!is_android) {
       "//brave/browser/autoplay:browser_tests",
       "//brave/browser/farbling:browser_tests",
       "//brave/browser/tor:browser_tests",
+      "//brave/browser/ui/sidebar:browser_tests",
       "//brave/browser/ui/tabs/test:browser_tests",
       "//brave/browser/widevine:browser_tests",
       "//brave/chromium_src/third_party/blink/renderer/modules:browser_tests",
       "//brave/components/ipfs/test:brave_ipfs_browser_tests",
+      "//brave/renderer/test:browser_tests",
       "//media:test_support",
+      "//testing/gmock",
     ]
 
     if (enable_brave_perf_predictor) {
@@ -756,6 +764,7 @@ if (!is_android) {
     }
 
     defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+
     deps += [
       ":brave_browser_tests_deps",
       "//brave/app:brave_generated_resources_grit",

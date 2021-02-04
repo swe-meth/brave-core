@@ -388,7 +388,7 @@ This file contains all "about" strings.  It is set to NOT be translated, in tran
         Set as default browser
       </message>
       <message name="IDS_BRAVE_SET_DEFAULT_BROWSER_DIALOG_TEXT" desc="Dialog for setting default browser">
-        Select Brave Browser from the list and tap 'Always'
+        Select Brave Browser and tap 'Always'
       </message>
       <message name="IDS_BRAVE_ALREADY_SET_AS_DEFAULT_BROWSER" desc="Toast message for those whom have already set Brave as default browser">
         Brave is already set as your default browser.
@@ -841,6 +841,18 @@ until they verify, or until 90 days have passed.
       <message name="IDS_SYNC_DEVICE_FAILURE" desc="The message for the dialog where the user notified about sync setup failure.">
         Sync could not be setup
       </message>
+      <message name="IDS_BRAVE_SYNC_ANDROID_SYNC_DISABLED" desc="The message for hint that Brave sync does not work because Android system sync is disabled and required need to open and enable">
+        We detected that you have Brave Sync enabled, however your system sync is turned off and will not allow Brave to sync. Press to open settings
+      </message>
+      <message name="IDS_BRAVE_OPEN_SYSTEM_SYNC_SETTINGS" desc="The text on button on informer which is fired when Android system sync settings switch is toggled off, to open system settings">
+        Open Settings
+      </message>
+      <message name="IDS_BRAVE_ANDROID_SYNC_DISABLED_OK" desc="The text on button on informer which is fired when Android system sync settings switch is toggled off, to ignore informer">
+        OK
+      </message>
+      <message name="IDS_BRAVE_ANDROID_SYNC_DISABLED_DONT_SHOW" desc="The text on button on informer which is fired when Android system sync settings switch is toggled off, to disable informer">
+        Don't show again
+      </message>
       <message name="IDS_BRAVE_PRIVACY_NOTICE_URL" desc="URL for the Brave privacy notice" translateable="false">
         https://brave.com/privacy_android
       </message>
@@ -1177,14 +1189,32 @@ until they verify, or until 90 days have passed.
       <message name="IDS_UPDATE_NOTIFICATION_TEXT" desc="Text of notification on application update.">
         Browse faster and block ads with Brave
       </message>
-      <message name="IDS_YOU_JUST_BLOCKED" desc="Shields tootltip text">
-        You just blocked some trackers &amp; ads.
+      <message name="IDS_TOOLTIP_TITLE_1" desc="Shields tootltip title">
+        Trackers &amp; ads blocked on this page.
       </message>
-      <message name="IDS_TAKE_A_LOOK" desc="Shields tootltip text">
+      <message name="IDS_TOOLTIP_TEXT_1" desc="Shields tootltip text">
+        Brave Shields just protected your privacy.
+      </message>
+      <message name="IDS_TAKE_A_LOOK" desc="Shields tootltip button text">
         Take a look
       </message>
-      <message name="IDS_NICE" desc="Shields tootltip title">
-        Nice!
+      <message name="IDS_TOOLTIP_TITLE_2" desc="Shields tootltip title">
+        Ads are blocked while watching videos on this website.
+      </message>
+      <message name="IDS_TOOLTIP_TEXT_2" desc="Shields tootltip text">
+        Videos without ads use less data.
+      </message>
+      <message name="IDS_TOOLTIP_TITLE_3" desc="Shields tootltip title">
+        10+ trackers &amp; ads blocked on this page.
+      </message>
+      <message name="IDS_TOOLTIP_TEXT_3" desc="Shields tootltip text">
+        Brave Shields protects your online privacy on every site.
+      </message>
+      <message name="IDS_TOOLTIP_TITLE_4" desc="Shields tootltip title">
+        Your connection is now encrypted.
+      </message>
+      <message name="IDS_TOOLTIP_TEXT_4" desc="Shields tootltip text">
+        If available, Brave upgrades you to a secure connection automatically.
       </message>
       <message name="IDS_BRAVE_WORKS_EVERYWHERE" desc="Cross promotional modal title text">
         Brave works everywhere
@@ -1529,7 +1559,7 @@ until they verify, or until 90 days have passed.
         Lets Take A Quick Tour
       </message>
       <message name="IDS_BRAVE_REWARDS_WELCOME_LAYOUT_TEXT" desc="Brave rewards welcome layout text">
-        After you recieve your first ads payout you can come back and tip this creator!
+        After you receive your first ads payout you can come back and tip this creator!
       </message>
       <message name="IDS_QUICK_REFRESHER_TOUR" desc="Brave rewards welcome layout button text">
         Quick refresher tour
@@ -1605,6 +1635,18 @@ until they verify, or until 90 days have passed.
       </message>
       <message name="IDS_BRE_BANNER_TEXT" desc="BRE banner text">
         Take a quick tour to brush up on how it works to go down in history as a Rewards rockstar!
+      </message>
+      <message name="IDS_SET_DEFAULT_BROWSER_TITLE" desc="Set default browser modal title">
+        Open all links with Brave to protect your privacy
+      </message>
+      <message name="IDS_SET_DEFAULT_BROWSER_TEXT" desc="Set default browser modal text">
+        Brave Shields blocks trackers &amp; ads, saves data, and saves you time on every site you visit.
+      </message>
+      <message name="IDS_SET_BRAVE_DEFAULT_BROWSER" desc="Set default browser modal button text">
+        Set Brave as default
+      </message>
+      <message name="IDS_NOT_NOW" desc="Set default browser modal button text">
+        Not now
       </message>
     </messages>
   </release>

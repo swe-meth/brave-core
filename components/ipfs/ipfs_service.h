@@ -12,12 +12,15 @@
 #include <utility>
 #include <vector>
 
+#include "base/containers/queue.h"
 #include "base/memory/scoped_refptr.h"
 #include "base/observer_list.h"
 #include "brave/components/ipfs/addresses_config.h"
 #include "brave/components/ipfs/brave_ipfs_client_updater.h"
 #include "brave/components/ipfs/ipfs_constants.h"
 #include "brave/components/ipfs/ipfs_p3a.h"
+#include "brave/components/ipfs/node_info.h"
+#include "brave/components/ipfs/repo_stats.h"
 #include "brave/components/services/ipfs/public/mojom/ipfs_service.mojom.h"
 #include "components/keyed_service/core/keyed_service.h"
 #include "components/version_info/channel.h"
@@ -58,6 +61,11 @@ class IpfsService : public KeyedService,
       base::OnceCallback<void(bool, const std::vector<std::string>&)>;
   using GetAddressesConfigCallback =
       base::OnceCallback<void(bool, const ipfs::AddressesConfig&)>;
+  using GetRepoStatsCallback =
+      base::OnceCallback<void(bool, const ipfs::RepoStats&)>;
+  using GetNodeInfoCallback =
+      base::OnceCallback<void(bool, const ipfs::NodeInfo&)>;
+
   using LaunchDaemonCallback = base::OnceCallback<void(bool)>;
   using ShutdownDaemonCallback = base::OnceCallback<void(bool)>;
   using GetConfigCallback = base::OnceCallback<void(bool, const std::string&)>;
@@ -82,10 +90,14 @@ class IpfsService : public KeyedService,
   void LaunchDaemon(LaunchDaemonCallback callback);
   void ShutdownDaemon(ShutdownDaemonCallback callback);
   void GetConfig(GetConfigCallback);
+  void GetRepoStats(GetRepoStatsCallback callback);
+  void GetNodeInfo(GetNodeInfoCallback callback);
 
   void SetAllowIpfsLaunchForTest(bool launched);
   void SetServerEndpointForTest(const GURL& gurl);
   void SetSkipGetConnectedPeersCallbackForTest(bool skip);
+  bool WasConnectedPeersCalledForTest() const;
+  void SetGetConnectedPeersCalledForTest(bool value);
   void RunLaunchDaemonCallbackForTest(bool result);
 
  protected:
@@ -101,7 +113,8 @@ class IpfsService : public KeyedService,
   void OnIpfsCrashed();
   void OnIpfsLaunched(bool result, int64_t pid);
   void OnIpfsDaemonCrashed(int64_t pid);
-
+  // Notifies tasks waiting to start the service.
+  void NotifyDaemonLaunchCallbacks(bool result);
   // Launches the ipfs service in an utility process.
   void LaunchIfNotRunning(const base::FilePath& executable_path);
 
@@ -113,7 +126,12 @@ class IpfsService : public KeyedService,
   void OnGetAddressesConfig(SimpleURLLoaderList::iterator iter,
                             GetAddressesConfigCallback callback,
                             std::unique_ptr<std::string> response_body);
-
+  void OnRepoStats(SimpleURLLoaderList::iterator iter,
+                   GetRepoStatsCallback callback,
+                   std::unique_ptr<std::string> response_body);
+  void OnNodeInfo(SimpleURLLoaderList::iterator iter,
+                  GetNodeInfoCallback callback,
+                  std::unique_ptr<std::string> response_body);
   // The remote to the ipfs service running on an utility process. The browser
   // will not launch a new ipfs service process if this remote is already
   // bound.
@@ -126,10 +144,12 @@ class IpfsService : public KeyedService,
   scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory_;
   SimpleURLLoaderList url_loaders_;
 
-  LaunchDaemonCallback launch_daemon_callback_;
+  base::queue<LaunchDaemonCallback> pending_launch_callbacks_;
 
   bool allow_ipfs_launch_for_test_ = false;
   bool skip_get_connected_peers_callback_for_test_ = false;
+  bool connected_peers_function_called_ = false;
+
   GURL server_endpoint_;
 
   base::FilePath user_data_dir_;

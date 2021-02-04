@@ -66,10 +66,14 @@ IN_PROC_BROWSER_TEST_F(BraveMainDelegateBrowserTest, DisabledFeatures) {
       &autofill::features::kAutofillEnableAccountWalletStorage,
       &autofill::features::kAutofillServerCommunication,
       &blink::features::kTextFragmentAnchor,
+      &features::kDirectSockets,
       &features::kIdleDetection,
+      &features::kLangClientHintHeader,
       &features::kNotificationTriggers,
       &features::kPrivacySettingsRedesign,
+      &features::kSignedExchangePrefetchCacheForNavigations,
       &features::kSignedExchangeSubresourcePrefetch,
+      &features::kSubresourceWebBundles,
       &features::kTabHoverCards,
       &features::kWebOTP,
       &network_time::kNetworkTimeServiceQuerying,
@@ -95,4 +99,6 @@ IN_PROC_BROWSER_TEST_F(BraveMainDelegateBrowserTest, EnabledFeatures) {
 
   for (const auto* feature : enabled_features)
     EXPECT_TRUE(base::FeatureList::IsEnabled(*feature));
+
+  EXPECT_TRUE(features::kDnsOverHttpsShowUiParam.default_value);
 }

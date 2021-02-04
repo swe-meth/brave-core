@@ -51,6 +51,10 @@ class BraveContentBrowserClient : public ChromeContentBrowserClient {
       const url::Origin& requesting_origin,
       const url::Origin& embedding_origin) override;
 
+  void RegisterBrowserInterfaceBindersForFrame(
+      content::RenderFrameHost* render_frame_host,
+      mojo::BinderMapWithContext<content::RenderFrameHost*>* map) override;
+
   void AppendExtraCommandLineSwitches(base::CommandLine* command_line,
                                       int child_process_id) override;
 
@@ -98,6 +102,9 @@ class BraveContentBrowserClient : public ChromeContentBrowserClient {
       content::BrowserContext* browser_context);
   std::vector<std::unique_ptr<content::NavigationThrottle>>
       CreateThrottlesForNavigation(content::NavigationHandle* handle) override;
+
+  std::string GetEffectiveUserAgent(content::BrowserContext* browser_context,
+                                    const GURL& url) override;
 
  private:
   uint64_t session_token_;

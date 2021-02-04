@@ -255,6 +255,9 @@
       <message name="IDS_BRAVE_TODAY_DISABLE_SOURCE_COMMAND" desc="Command text to disable a specific publisher from showing in the feed">
         Disable content from <ph name="PUBLISHER_NAME">$1<ex>The New York Times</ex></ph>
       </message>
+      <message name="IDS_BRAVE_TODAY_PROMOTED" desc="Label for promoted content">
+        Promoted
+      </message>
 
       <message name="IDS_BRAVE_NEW_TAB_STATS_TAB" desc="Brave Stats title">Brave Stats</message>
       <message name="IDS_BRAVE_NEW_TAB_CLOCK_TAB" desc="Clock title">Clock</message>
@@ -268,6 +271,21 @@
       <message name="IDS_BRAVE_NEW_TAB_GEMINI_WIDGET_DESC" desc="Gemini widget description">Trade Crypto on Gemini directly in your browser.</message>
       <message name="IDS_BRAVE_NEW_TAB_CARDS_TITLE" desc="Toggle cards title">Cards</message>
       <message name="IDS_BRAVE_NEW_TAB_CARDS_DESC" desc="Toggle cards description">By turning off Cards, all cards currently visible will be hidden. However, you may still be notified of new cards.</message>
+
+      <if expr="enable_sidebar">
+        <message name="IDS_SIDEBAR_BRAVE_TOGETHER_ITEM_TITLE" desc="Title for brave together item in sidebar">
+          Brave Together
+        </message>
+        <message name="IDS_SIDEBAR_WALLET_ITEM_TITLE" desc="Title for crypto wallet item in sidebar">
+          Crypto Wallets
+        </message>
+        <message name="IDS_SIDEBAR_BOOKMARKS_ITEM_TITLE" desc="Title for bookmarks item in sidebar">
+          Bookmarks
+        </message>
+        <message name="IDS_SIDEBAR_HISTORY_ITEM_TITLE" desc="Title for history item in sidebar">
+          History
+        </message>
+      </if>
 
       <!-- WebUI private tab resources -->
       <message name="IDS_BRAVE_PRIVATE_NEW_TAB_LEARN_MORE" desc="">Learn more</message>
@@ -927,12 +945,13 @@
       <message name="IDS_REWARDS_WIDGET_ENABLE_BRANDED_WALLPAPER_TITLE"
         desc="Title for prompt to enable Brave Rewards when a Branded Wallpaper is currently being displayed"
       >
-        Get paid to view this sponsored background image.
+
+        Earn rewards for viewing this sponsored background image.
       </message>
       <message name="IDS_REWARDS_WIDGET_ENABLE_BRANDED_WALLPAPER_SUBTITLE"
         desc="Description for prompt to enable Brave Rewards when a Branded Wallpaper is currently being displayed"
       >
-        Turn on Brave Ads to claim your share. You can also choose to <ph name="LINK_BEGIN">$1</ph>hide sponsored images<ph name="LINK_END">$2</ph>.
+        Turn on Brave Private Ads to claim your share. You can also choose to <ph name="LINK_BEGIN">$1</ph>hide sponsored images<ph name="LINK_END">$2</ph>.
       </message>
       <message name="IDS_REWARDS_WIDGET_NOTIFICATION_TITLE" desc="">Way to Go!</message>
       <message name="IDS_REWARDS_WIDGET_NOTIFICATION_TEXT_ADS" desc="">Your rewards from Ads are here</message>
@@ -952,6 +971,18 @@
       >
         Hide sponsored images
       </message>
+      <!-- Rewards BAP Deprecation Notice -->
+      <message name="IDS_REWARDS_BAP_DEPRECATION_ALERT_TEXT" desc="">
+        The tipping feature will be unavailable from March 13th until April
+        13th. All BAPs will be discontinued by April 13th. Please use your BAP
+        by March 13th. Any BAP remaining in your Brave browser after March 13th
+        cannot be held or transferred by you or Brave, and will be lost. A new
+        and improved system awaits!
+      </message>
+      <message name="IDS_REWARDS_BAP_DEPRECATION_HEADER" desc="">
+        Brave Rewards in Japan is switching to a new system!
+      </message>
+      <message name="IDS_REWARDS_BAP_DEPRECATION_OK" desc="">OK</message>
       <message name="IDS_EDIT_CARDS_TITLE" desc="">Edit Cards</message>
       <message name="IDS_REWARDS_WIDGET_TOS_AND_PP" desc="">By clicking {{title}}, you agree to the <ph name="BEGIN_LINK1">$1</ph>Terms of Service<ph name="END_LINK1">$2</ph> and <ph name="BEGIN_LINK2">$3</ph>Privacy Policy<ph name="END_LINK2">$4</ph>.</message>
       <message name="IDS_REWARDS_WIDGET_START_USING" desc="">Start using Brave Rewards</message>

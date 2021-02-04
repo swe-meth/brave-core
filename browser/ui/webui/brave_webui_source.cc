@@ -14,6 +14,7 @@
 #include "brave/common/url_constants.h"
 #include "brave/components/crypto_dot_com/browser/buildflags/buildflags.h"
 #include "brave/components/ipfs/buildflags/buildflags.h"
+#include "brave/components/tor/buildflags/buildflags.h"
 #include "components/grit/brave_components_resources.h"
 #include "components/grit/brave_components_strings.h"
 #include "components/grit/components_resources.h"
@@ -168,6 +169,7 @@ void CustomizeWebUIHTMLSource(const std::string &name,
         { "braveTodaySourcesTitle", IDS_BRAVE_TODAY_SOURCES_TITLE},
         { "braveTodayDisableSourceCommand",
             IDS_BRAVE_TODAY_DISABLE_SOURCE_COMMAND},
+        { "promoted", IDS_BRAVE_TODAY_PROMOTED },
 
         { "addWidget", IDS_BRAVE_NEW_TAB_WIDGET_ADD },
         { "hideWidget", IDS_BRAVE_NEW_TAB_WIDGET_HIDE },
@@ -250,6 +252,10 @@ void CustomizeWebUIHTMLSource(const std::string &name,
         { "editCardsTitle", IDS_EDIT_CARDS_TITLE },
         { "tosAndPp", IDS_REWARDS_WIDGET_TOS_AND_PP},     // NOLINT
         { "rewardsWidgetStartUsing", IDS_REWARDS_WIDGET_START_USING},     // NOLINT
+        // Rewards BAP Deprecation Alert
+        { "bapDeprecationAlertText", IDS_REWARDS_BAP_DEPRECATION_ALERT_TEXT },
+        { "bapDeprecationHeader", IDS_REWARDS_BAP_DEPRECATION_HEADER },
+        { "bapDeprecationOK", IDS_REWARDS_BAP_DEPRECATION_OK },
         // Together Widget
         { "togetherWidgetTitle", IDS_TOGETHER_WIDGET_TITLE },
         { "togetherWidgetWelcomeTitle", IDS_TOGETHER_WIDGET_WELCOME_TITLE },
@@ -851,14 +857,23 @@ void CustomizeWebUIHTMLSource(const std::string &name,
       std::string("ipfs"), {
         { "connectedPeersTitle", IDS_IPFS_CONNECTED_PEERS_TITLE },
         { "addressesConfigTitle", IDS_IPFS_ADDRESSES_CONFIG_TITLE },
+        { "repoStatsTitle", IDS_IPFS_REPO_STATS_TITLE },
         { "daemonStatusTitle", IDS_IPFS_DAEMON_STATUS_TITLE },
         { "api", IDS_IPFS_API },
         { "gateway", IDS_IPFS_GATEWAY },
         { "swarm", IDS_IPFS_SWARM },
+        { "objects", IDS_IPFS_REPO_OBJECTS },
+        { "size", IDS_IPFS_REPO_SIZE },
+        { "storage", IDS_IPFS_REPO_STORAGE },
+        { "path", IDS_IPFS_REPO_PATH },
+        { "version", IDS_IPFS_REPO_VERSION },
         { "launched", IDS_IPFS_LAUNCHED },
         { "launch", IDS_IPFS_LAUNCH },
         { "shutdown", IDS_IPFS_SHUTDOWN },
         { "not_installed", IDS_IPFS_NOT_INSTALLED },
+        { "nodeInfoTitle", IDS_IPFS_NODE_INFO_TITLE },
+        { "id", IDS_IPFS_NODE_INFO_ID },
+        { "agentVersion", IDS_IPFS_NODE_INFO_VERSION },
       }
     }, {
 #endif
@@ -1029,6 +1044,19 @@ void CustomizeWebUIHTMLSource(const std::string &name,
         { "walletStatusPending", IDS_BRAVE_REWARDS_INTERNALS_WALLET_STATUS_PENDING },    // NOLINT
       }
     }, {
+#if BUILDFLAG(IPFS_ENABLED)
+      std::string("tor-internals"), {
+        { "tabGeneralInfo", IDS_TOR_INTERNALS_TAB_GENERAL_INFO },
+        { "tabLogs", IDS_TOR_INTERNALS_TAB_LOGS },
+        { "torControlEvents", IDS_TOR_INTERNALS_TOR_CONTROL_EVENTS },
+        { "torVersion", IDS_TOR_INTERNALS_TOR_VERSION },
+        { "torPid", IDS_TOR_INTERNALS_TOR_PID },
+        { "torProxyURI", IDS_TOR_INTERNALS_TOR_PROXY_URI },
+        { "torConnectionStatus", IDS_TOR_INTERNALS_TOR_CONNECTION_STATUS },
+        { "torInitProgress", IDS_TOR_INTERNALS_TOR_INIT_PROGRESS },
+      }
+    }, {
+#endif
       std::string("webcompat"), {
         // Report modal
         { "reportModalTitle", IDS_BRAVE_WEBCOMPATREPORTER_REPORT_MODAL_TITLE },

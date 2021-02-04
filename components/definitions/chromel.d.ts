@@ -180,6 +180,7 @@ declare namespace chrome.binance {
   const getConvertAssets: (callback: (supportedAssets: any) => void) => {}
   const confirmConvert: (quoteId: string, callback: (success: boolean, message: string) => void) => {}
   const revokeToken: (callback: (success: boolean) => void) => {}
+  const getLocaleForURL: (callback: (locale: string) => void) => {}
 }
 
 declare namespace chrome.gemini {
@@ -237,6 +238,7 @@ declare namespace chrome.braveToday {
   const onClearHistory: {
     addListener: (callback: () => any) => void
   }
+  const getHostname: (callback: (hostname: string) => any) => void
 }
 
 type BlockTypes = 'shieldsAds' | 'trackers' | 'httpUpgradableResources' | 'javascript' | 'fingerprinting'
@@ -309,6 +311,10 @@ declare namespace chrome.braveWallet {
   const shouldCheckForDapps: (callback: (dappDetection: boolean) => void) => void
   const shouldPromptForSetup: (callback: (dappDetection: boolean) => void) => void
   const loadUI: (callback: () => void) => void
+}
+
+declare namespace chrome.ipfs {
+  const resolveIPFSURI: (uri: string, callback: (gatewayUrl: string) => void) => void
 }
 
 declare namespace chrome.test {

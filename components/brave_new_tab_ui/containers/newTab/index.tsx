@@ -24,6 +24,7 @@ import BrandedWallpaperLogo from '../../components/default/brandedWallpaper/logo
 import { brandedWallpaperLogoClicked } from '../../api/brandedWallpaper'
 import BraveTodayHint from '../../components/default/braveToday/hint'
 import BraveToday from '../../components/default/braveToday'
+import BAPDeprecationModal from '../../components/default/rewards/bapDeprecationModal'
 
 // Helpers
 import VisibilityTimer from '../../helpers/visibilityTimer'
@@ -340,19 +341,23 @@ class NewTabPage extends React.Component<Props, State> {
   }
 
   buyCrypto = (coin: string, amount: string, fiat: string) => {
-    const { userTLD } = this.props.newTabData.binanceState
+    const { userLocale, userTLD } = this.props.newTabData.binanceState
     const refCode = userTLD === 'us' ? '35089877' : '39346846'
     const refParams = `ref=${refCode}&utm_source=brave`
 
     if (userTLD === 'us') {
       window.open(`https://www.binance.us/en/buy-sell-crypto?crypto=${coin}&amount=${amount}&${refParams}`, '_blank', 'noopener')
     } else {
-      window.open(`https://www.binance.com/en/buy-sell-crypto?fiat=${fiat}&crypto=${coin}&amount=${amount}&${refParams}`, '_blank', 'noopener')
+      window.open(`https://www.binance.com/${userLocale}/buy-sell-crypto?fiat=${fiat}&crypto=${coin}&amount=${amount}&${refParams}`, '_blank', 'noopener')
     }
   }
 
   onBinanceUserTLD = (userTLD: NewTab.BinanceTLD) => {
     this.props.actions.onBinanceUserTLD(userTLD)
+  }
+
+  onBinanceUserLocale = (userLocale: string) => {
+    this.props.actions.onBinanceUserLocale(userLocale)
   }
 
   setBalanceInfo = (info: Record<string, Record<string, string>>) => {
@@ -889,6 +894,7 @@ class NewTabPage extends React.Component<Props, State> {
         onValidAuthCode={this.onValidBinanceAuthCode}
         onBuyCrypto={this.buyCrypto}
         onBinanceUserTLD={this.onBinanceUserTLD}
+        onBinanceUserLocale={this.onBinanceUserLocale}
         onShowContent={this.setForegroundStackWidget.bind(this, 'binance')}
         onSetInitialAmount={this.setInitialAmount}
         onSetInitialAsset={this.setInitialAsset}
@@ -1079,7 +1085,8 @@ class NewTabPage extends React.Component<Props, State> {
             </Page.GridItemBrandedLogo>}
             <FooterInfo
               textDirection={newTabData.textDirection}
-              togetherPrmoptDismissed={newTabData.togetherPromptDismissed}
+              supportsTogether={newTabData.togetherSupported}
+              togetherPromptDismissed={newTabData.togetherPromptDismissed}
               backgroundImageInfo={newTabData.backgroundImage}
               showPhotoInfo={!isShowingBrandedWallpaper && newTabData.showBackgroundImage}
               onClickSettings={this.openSettings}
@@ -1109,6 +1116,7 @@ class NewTabPage extends React.Component<Props, State> {
           // tslint:disable-next-line:jsx-no-lambda
           onCustomizeBraveToday={() => { this.openSettings(SettingsTabType.BraveToday) }}
           onReadFeedItem={this.props.actions.today.readFeedItem}
+          onPromotedItemViewed={this.props.actions.today.promotedItemViewed}
           onSetPublisherPref={this.props.actions.today.setPublisherPref}
           onCheckForUpdate={this.props.actions.today.checkForUpdate}
           onReadCardIntro={this.props.onReadBraveTodayIntroCard}
@@ -1156,6 +1164,7 @@ class NewTabPage extends React.Component<Props, State> {
           cardsHidden={this.allWidgetsHidden()}
           toggleCards={this.toggleAllCards}
         />
+        <BAPDeprecationModal rewardsState={this.props.newTabData.rewardsState} />
       </Page.App>
     )
   }

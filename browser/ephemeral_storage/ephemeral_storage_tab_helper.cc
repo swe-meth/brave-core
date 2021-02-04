@@ -11,6 +11,7 @@
 #include "base/feature_list.h"
 #include "base/hash/md5.h"
 #include "base/no_destructor.h"
+#include "base/optional.h"
 #include "content/public/browser/navigation_handle.h"
 #include "content/public/browser/session_storage_namespace.h"
 #include "content/public/browser/storage_partition.h"
@@ -26,6 +27,10 @@ using content::WebContents;
 namespace ephemeral_storage {
 
 namespace {
+
+// TODO(bridiver) - share these constants with DOMWindowStorage
+constexpr char kSessionStorageSuffix[] = "/ephemeral-session-storage";
+constexpr char kLocalStorageSuffix[] = "/ephemeral-local-storage";
 
 // Session storage ids are expected to be 36 character long GUID strings. Since
 // we are constructing our own ids, we convert our string into a 32 character
@@ -52,9 +57,8 @@ EphemeralStorageTabHelper::EphemeralStorageTabHelper(WebContents* web_contents)
   // The URL might not be empty if this is a restored WebContents, for instance.
   // In that case we want to make sure it has valid ephemeral storage.
   const GURL& url = web_contents->GetLastCommittedURL();
-  if (!url.is_empty())
-    CreateEphemeralStorageAreasForDomainAndURL(
-        net::URLToEphemeralStorageDomain(url), url);
+  CreateEphemeralStorageAreasForDomainAndURL(
+      net::URLToEphemeralStorageDomain(url), url);
 }
 
 EphemeralStorageTabHelper::~EphemeralStorageTabHelper() {}
@@ -79,6 +83,9 @@ void EphemeralStorageTabHelper::ReadyToCommitNavigation(
 void EphemeralStorageTabHelper::CreateEphemeralStorageAreasForDomainAndURL(
     std::string new_domain,
     const GURL& new_url) {
+  if (new_url.is_empty())
+    return;
+
   auto* browser_context = web_contents()->GetBrowserContext();
   auto site_instance =
       content::SiteInstance::CreateForURL(browser_context, new_url);
@@ -90,9 +97,9 @@ void EphemeralStorageTabHelper::CreateEphemeralStorageAreasForDomainAndURL(
   // namespace, this will just give us a new reference. When the last tab helper
   // drops the reference, the namespace should be deleted.
   std::string local_partition_id =
-      StringToSessionStorageId(new_domain, "/ephemeral-local-storage");
-  local_storage_namespace_ =
-      content::CreateSessionStorageNamespace(partition, local_partition_id);
+      StringToSessionStorageId(new_domain, kLocalStorageSuffix);
+  local_storage_namespace_ = content::CreateSessionStorageNamespace(
+      partition, local_partition_id, base::nullopt);
 
   // Session storage is always per-tab and never per-TLD, so we always delete
   // and recreate the session storage when switching domains.
@@ -104,9 +111,18 @@ void EphemeralStorageTabHelper::CreateEphemeralStorageAreasForDomainAndURL(
 
   std::string session_partition_id = StringToSessionStorageId(
       content::GetSessionStorageNamespaceId(web_contents()),
-      "/ephemeral-session-storage");
-  session_storage_namespace_ =
-      content::CreateSessionStorageNamespace(partition, session_partition_id);
+      kSessionStorageSuffix);
+
+  auto* rfh = web_contents()->GetOpener();
+  session_storage_namespace_ = content::CreateSessionStorageNamespace(
+      partition, session_partition_id,
+      // clone the namespace if there is an opener
+      // https://html.spec.whatwg.org/multipage/browsers.html#copy-session-storage
+      rfh ? base::make_optional<std::string>(StringToSessionStorageId(
+                content::GetSessionStorageNamespaceId(
+                    WebContents::FromRenderFrameHost(rfh)),
+                kSessionStorageSuffix))
+          : base::nullopt);
 
   tld_ephemeral_lifetime_ = content::TLDEphemeralLifetime::GetOrCreate(
       browser_context, partition, new_domain);
