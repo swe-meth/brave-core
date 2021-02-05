@@ -12,6 +12,8 @@
 
 #include "bat/ads/internal/ml/data/data.h"
 
+typedef std::pair<unsigned, double> SparseVectorElement;
+
 namespace ads {
 namespace ml {
 namespace data {
@@ -36,11 +38,11 @@ class VectorData : public Data {
 
   int GetDimensionCount() const;
 
-  std::map<unsigned, double> GetRawData() const;
+  std::vector<SparseVectorElement> GetRawData() const;
 
  private:
   int dimension_count_;
-  std::map<unsigned, double> data_;
+  std::vector<SparseVectorElement> data_;
 };
 
 }  // namespace data

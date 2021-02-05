@@ -32,27 +32,32 @@ VectorData::~VectorData() = default;
 
 VectorData::VectorData(int dimension_count,
                        const std::map<unsigned, double>& data)
-    : Data(DataType::VECTOR_DATA),
-      dimension_count_(dimension_count),
-      data_(data) {}
+    : Data(DataType::VECTOR_DATA) {
+  dimension_count_ = dimension_count;
+  data_.reserve(dimension_count_);
+  for (auto data_it = data.begin(); data_it != data.end(); data_it++) {
+    data_.push_back(SparseVectorElement(data_it->first, data_it->second));
+  }
+}
 
 VectorData::VectorData(const std::vector<double>& data)
     : Data(DataType::VECTOR_DATA) {
   dimension_count_ = static_cast<int>(data.size());
+  data_.resize(dimension_count_);
   for (int i = 0; i < dimension_count_; ++i) {
-    data_[i] = data[i];
+    data_[i] = SparseVectorElement(static_cast<unsigned>(i), data[i]);
   }
 }
 
 void VectorData::Normalize() {
   double vector_length = 0.0;
-  for (auto data_it = data_.begin(); data_it != data_.end(); data_it++) {
-    vector_length += data_it->second * data_it->second;
+  for (size_t i = 0; i < data_.size(); ++i) {
+    vector_length += data_[i].second;
   }
   vector_length = sqrt(vector_length);
   if (vector_length > 1e-7) {
-    for (auto data_it = data_.begin(); data_it != data_.end(); data_it++) {
-      data_it->second /= vector_length;
+    for (size_t i = 0; i < data_.size(); ++i) {
+      data_[i].second /= vector_length;
     }
   }
 }
@@ -61,7 +66,7 @@ int VectorData::GetDimensionCount() const {
   return dimension_count_;
 }
 
-std::map<unsigned, double> VectorData::GetRawData() const {
+std::vector<SparseVectorElement> VectorData::GetRawData() const {
   return data_;
 }
 
@@ -75,10 +80,19 @@ double operator*(const VectorData& a, const VectorData& b) {
   }
 
   double dot_product = 0.0;
-  for (auto kv : a.data_) {
-    if (b.data_.count(kv.first) > 0) {
-      auto tmp = b.data_.at(kv.first);
-      dot_product += kv.second * tmp;
+  size_t a_ind = 0;
+  size_t b_ind = 0;
+  while (a_ind < a.data_.size() && b_ind < b.data_.size()) {
+    if (a.data_[a_ind].first == b.data_[b_ind].first) {
+      dot_product += a.data_[a_ind].second * b.data_[b_ind].second;
+      ++a_ind;
+      ++b_ind;
+    } else {
+      if (a.data_[a_ind].first < b.data_[b_ind].first) {
+        ++a_ind;
+      } else {
+        ++b_ind;
+      }
     }
   }
 
