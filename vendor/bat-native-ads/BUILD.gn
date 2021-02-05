@@ -624,7 +624,6 @@ source_set("ads") {
     "//third_party/boringssl",
     "//third_party/re2",
     "//third_party/sqlite",
-    "//third_party/eigen3",
     "//url",
     rebase_path("bat-native-rapidjson", dep_base),
     rebase_path("bat-native-tweetnacl:tweetnacl", dep_base),
