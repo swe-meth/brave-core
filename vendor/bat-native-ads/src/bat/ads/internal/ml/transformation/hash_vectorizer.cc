@@ -13,8 +13,8 @@
 
 #include "bat/ads/internal/ml/data/text_data.h"
 #include "bat/ads/internal/ml/ml_static_values.h"
-#include "bat/ads/internal/ml/transformation/crc.h"
 #include "bat/ads/internal/ml/transformation/hash_vectorizer.h"
+#include "third_party/zlib/zlib.h"
 
 namespace ads {
 namespace ml {
@@ -44,9 +44,9 @@ int HashVectorizer::GetBucketCount() const {
 }
 
 int HashVectorizer::GetHash(const std::string& substring) {
-  auto* u8str = substring.c_str();
-  auto rtn =
-      CRC::Calculate(u8str, strlen(u8str), CRC::CRC_32()) % bucket_count_;
+  const auto* u8str = substring.c_str();
+  auto rtn = crc32(crc32(0L, Z_NULL, 0),
+      reinterpret_cast<const unsigned char*>(u8str), strlen(u8str));
   return rtn;
 }
 
