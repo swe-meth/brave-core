@@ -13,10 +13,10 @@ namespace ads {
 namespace ml {
 namespace pipeline {
 
-bool ParseTransformationsJSON(base::Value* transformations_value,
+bool ParseTransformationsJSON(
+    base::Value* transformations_value,
     std::vector<transformation::TransformationPtr>& transformations) {
-  if (!transformations_value
-      || !transformations_value->is_list()) {
+  if (!transformations_value || !transformations_value->is_list()) {
     return false;
   }
 
@@ -35,15 +35,13 @@ bool ParseTransformationsJSON(base::Value* transformations_value,
     std::string parsed_transformation_type = *transformation_type;
 
     if (parsed_transformation_type.compare("TO_LOWER") == 0) {
-      transformations.push_back(
-          std::make_shared<transformation::Lowercase>(
-              transformation::Lowercase()));
+      transformations.push_back(std::make_shared<transformation::Lowercase>(
+          transformation::Lowercase()));
     }
 
     if (parsed_transformation_type.compare("NORMALIZE") == 0) {
-      transformations.push_back(
-          std::make_shared<transformation::Normalization>(
-              transformation::Normalization()));
+      transformations.push_back(std::make_shared<transformation::Normalization>(
+          transformation::Normalization()));
     }
 
     if (parsed_transformation_type.compare("HASHED_NGRAMS") == 0) {
@@ -54,7 +52,8 @@ bool ParseTransformationsJSON(base::Value* transformations_value,
         return false;
       }
 
-      const base::Optional<int> nb = transformation_params->FindIntKey("num_buckets");
+      const base::Optional<int> nb =
+          transformation_params->FindIntKey("num_buckets");
       if (!nb.has_value()) {
         return false;
       }
@@ -84,13 +83,14 @@ bool ParseTransformationsJSON(base::Value* transformations_value,
 }
 
 bool ParseClassifierJSON(base::Value* classifier_value,
-    model::Linear& linear_model) {
+                         model::Linear& linear_model) {
   if (!classifier_value) {
     return false;
   }
 
   std::vector<std::string> classes;
-  std::string* classifier_type = classifier_value->FindStringKey("classifier_type");
+  std::string* classifier_type =
+      classifier_value->FindStringKey("classifier_type");
 
   if (!classifier_type) {
     return false;
@@ -158,7 +158,8 @@ bool ParseClassifierJSON(base::Value* classifier_value,
   return true;
 }
 
-bool ParsePipelineJSON(const std::string& json,
+bool ParsePipelineJSON(
+    const std::string& json,
     uint16_t& version,
     std::string& timestamp,
     std::string& locale,
@@ -170,8 +171,7 @@ bool ParsePipelineJSON(const std::string& json,
     return false;
   }
 
-  base::Optional<int> version_value =
-      root->FindIntKey("version");
+  base::Optional<int> version_value = root->FindIntKey("version");
   if (!version_value.has_value()) {
     return false;
   }

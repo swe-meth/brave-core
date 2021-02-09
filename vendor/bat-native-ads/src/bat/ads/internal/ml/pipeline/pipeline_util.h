@@ -8,8 +8,8 @@
 
 #include <vector>
 
-#include "base/values.h"
 #include "base/json/json_reader.h"
+#include "base/values.h"
 #include "bat/ads/internal/ml/model/linear/linear.h"
 #include "bat/ads/internal/ml/transformation/hashed_ngrams.h"
 #include "bat/ads/internal/ml/transformation/lowercase.h"
@@ -20,13 +20,15 @@ namespace ads {
 namespace ml {
 namespace pipeline {
 
-bool ParseTransformationsJSON(base::Value* transformations_value,
+bool ParseTransformationsJSON(
+    base::Value* transformations_value,
     std::vector<transformation::TransformationPtr>& transformations);
 
 bool ParseClassifierJSON(base::Value* classifier_value,
-    model::Linear& linear_model);
+                         model::Linear& linear_model);
 
-bool ParsePipelineJSON(const std::string& json,
+bool ParsePipelineJSON(
+    const std::string& json,
     uint16_t& version,
     std::string& timestamp,
     std::string& locale,

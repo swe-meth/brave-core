@@ -45,12 +45,8 @@ TextProcessing::TextProcessing(
 }
 
 bool TextProcessing::FromJson(const std::string& json) {
-  is_initialized_ = ParsePipelineJSON(json,
-      version_,
-      timestamp_,
-      locale_,
-      transformations_,
-      linear_model_);
+  is_initialized_ = ParsePipelineJSON(json, version_, timestamp_, locale_,
+                                      transformations_, linear_model_);
 
   return is_initialized_;
 }

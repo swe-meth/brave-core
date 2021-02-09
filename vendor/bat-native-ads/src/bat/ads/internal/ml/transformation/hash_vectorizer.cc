@@ -45,8 +45,9 @@ int HashVectorizer::GetBucketCount() const {
 
 int HashVectorizer::GetHash(const std::string& substring) {
   const auto* u8str = substring.c_str();
-  auto rtn = crc32(crc32(0L, Z_NULL, 0),
-      reinterpret_cast<const unsigned char*>(u8str), strlen(u8str));
+  auto rtn =
+      crc32(crc32(0L, Z_NULL, 0), reinterpret_cast<const unsigned char*>(u8str),
+            strlen(u8str));
   return rtn;
 }
 
