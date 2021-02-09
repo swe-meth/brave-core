@@ -1,0 +1,297 @@
+# Copyright (c) 2020 The Brave Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//build/config/ui.gni")
+import("//chrome/common/features.gni")
+import("//components/safe_browsing/buildflags.gni")
+import("//components/signin/features.gni")
+import("//extensions/buildflags/buildflags.gni")
+import("//printing/buildflags/buildflags.gni")
+import("//ui/webui/webui_features.gni")
+
+# List of files containing unit tests from upstream that we know are going to
+# fail due to the explicit ways in which Brave modifies the browser behaviour.
+brave_chromium_unit_test_exclusions = [
+  "../browser/about_flags_unittest.cc",
+  "../browser/autocomplete/chrome_autocomplete_provider_client_unittest.cc",
+  "../browser/autocomplete/search_provider_unittest.cc",
+  "../browser/background_sync/periodic_background_sync_permission_context_unittest.cc",
+  "../browser/browsing_data/chrome_browsing_data_remover_delegate_unittest.cc",
+  "../browser/browsing_data/counters/site_settings_counter_unittest.cc",
+  "../browser/chrome_content_browser_client_unittest.cc",
+  "../browser/component_updater/chrome_component_updater_configurator_unittest.cc",
+  "../browser/component_updater/floc_component_installer_unittest.cc",
+  "../browser/component_updater/subresource_filter_component_installer_unittest.cc",
+  "../browser/content_settings/host_content_settings_map_unittest.cc",
+  "../browser/download/chrome_download_manager_delegate_unittest.cc",
+  "../browser/download/download_target_determiner_unittest.cc",
+  "../browser/federated_learning/floc_id_provider_unittest.cc",
+  "../browser/metrics/chrome_metrics_services_manager_client_unittest.cc",
+  "../browser/net/net_error_tab_helper_unittest.cc",
+  "../browser/notifications/notification_permission_context_unittest.cc",
+  "../browser/prefetch/no_state_prefetch/prerender_unittest.cc",
+  "../browser/prefetch/prefetch_proxy/prefetch_proxy_tab_helper_unittest.cc",
+  "../browser/privacy_sandbox/privacy_sandbox_settings_unittest.cc",
+  "../browser/profiles/gaia_info_update_service_unittest.cc",
+  "../browser/profiles/profile_attributes_storage_unittest.cc",
+  "../browser/profiles/profile_info_cache_unittest.cc",
+  "../browser/profiles/profile_manager_unittest.cc",
+  "../browser/resource_coordinator/tab_load_tracker_unittest.cc",
+  "../browser/search_engines/template_url_service_unittest.cc",
+  "../browser/ui/cookie_controls/cookie_controls_controller_unittest.cc",
+  "../common/chrome_paths_unittest.cc",
+]
+
+if (!is_android) {
+  brave_chromium_unit_test_exclusions += [
+    "../browser/browser_commands_unittest.cc",
+    "../browser/devtools/devtools_ui_bindings_unittest.cc",
+    "../browser/devtools/protocol/cast_handler_unittest.cc",
+    "../browser/enterprise/reporting/extension_request/extension_request_notification_unittest.cc",
+    "../browser/enterprise/reporting/extension_request/extension_request_observer_unittest.cc",
+    "../browser/media_galleries/gallery_watch_manager_unittest.cc",
+    "../browser/media_galleries/media_file_system_registry_unittest.cc",
+    "../browser/media_galleries/media_galleries_permission_controller_unittest.cc",
+    "../browser/media_galleries/media_galleries_preferences_unittest.cc",
+    "../browser/media/webrtc/tab_desktop_media_list_unittest.cc",
+    "../browser/media/webrtc/webrtc_event_log_uploader_impl_unittest.cc",
+    "../browser/password_manager/multi_profile_credentials_filter_unittest.cc",
+    "../browser/profile_resetter/profile_resetter_unittest.cc",
+    "../browser/profiles/profile_list_desktop_unittest.cc",
+    "../browser/renderer_context_menu/render_view_context_menu_unittest.cc",
+    "../browser/resource_coordinator/tab_activity_watcher_unittest.cc",
+    "../browser/resource_coordinator/tab_manager_unittest.cc",
+    "../browser/resource_coordinator/tab_metrics_logger_unittest.cc",
+    "../browser/search/chrome_colors/chrome_colors_service_unittest.cc",
+    "../browser/search/instant_service_unittest.cc",
+    "../browser/search/promos/promo_service_unittest.cc",
+    "../browser/search/search_unittest.cc",
+    "../browser/send_tab_to_self/desktop_notification_handler_unittest.cc",
+    "../browser/send_tab_to_self/send_tab_to_self_desktop_util_unittest.cc",
+    "../browser/send_tab_to_self/send_tab_to_self_util_unittest.cc",
+    "../browser/signin/signin_ui_util_unittest.cc",
+    "../browser/sync/sessions/browser_list_router_helper_unittest.cc",
+    "../browser/themes/theme_service_unittest.cc",
+    "../browser/themes/theme_syncable_service_unittest.cc",
+    "../browser/translate/translate_manager_render_view_host_unittest.cc",
+    "../browser/ui/autofill/payments/local_card_migration_bubble_controller_impl_unittest.cc",
+    "../browser/ui/autofill/payments/save_card_bubble_controller_impl_unittest.cc",
+    "../browser/ui/bookmarks/bookmark_unittest.cc",
+    "../browser/ui/browser_instant_controller_unittest.cc",
+    "../browser/ui/browser_unittest.cc",
+    "../browser/ui/content_settings/content_setting_image_model_unittest.cc",
+    "../browser/ui/exclusive_access/fullscreen_controller_state_unittest.cc",
+    "../browser/ui/extensions/extension_action_view_controller_unittest.cc",
+    "../browser/ui/extensions/extension_installed_bubble_model_unittest.cc",
+    "../browser/ui/extensions/extension_message_bubble_bridge_unittest.cc",
+    "../browser/ui/extensions/settings_overridden_params_providers_unittest.cc",
+    "../browser/ui/media_router/media_router_ui_service_factory_unittest.cc",
+    "../browser/ui/passwords/bubble_controllers/move_to_account_store_bubble_controller_unittest.cc",
+    "../browser/ui/passwords/bubble_controllers/save_update_bubble_controller_unittest.cc",
+    "../browser/ui/passwords/well_known_change_password_navigation_throttle_unittest.cc",
+    "../browser/ui/search/search_ipc_router_policy_unittest.cc",
+    "../browser/ui/search/search_ipc_router_unittest.cc",
+    "../browser/ui/search/search_tab_helper_unittest.cc",
+    "../browser/ui/send_tab_to_self/send_tab_to_self_sub_menu_model_unittest.cc",
+    "../browser/ui/startup/startup_tab_provider_unittest.cc",
+    "../browser/ui/sync/profile_signin_confirmation_helper_unittest.cc",
+    "../browser/ui/sync/sync_promo_ui_unittest.cc",
+    "../browser/ui/tab_contents/chrome_web_contents_menu_helper_unittest.cc",
+    "../browser/ui/tab_contents/tab_contents_iterator_unittest.cc",
+    "../browser/ui/tab_sharing/tab_sharing_infobar_delegate_unittest.cc",
+    "../browser/ui/tabs/existing_tab_group_sub_menu_model_unittest.cc",
+    "../browser/ui/tabs/existing_window_sub_menu_model_unittest.cc",
+    "../browser/ui/tabs/pinned_tab_codec_unittest.cc",
+    "../browser/ui/tabs/pinned_tab_service_unittest.cc",
+    "../browser/ui/tabs/tab_menu_model_unittest.cc",
+    "../browser/ui/tabs/tab_strip_model_unittest.cc",
+    "../browser/ui/toolbar/chrome_location_bar_model_delegate_unittest.cc",
+    "../browser/ui/toolbar/location_bar_model_unittest.cc",
+    "../browser/ui/toolbar/toolbar_actions_bar_unittest.cc",
+    "../browser/ui/toolbar/toolbar_actions_model_unittest.cc",
+    "../browser/ui/user_education/reopen_tab_in_product_help_unittest.cc",
+    "../browser/ui/views/sharing/sharing_dialog_view_unittest.cc",
+    "../browser/ui/webui/customize_themes/chrome_customize_themes_handler_unittest.cc",
+    "../browser/ui/webui/devtools_ui_data_source_unittest.cc",
+    "../browser/ui/webui/read_later/read_later_page_handler_unittest.cc",
+    "../browser/ui/webui/settings/people_handler_unittest.cc",
+    "../browser/ui/webui/settings/safety_check_handler_unittest.cc",
+    "../browser/ui/webui/settings/settings_manage_profile_handler_unittest.cc",
+    "../browser/ui/webui/settings/site_settings_handler_unittest.cc",
+    "../browser/ui/webui/settings/site_settings_helper_unittest.cc",
+    "../browser/ui/webui/signin/login_ui_service_unittest.cc",
+    "../browser/ui/webui/signin/profile_picker_handler_unittest.cc",
+    "../browser/ui/webui/signin/signin_error_handler_unittest.cc",
+    "../browser/ui/webui/signin/sync_confirmation_handler_unittest.cc",
+    "../browser/ui/webui/tab_search/tab_search_page_handler_unittest.cc",
+    "../browser/ui/webui/theme_source_unittest.cc",
+    "../browser/ui/webui/web_dialog_web_contents_delegate_unittest.cc",
+    "../browser/usb/web_usb_detector_unittest.cc",
+  ]
+}
+
+if (is_linux) {
+  brave_chromium_unit_test_exclusions +=
+      [ "../browser/shell_integration_linux_unittest.cc" ]
+}
+
+if (enable_background_mode) {
+  brave_chromium_unit_test_exclusions +=
+      [ "../browser/background/background_application_list_model_unittest.cc" ]
+}
+
+if (enable_print_preview) {
+  brave_chromium_unit_test_exclusions += [
+    "../browser/printing/cloud_print/cloud_print_proxy_service_unittest.cc",
+    "../browser/printing/print_preview_dialog_controller_unittest.cc",
+    "../browser/printing/print_view_manager_unittest.cc",
+    "../browser/ui/webui/print_preview/extension_printer_handler_unittest.cc",
+    "../browser/ui/webui/print_preview/print_preview_ui_unittest.cc",
+  ]
+}
+
+if (enable_dice_support) {
+  brave_chromium_unit_test_exclusions += [
+    "../browser/signin/dice_web_signin_interceptor_unittest.cc",
+    "../browser/signin/process_dice_header_delegate_impl_unittest.cc",
+    "../browser/signin/signin_manager_unittest.cc",
+    "../browser/ui/webui/signin/dice_turn_sync_on_helper_unittest.cc",
+  ]
+}
+
+if (enable_extensions) {
+  brave_chromium_unit_test_exclusions += [
+    "../../apps/saved_files_service_unittest.cc",
+    "../browser/autocomplete/keyword_extensions_delegate_impl_unittest.cc",
+    "../browser/extensions/active_tab_unittest.cc",
+    "../browser/extensions/activity_log/activity_log_enabled_unittest.cc",
+    "../browser/extensions/activity_log/activity_log_unittest.cc",
+    "../browser/extensions/activity_log/counting_policy_unittest.cc",
+    "../browser/extensions/activity_log/fullstream_ui_policy_unittest.cc",
+    "../browser/extensions/api/cryptotoken_private/cryptotoken_private_api_unittest.cc",
+    "../browser/extensions/api/declarative_content/chrome_content_rules_registry_unittest.cc",
+    "../browser/extensions/api/declarative_content/content_action_unittest.cc",
+    "../browser/extensions/api/declarative_net_request/action_tracker_unittest.cc",
+    "../browser/extensions/api/declarative_net_request/declarative_net_request_unittest.cc",
+    "../browser/extensions/api/declarative_net_request/ruleset_manager_unittest.cc",
+    "../browser/extensions/api/declarative/rules_registry_with_cache_unittest.cc",
+    "../browser/extensions/api/developer_private/developer_private_api_unittest.cc",
+    "../browser/extensions/api/developer_private/extension_info_generator_unittest.cc",
+    "../browser/extensions/api/device_permissions_manager_unittest.cc",
+    "../browser/extensions/api/extension_action/extension_action_api_unittest.cc",
+    "../browser/extensions/api/management/management_api_unittest.cc",
+    "../browser/extensions/api/permissions/permissions_api_unittest.cc",
+    "../browser/extensions/api/runtime/chrome_runtime_api_delegate_unittest.cc",
+    "../browser/extensions/api/safe_browsing_private/safe_browsing_private_api_unittest.cc",
+    "../browser/extensions/api/search/search_api_unittest.cc",
+    "../browser/extensions/api/socket/tcp_socket_unittest.cc",
+    "../browser/extensions/api/tab_groups/tab_groups_api_unittest.cc",
+    "../browser/extensions/api/tabs/tabs_api_unittest.cc",
+    "../browser/extensions/chrome_app_icon_unittest.cc",
+    "../browser/extensions/chrome_content_verifier_unittest.cc",
+    "../browser/extensions/component_loader_unittest.cc",
+    "../browser/extensions/extension_action_icon_factory_unittest.cc",
+    "../browser/extensions/extension_action_runner_unittest.cc",
+    "../browser/extensions/extension_allowlist_unittest.cc",
+    "../browser/extensions/extension_context_menu_model_unittest.cc",
+    "../browser/extensions/extension_garbage_collector_unittest.cc",
+    "../browser/extensions/extension_gcm_app_handler_unittest.cc",
+    "../browser/extensions/extension_install_prompt_unittest.cc",
+    "../browser/extensions/extension_message_bubble_controller_unittest.cc",
+    "../browser/extensions/extension_migrator_unittest.cc",
+    "../browser/extensions/extension_protocols_unittest.cc",
+    "../browser/extensions/extension_service_sync_unittest.cc",
+    "../browser/extensions/extension_service_unittest.cc",
+    "../browser/extensions/extension_web_ui_unittest.cc",
+    "../browser/extensions/external_policy_loader_unittest.cc",
+    "../browser/extensions/external_provider_impl_unittest.cc",
+    "../browser/extensions/permission_message_combinations_unittest.cc",
+    "../browser/extensions/permission_messages_unittest.cc",
+    "../browser/extensions/scripting_permissions_modifier_unittest.cc",
+    "../browser/extensions/shared_module_service_unittest.cc",
+    "../browser/extensions/tab_helper_unittest.cc",
+    "../browser/extensions/update_install_gate_unittest.cc",
+    "../browser/extensions/user_script_listener_unittest.cc",
+    "../browser/extensions/zipfile_installer_unittest.cc",
+    "../common/extensions/manifest_tests/extension_manifests_homepage_unittest.cc",
+    "../common/extensions/permissions/permission_set_unittest.cc",
+  ]
+}
+
+if (enable_session_service) {
+  brave_chromium_unit_test_exclusions +=
+      [ "../browser/sessions/session_service_unittest.cc" ]
+}
+
+if (enable_webui_tab_strip) {
+  brave_chromium_unit_test_exclusions += [
+    "../browser/ui/views/frame/webui_tab_strip_container_view_unittest.cc",
+    "../browser/ui/views/toolbar/webui_tab_counter_button_unittest.cc",
+    "../browser/ui/webui/tab_strip/tab_strip_ui_handler_unittest.cc",
+  ]
+}
+
+if (safe_browsing_mode > 0) {
+  brave_chromium_unit_test_exclusions += [
+    "../browser/safe_browsing/chrome_password_protection_service_unittest.cc",
+  ]
+
+  if (safe_browsing_mode == 1) {
+    brave_chromium_unit_test_exclusions += [
+      "../browser/safe_browsing/chrome_enterprise_url_lookup_service_unittest.cc",
+      "../browser/safe_browsing/download_protection/download_protection_service_unittest.cc",
+      "../browser/safe_browsing/safe_browsing_navigation_observer_unittest.cc",
+    ]
+  }
+}
+
+if (toolkit_views) {
+  brave_chromium_unit_test_exclusions += [
+    "../browser/ui/media_router/media_router_ui_unittest.cc",
+    "../browser/ui/views/apps/app_info_dialog/app_info_dialog_views_unittest.cc",
+    "../browser/ui/views/bookmarks/bookmark_bar_view_unittest.cc",
+    "../browser/ui/views/bookmarks/bookmark_bubble_view_unittest.cc",
+    "../browser/ui/views/desktop_capture/get_current_browsing_context_media_dialog_unittest.cc",
+    "../browser/ui/views/extensions/extensions_menu_view_unittest.cc",
+    "../browser/ui/views/frame/browser_non_client_frame_view_unittest.cc",
+    "../browser/ui/views/frame/browser_view_unittest.cc",
+    "../browser/ui/views/infobars/infobar_view_unittest.cc",
+    "../browser/ui/views/intent_picker_bubble_view_unittest.cc",
+    "../browser/ui/views/media_router/cast_toolbar_button_unittest.cc",
+    "../browser/ui/views/profiles/avatar_toolbar_button_unittest.cc",
+    "../browser/ui/views/relaunch_notification/relaunch_notification_controller_unittest.cc",
+    "../browser/ui/views/tabs/tab_strip_unittest.cc",
+    "../browser/ui/views/tabs/tab_unittest.cc",
+    "../browser/ui/views/toolbar/chrome_labs_bubble_view_unittest.cc",
+    "../browser/ui/views/toolbar/chrome_labs_button_unittest.cc",
+    "../browser/ui/views/user_education/feature_promo_bubble_view_unittest.cc",
+    "../browser/ui/views/user_education/feature_promo_controller_views_unittest.cc",
+    "views/accessibility_checker_unittest.cc",
+  ]
+}
+
+# Exclusions for unit tests from //chrome/browser/media/router
+brave_chromium_unit_test_exclusions_media_router = []
+if (!is_android) {
+  brave_chromium_unit_test_exclusions_media_router =
+      [ "media_router_feature_unittest.cc" ]
+}
+
+# Exclusions for unit tests from //chrome/browser/web_applications
+brave_chromium_unit_test_exclusions_web_applications =
+    [ "external_web_app_manager_unittest.cc" ]
+
+# Exclusions for unit tests from //chrome/browser/web_applications/components
+brave_chromium_unit_test_exclusions_web_applications_components = []
+if (is_linux) {
+  brave_chromium_unit_test_exclusions_web_applications_components +=
+      [ "web_app_shortcut_linux_unittest.cc" ]
+}
+
+# Exclusions for unit tests from //chrome/browser/web_applications/extensions
+brave_chromium_unit_test_exclusions_web_applications_extensions = [
+  "bookmark_app_install_finalizer_unittest.cc",
+  "externally_installed_web_app_prefs_unittest.cc",
+]

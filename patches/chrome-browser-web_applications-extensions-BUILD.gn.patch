@@ -1,0 +1,20 @@
+diff --git a/chrome/browser/web_applications/extensions/BUILD.gn b/chrome/browser/web_applications/extensions/BUILD.gn
+index ff74bc8d725bd6135c176be694370b807dfba35d..bb504ee726a5d7d2e1daf5798bd093457ca46706 100644
+--- a/chrome/browser/web_applications/extensions/BUILD.gn
++++ b/chrome/browser/web_applications/extensions/BUILD.gn
+@@ -3,6 +3,7 @@
+ # found in the LICENSE file.
+ 
+ import("//extensions/buildflags/buildflags.gni")
++import("//brave/test/exclusions.gni")
+
+ assert(enable_extensions)
+ 
+@@ -63,6 +64,7 @@ source_set("unit_tests") {
+     "web_app_policy_manager_unittest.cc",
+     "web_app_provider_unittest.cc",
+   ]
++  sources -= brave_chromium_unit_test_exclusions_web_applications_extensions
+ 
+   deps = [
+     ":extensions",

@@ -1,0 +1,20 @@
+diff --git a/chrome/browser/web_applications/components/BUILD.gn b/chrome/browser/web_applications/components/BUILD.gn
+index 9db650a660f5bdb9285c847cf584bf65a4ff7a01..d5835dca67296bbf8cf895d55b0e4a8334fe1233 100644
+--- a/chrome/browser/web_applications/components/BUILD.gn
++++ b/chrome/browser/web_applications/components/BUILD.gn
+@@ -3,6 +3,7 @@
+ # found in the LICENSE file.
+ 
+ import("//build/config/chromeos/ui_mode.gni")
++import("//brave/test/exclusions.gni")
+
+ source_set("components") {
+   sources = [
+@@ -209,6 +210,7 @@ source_set("unit_tests") {
+       "web_app_shortcut_linux_unittest.cc",
+     ]
+   }
++  sources -= brave_chromium_unit_test_exclusions_web_applications_components
+ 
+   deps = [
+     ":components",
