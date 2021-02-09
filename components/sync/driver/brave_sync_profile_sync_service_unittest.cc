@@ -176,7 +176,7 @@ TEST_F(BraveProfileSyncServiceTest, NoIdentityManagerCalls) {
   // `SyncEngine::OnCookieJarChanged`
 
   // TODO: Migrate this EXPECT_CALL
-  //EXPECT_CALL(*engine(), OnCookieJarChanged(_, _)).Times(0);
+  // EXPECT_CALL(*engine(), OnCookieJarChanged(_, _)).Times(0);
 
   brave_sync_service()->OnEngineInitialized(
       WeakHandle<JsBackend>(), WeakHandle<DataTypeDebugInfoListener>(),
