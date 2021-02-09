@@ -50,24 +50,6 @@ class TextProcessing {
   const std::map<std::string, double> ClassifyPage(const std::string& content);
 
  private:
-  void GetReverseCategories();
-
-  bool ParseClassifier(base::Value* classifier);
-
-  bool ParseTransformations(base::Value* transformations);
-
-  bool GetVersionFromJSON(base::DictionaryValue* dictionary);
-
-  bool GetTimestampFromJSON(base::DictionaryValue* dictionary);
-
-  bool GetLocaleFromJSON(base::DictionaryValue* dictionary);
-
-  bool GetTransformationsFromJSON(base::DictionaryValue* dictionary);
-
-  bool GetClassifierFromJSON(base::DictionaryValue* dictionary);
-
-  bool GetTransformationsFromList(base::ListValue List);
-
   bool is_initialized_;
   uint16_t version_;
   std::string timestamp_;

@@ -484,6 +484,8 @@ source_set("ads") {
     "src/bat/ads/internal/ml/ml_util.h",
     "src/bat/ads/internal/ml/model/linear/linear.cc",
     "src/bat/ads/internal/ml/model/linear/linear.h",
+    "src/bat/ads/internal/ml/pipeline/pipeline_util.cc",
+    "src/bat/ads/internal/ml/pipeline/pipeline_util.h",
     "src/bat/ads/internal/ml/pipeline/text_processing/text_processing.cc",
     "src/bat/ads/internal/ml/pipeline/text_processing/text_processing.h",
     "src/bat/ads/internal/ml/transformation/hash_vectorizer.cc",
