@@ -16,6 +16,8 @@ namespace transformation {
 
 class HashVectorizer {
  public:
+  HashVectorizer();
+
   HashVectorizer(const HashVectorizer& other);
 
   HashVectorizer(int n_buckets, const std::vector<int>& subgrams);

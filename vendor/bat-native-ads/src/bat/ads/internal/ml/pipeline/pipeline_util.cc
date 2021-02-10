@@ -97,11 +97,6 @@ bool ParseClassifierJSON(base::Value* classifier_value,
   }
 
   std::string parsed_classifier_type = *classifier_type;
-  // bool parsed_classifier_type_success =
-  //     classifier_type->GetAsString(&parsed_classifier_type);
-  // if (!parsed_classifier_type_success) {
-  //   return false;
-  // }
 
   if (parsed_classifier_type.compare("LINEAR")) {
     return false;

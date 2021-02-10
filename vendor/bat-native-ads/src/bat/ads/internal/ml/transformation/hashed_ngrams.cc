@@ -14,6 +14,12 @@ namespace ads {
 namespace ml {
 namespace transformation {
 
+HashedNGrams::HashedNGrams()
+    : Transformation(TransformationType::HASHED_NGRAMS) {
+  hash_vectorizer =
+      std::make_shared<HashVectorizer>(HashVectorizer());
+}
+
 HashedNGrams::HashedNGrams(const HashedNGrams& hashed_ngrams)
     : Transformation(TransformationType::HASHED_NGRAMS) {
   hash_vectorizer = hashed_ngrams.hash_vectorizer;

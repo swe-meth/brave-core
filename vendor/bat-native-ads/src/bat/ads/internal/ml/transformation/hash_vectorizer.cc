@@ -20,6 +20,13 @@ namespace ads {
 namespace ml {
 namespace transformation {
 
+HashVectorizer::HashVectorizer() {
+  for (int i = 1; i <= kMaxSubLen; ++i) {
+    substring_sizes_.push_back(i);
+  }
+  bucket_count_ = kNumBuckets;
+}
+
 HashVectorizer::~HashVectorizer() = default;
 
 HashVectorizer::HashVectorizer(int bucket_count,

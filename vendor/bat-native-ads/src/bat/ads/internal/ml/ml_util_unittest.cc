@@ -7,7 +7,7 @@
 #include <map>
 #include <string>
 
-#include "bat/ads/internal/ml_tools/ml_tools_util.h"
+#include "bat/ads/internal/ml/ml_util.h"
 
 #include "bat/ads/internal/unittest_base.h"
 #include "bat/ads/internal/unittest_util.h"
@@ -15,7 +15,7 @@
 // npm run test -- brave_unit_tests --filter=BatAds*
 
 namespace ads {
-namespace ml_tools {
+namespace ml {
 
 class BatAdsMLToolsUtilTest : public UnitTestBase {
  protected:
@@ -30,7 +30,7 @@ TEST_F(BatAdsMLToolsUtilTest, SoftmaxTest) {
   std::map<std::string, double> group_1 = {
       {"c1", -1.0}, {"c2", 2.0}, {"c3", 3.0}};
 
-  auto sm = softmax(group_1);
+  auto sm = Softmax(group_1);
 
   ASSERT_TRUE(sm["c3"] > sm["c1"]);
   ASSERT_TRUE(sm["c3"] > sm["c2"]);
@@ -55,8 +55,8 @@ TEST_F(BatAdsMLToolsUtilTest, ExtendedSoftmaxTest) {
   std::map<std::string, double> group_2 = {
       {"c1", 3.0}, {"c2", 4.0}, {"c3", 5.0}};
 
-  auto sm_1 = softmax(group_1);
-  auto sm_2 = softmax(group_2);
+  auto sm_1 = Softmax(group_1);
+  auto sm_2 = Softmax(group_2);
   ASSERT_TRUE(std::fabs(sm_1["c1"] - sm_2["c1"]) < kEps);
   ASSERT_TRUE(std::fabs(sm_1["c2"] - sm_2["c2"]) < kEps);
   ASSERT_TRUE(std::fabs(sm_1["c3"] - sm_2["c3"]) < kEps);
@@ -66,5 +66,5 @@ TEST_F(BatAdsMLToolsUtilTest, ExtendedSoftmaxTest) {
               std::fabs(sm_1["c3"] - 0.66524095) < kEps);
 }
 
-}  // namespace ml_tools
+}  // namespace ml
 }  // namespace ads
