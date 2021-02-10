@@ -231,9 +231,12 @@ class NewTabPage extends React.Component<Props, State> {
     this.props.actions.setMostVisitedSettings(!showTopSites, customLinksEnabled)
   }
 
-  toggleCustomLinksEnabled = () => {
-    const { showTopSites, customLinksEnabled } = this.props.newTabData
-    this.props.actions.setMostVisitedSettings(showTopSites, !customLinksEnabled)
+  setMostVisitedSettings = (showTopSites: boolean, customLinksEnabled: boolean) => {
+    this.props.actions.setMostVisitedSettings(showTopSites, customLinksEnabled)
+  }
+
+  addTopSite = () => {
+    console.log('Launch add topsites dialog')
   }
 
   toggleShowRewards = () => {
@@ -1056,6 +1059,7 @@ class NewTabPage extends React.Component<Props, State> {
                   gridSites={gridSitesData.gridSites}
                   menuPosition={'right'}
                   hideWidget={this.toggleShowTopSites}
+                  onAddSite={this.addTopSite}
                   textDirection={newTabData.textDirection}
                 />
               </Page.GridItemTopSites>
@@ -1135,7 +1139,7 @@ class NewTabPage extends React.Component<Props, State> {
           toggleShowStats={this.toggleShowStats}
           toggleShowToday={this.toggleShowToday}
           toggleShowTopSites={this.toggleShowTopSites}
-          toggleCustomLinksEnabled={this.toggleCustomLinksEnabled}
+          setMostVisitedSettings={this.setMostVisitedSettings}
           toggleBrandedWallpaperOptIn={this.toggleShowBrandedWallpaper}
           showBackgroundImage={newTabData.showBackgroundImage}
           showClock={newTabData.showClock}

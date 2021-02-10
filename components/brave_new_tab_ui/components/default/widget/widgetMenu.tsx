@@ -26,6 +26,7 @@ interface Props {
   onLearnMore?: () => void
   onDisconnect?: () => void
   onRefreshData?: () => void
+  onAddSite?: () => void
   lightWidget?: boolean
   paddingType: 'none' | 'right' | 'default'
 }
@@ -82,6 +83,11 @@ export default class WidgetMenu extends React.PureComponent<Props, State> {
     this.closeMenu()
   }
 
+  addSite = (action: any) => {
+    action()
+    this.closeMenu()
+  }
+
   render () {
     const {
       menuPosition,
@@ -93,7 +99,8 @@ export default class WidgetMenu extends React.PureComponent<Props, State> {
       paddingType,
       onLearnMore,
       onDisconnect,
-      onRefreshData
+      onRefreshData,
+      onAddSite
     } = this.props
     const { showMenu } = this.state
     const hideString = widgetTitle ? `${getLocale('hide')} ${widgetTitle}` : getLocale('hide')
@@ -141,6 +148,14 @@ export default class WidgetMenu extends React.PureComponent<Props, State> {
                 <StyledSpan>
                   {getLocale('binanceWidgetDisconnectButton')}
                 </StyledSpan>
+              </StyledWidgetButton>
+            : null
+          }
+          {
+            onAddSite
+            ? <StyledWidgetButton onClick={this.addSite.bind(this, onAddSite)}>
+                <StyledWidgetIcon><HideIcon/></StyledWidgetIcon>
+                <StyledSpan>{getLocale('addSiteMenuLabel')}</StyledSpan>
               </StyledWidgetButton>
             : null
           }

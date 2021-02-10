@@ -7,29 +7,53 @@ import * as React from 'react'
 
 import {
   SettingsRow,
-  SettingsText
+  SettingsText,
+  StyledTopSitesCustomizationSettings,
+  StyledTopSitesCustomizationSettingsOption,
+  StyledTopSitesCustomizationImageBorder,
+  StyledTopSitesCustomizationImage,
+  StyledTopSitesCustomizationOptionTitle,
+  StyledTopSitesCustomizationOptionDesc
 } from '../../../components/default'
 import { Toggle } from '../../../components/toggle'
 
 import { getLocale } from '../../../../common/locale'
 
+import favoritesSelectedLight from './assets/favorites-selected.png'
+import favoritesUnselectedLight from './assets/favorites-unselected.png'
+import frecencySelectedLight from './assets/frecency-selected.png'
+import frecencyUnselectedLight from './assets/frecency-unselected.png'
+
+import favoritesSelectedDark from './assets/favorites-selected-dark.png'
+import favoritesUnselectedDark from './assets/favorites-unselected-dark.png'
+import frecencySelectedDark from './assets/frecency-selected-dark.png'
+import frecencyUnselectedDark from './assets/frecency-unselected-dark.png'
+
 interface Props {
   toggleShowTopSites: () => void
   showTopSites: boolean
-  toggleCustomLinksEnabled: () => void
   customLinksEnabled: boolean
+  setMostVisitedSettings: (show: boolean, customize: boolean) => void
 }
 
 class TopSitesSettings extends React.PureComponent<Props, {}> {
+  onClickFavorites = () => {
+    this.props.setMostVisitedSettings(true, true)
+  }
+
+  onClickFrecency = () => {
+    this.props.setMostVisitedSettings(true, false)
+  }
+
   render () {
     const {
       toggleShowTopSites,
       showTopSites,
-      toggleCustomLinksEnabled,
       customLinksEnabled
     } = this.props
-    // Enable when we're ready to use add shortcut feature to topsite.
-    const showCustomizedLink = false
+
+    const favoritesSelected = showTopSites && customLinksEnabled
+    const frecencySelected = showTopSites && !customLinksEnabled
     return (
       <div>
         <SettingsRow>
@@ -40,17 +64,42 @@ class TopSitesSettings extends React.PureComponent<Props, {}> {
             size='large'
           />
         </SettingsRow>
-        {
-          showCustomizedLink ?
-          (<SettingsRow>
-            <SettingsText>{getLocale('topSiteCustomLinksEnabled')}</SettingsText>
-            <Toggle
-              onChange={toggleCustomLinksEnabled}
-              checked={customLinksEnabled}
-              size='large'
-            />
-          </SettingsRow>) : null
-        }
+        <StyledTopSitesCustomizationSettings>
+          <StyledTopSitesCustomizationSettingsOption>
+            <StyledTopSitesCustomizationImageBorder
+              selected={favoritesSelected}>
+              <StyledTopSitesCustomizationImage
+                imgSrcLight={favoritesSelected ? favoritesSelectedLight : favoritesUnselectedLight}
+                imgSrcDark={favoritesSelected ? favoritesSelectedDark : favoritesUnselectedDark}
+                selected={favoritesSelected}
+                onClick={this.onClickFavorites}
+              />
+            </StyledTopSitesCustomizationImageBorder>
+            <StyledTopSitesCustomizationOptionTitle>
+              {getLocale('showFavoritesLabel')}
+            </StyledTopSitesCustomizationOptionTitle>
+            <StyledTopSitesCustomizationOptionDesc>
+              {getLocale('showFavoritesDesc')}
+            </StyledTopSitesCustomizationOptionDesc>
+          </StyledTopSitesCustomizationSettingsOption>
+          <StyledTopSitesCustomizationSettingsOption>
+            <StyledTopSitesCustomizationImageBorder
+              selected={frecencySelected} >
+              <StyledTopSitesCustomizationImage
+                imgSrcLight={frecencySelected ? frecencySelectedLight : frecencyUnselectedLight}
+                imgSrcDark={frecencySelected ? frecencySelectedDark : frecencyUnselectedDark}
+                selected={frecencySelected}
+                onClick={this.onClickFrecency}
+              />
+            </StyledTopSitesCustomizationImageBorder>
+            <StyledTopSitesCustomizationOptionTitle>
+              {getLocale('showFrecencyLabel')}
+            </StyledTopSitesCustomizationOptionTitle>
+            <StyledTopSitesCustomizationOptionDesc>
+              {getLocale('showFrecencyDesc')}
+            </StyledTopSitesCustomizationOptionDesc>
+          </StyledTopSitesCustomizationSettingsOption>
+        </StyledTopSitesCustomizationSettings>
       </div>
     )
   }

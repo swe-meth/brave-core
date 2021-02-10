@@ -23,6 +23,7 @@ export interface WidgetProps {
   onLearnMore?: () => void
   onDisconnect?: () => void
   onRefreshData?: () => void
+  onAddSite?: () => void
 }
 
 export interface WidgetState {
@@ -61,7 +62,8 @@ const createWidget = <P extends object>(WrappedComponent: React.ComponentType<P>
         paddingType,
         onLearnMore,
         onDisconnect,
-        onRefreshData
+        onRefreshData,
+        onAddSite
       } = this.props
       const { widgetMenuPersist } = this.state
 
@@ -85,6 +87,7 @@ const createWidget = <P extends object>(WrappedComponent: React.ComponentType<P>
             onLearnMore={onLearnMore}
             onDisconnect={onDisconnect}
             onRefreshData={onRefreshData}
+            onAddSite={onAddSite}
             isForeground={isForeground}
             widgetMenuPersist={widgetMenuPersist}
             textDirection={textDirection}
