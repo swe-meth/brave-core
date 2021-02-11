@@ -16,8 +16,7 @@ namespace transformation {
 
 HashedNGrams::HashedNGrams()
     : Transformation(TransformationType::HASHED_NGRAMS) {
-  hash_vectorizer =
-      std::make_shared<HashVectorizer>(HashVectorizer());
+  hash_vectorizer = std::make_shared<HashVectorizer>(HashVectorizer());
 }
 
 HashedNGrams::HashedNGrams(const HashedNGrams& hashed_ngrams)

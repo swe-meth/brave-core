@@ -3,11 +3,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "bat/ads/internal/ml/transformation/lowercase.h"
 #include "bat/ads/internal/ml/transformation/normalization.h"
-#include "bat/ads/internal/ml/transformation/hashed_ngrams.h"
 #include "bat/ads/internal/ml/data/text_data.h"
 #include "bat/ads/internal/ml/data/vector_data.h"
+#include "bat/ads/internal/ml/transformation/hashed_ngrams.h"
+#include "bat/ads/internal/ml/transformation/lowercase.h"
 
 #include "bat/ads/internal/unittest_base.h"
 #include "bat/ads/internal/unittest_util.h"
@@ -29,7 +29,8 @@ TEST_F(BatAdsNormalizationTest, NormalizationTest) {
 
   std::string test_string = "quite a small test string";
   data::TextData text_data(test_string);
-  std::shared_ptr<data::Data> data = std::make_shared<data::TextData>(text_data);
+  std::shared_ptr<data::Data> data =
+      std::make_shared<data::TextData>(text_data);
 
   transformation::HashedNGrams hashed_ngrams(10, std::vector<int>{3, 4});
   data = hashed_ngrams.Get(data);
@@ -56,8 +57,7 @@ TEST_F(BatAdsNormalizationTest, ChainingTest) {
   std::vector<transformation::TransformationPtr> chain;
 
   transformation::Lowercase lowercase;
-  chain.push_back(
-      std::make_shared<transformation::Lowercase>(lowercase));
+  chain.push_back(std::make_shared<transformation::Lowercase>(lowercase));
 
   transformation::HashedNGrams hashed_ngrams;
   chain.push_back(

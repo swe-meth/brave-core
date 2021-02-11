@@ -73,8 +73,7 @@ TEST_F(BatAdsLinearSVMTest, BiasesPredictionTest) {
 
 TEST_F(BatAdsLinearSVMTest, BinaryClassifierPredictionTest) {
   std::map<std::string, data::VectorData> weights = {
-      {"the_only_class",
-       data::VectorData(std::vector<double>{0.3, 0.2, 0.25})},
+      {"the_only_class", data::VectorData(std::vector<double>{0.3, 0.2, 0.25})},
   };
 
   std::map<std::string, double> biases = {

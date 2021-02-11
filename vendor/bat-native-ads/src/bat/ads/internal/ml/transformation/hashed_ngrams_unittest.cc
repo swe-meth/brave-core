@@ -28,8 +28,7 @@ TEST_F(BatAdsHashedNGramsTest, HashingTest) {
       std::make_shared<data::TextData>(data::TextData(test_string));
 
   transformation::HashedNGrams hashed_ngrams;
-  const std::shared_ptr<data::Data> hashed_data =
-      hashed_ngrams.Get(text_data);
+  const std::shared_ptr<data::Data> hashed_data = hashed_ngrams.Get(text_data);
 
   ASSERT_EQ(hashed_data->GetType(), data::DataType::VECTOR_DATA);
 
@@ -41,8 +40,7 @@ TEST_F(BatAdsHashedNGramsTest, HashingTest) {
 
   // Hashes for [t, i, n, y, ti, in, ny, tin, iny, tiny] -- 10 in total
   size_t expected_element_count = 10;
-  EXPECT_EQ(hashed_vect_data->GetRawData().size(),
-      expected_element_count);
+  EXPECT_EQ(hashed_vect_data->GetRawData().size(), expected_element_count);
 }
 
 TEST_F(BatAdsHashedNGramsTest, CustomHashingTest) {
@@ -51,8 +49,7 @@ TEST_F(BatAdsHashedNGramsTest, CustomHashingTest) {
       std::make_shared<data::TextData>(data::TextData(test_string));
 
   transformation::HashedNGrams hashed_ngrams(3, std::vector<int>{1, 2, 3});
-  const std::shared_ptr<data::Data> hashed_data =
-      hashed_ngrams.Get(text_data);
+  const std::shared_ptr<data::Data> hashed_data = hashed_ngrams.Get(text_data);
 
   ASSERT_EQ(hashed_data->GetType(), data::DataType::VECTOR_DATA);
 
@@ -62,8 +59,7 @@ TEST_F(BatAdsHashedNGramsTest, CustomHashingTest) {
   ASSERT_EQ(hashed_vect_data->GetDimensionCount(), 3);
 
   size_t expected_element_count = 3;
-  EXPECT_EQ(hashed_vect_data->GetRawData().size(),
-      expected_element_count);
+  EXPECT_EQ(hashed_vect_data->GetRawData().size(), expected_element_count);
 }
 
 }  // namespace ml

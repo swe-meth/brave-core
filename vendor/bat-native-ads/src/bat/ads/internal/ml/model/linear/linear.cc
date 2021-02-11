@@ -10,8 +10,8 @@
 #include <utility>
 #include <vector>
 
-#include "bat/ads/internal/ml/ml_util.h"
 #include "bat/ads/internal/ml/data/vector_data.h"
+#include "bat/ads/internal/ml/ml_util.h"
 #include "bat/ads/internal/ml/model/linear/linear.h"
 
 namespace ads {

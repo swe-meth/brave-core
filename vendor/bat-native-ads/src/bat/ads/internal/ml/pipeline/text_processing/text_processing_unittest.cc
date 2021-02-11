@@ -99,7 +99,7 @@ TEST_F(BatAdsTextProcessingPipelineTest, TestLoadFromJson) {
                                            "junk"};
 
   for (size_t i = 0; i < train_texts.size(); i++) {
-    std::shared_ptr<data::Data> text_data = 
+    std::shared_ptr<data::Data> text_data =
         std::make_shared<data::TextData>(data::TextData(train_texts[i]));
     auto preds = pipeline.Apply(text_data);
     for (auto const& pred : preds) {
@@ -158,7 +158,7 @@ TEST_F(BatAdsTextProcessingPipelineTest, TopPredUnitTest) {
   EXPECT_TRUE(preds.size());
   EXPECT_TRUE(preds.size() < 100);
   EXPECT_TRUE(preds.count("crypto-crypto"));
-  for (auto const& pred: preds) {
+  for (auto const& pred : preds) {
     EXPECT_TRUE(pred.second <= preds["crypto-crypto"]);
   }
 }
@@ -182,7 +182,7 @@ TEST_F(BatAdsTextProcessingPipelineTest, TextCMCCrashTest) {
   EXPECT_TRUE(preds.size() < 100);
   EXPECT_TRUE(preds.size() > 2);
   EXPECT_TRUE(preds.count("personal finance-personal finance"));
-  for (auto const& pred: preds) {
+  for (auto const& pred : preds) {
     EXPECT_TRUE(pred.second <= preds["personal finance-personal finance"]);
   }
 }
