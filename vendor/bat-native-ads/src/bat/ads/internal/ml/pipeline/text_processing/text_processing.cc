@@ -54,6 +54,7 @@ bool TextProcessing::FromJson(const std::string& json) {
 std::map<std::string, double> TextProcessing::Apply(
     const std::shared_ptr<data::Data>& input_data) {
   std::shared_ptr<data::Data> current_data = input_data;
+
   for (auto& transformation : transformations_) {
     current_data = transformation->Get(current_data);
   }
@@ -71,7 +72,7 @@ std::map<std::string, double> TextProcessing::Apply(
 const std::map<std::string, double> TextProcessing::GetTopPredictions(
     const std::string& html) {
   data::TextData text_data(html);
-  auto predictions = Apply(std::make_shared<data::Data>(text_data));
+  auto predictions = Apply(std::make_shared<data::TextData>(text_data));
   double expected_prob = 1.0 / static_cast<double>(predictions.size());
   std::map<std::string, double> rtn;
   for (auto const& prediction : predictions) {

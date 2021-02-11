@@ -52,7 +52,7 @@ VectorData::VectorData(const std::vector<double>& data)
 void VectorData::Normalize() {
   double vector_length = 0.0;
   for (size_t i = 0; i < data_.size(); ++i) {
-    vector_length += data_[i].second;
+    vector_length += data_[i].second * data_[i].second;
   }
   vector_length = sqrt(vector_length);
   if (vector_length > 1e-7) {

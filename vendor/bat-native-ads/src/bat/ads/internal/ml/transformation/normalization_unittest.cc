@@ -37,6 +37,8 @@ TEST_F(BatAdsNormalizationTest, NormalizationTest) {
   transformation::Normalization normalization;
   data = normalization.Get(data);
 
+  ASSERT_EQ(data->GetType(), data::DataType::VECTOR_DATA);
+
   const std::shared_ptr<data::VectorData> norm_data =
       std::static_pointer_cast<data::VectorData>(data);
 

@@ -68,12 +68,10 @@ TEST_F(BatAdsTextProcessingPipelineTest, BuildSimplePipeline) {
   pipeline::TextProcessing pipeline =
       pipeline::TextProcessing(transformations, linear_model);
 
-  std::shared_ptr<data::Data> data_point_3 = 
-      std::make_shared<data::VectorData>(
-          data::VectorData(std::vector<double>{1.0, 0.0, 0.0}));
+  data::VectorData data_point_3(std::vector<double>{1.0, 0.0, 0.0});
 
-  auto data_point_3_res = pipeline.Apply(data_point_3);
-  ASSERT_EQ(expected_len, data_point_3_res.size());
+  auto data_point_3_res = linear_model.Predict(data_point_3);
+  ASSERT_EQ(data_point_3_res.size(), expected_len);
 
   std::string test_string = "Test String";
   auto res = pipeline.GetTopPredictions(test_string);

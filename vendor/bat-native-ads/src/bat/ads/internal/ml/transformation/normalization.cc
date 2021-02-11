@@ -22,7 +22,7 @@ Normalization::~Normalization() = default;
 std::shared_ptr<data::Data> Normalization::Get(
     const std::shared_ptr<data::Data>& input_data) {
   if (input_data->GetType() != data::DataType::VECTOR_DATA) {
-    return std::make_shared<data::Data>(
+    return std::make_shared<data::VectorData>(
         data::VectorData(0, std::map<unsigned, double>()));
   }
 

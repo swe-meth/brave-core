@@ -24,17 +24,20 @@ class BatAdsLowercaseTest : public UnitTestBase {
 TEST_F(BatAdsLowercaseTest, LowercaseTest) {
   const std::string uppercase_str = "LOWER CASE";
   const std::string lowercase_str = "lower case";
-  std::shared_ptr<data::Data> uppercase_data =
+  const std::shared_ptr<data::Data> uppercase_data =
       std::make_shared<data::TextData>(uppercase_str);
 
   transformation::Lowercase lowercase;
+
   const std::shared_ptr<data::Data> lowercase_data =
       lowercase.Get(uppercase_data);
+
   ASSERT_EQ(lowercase_data->GetType(), data::DataType::TEXT_DATA);
 
-  std::shared_ptr<data::TextData> lowercase_text_data =
+  const std::shared_ptr<data::TextData> lowercase_text_data =
       std::static_pointer_cast<data::TextData>(lowercase_data);
-  EXPECT_EQ(lowercase_text_data->GetText(), lowercase_str);
+
+  EXPECT_FALSE(lowercase_str.compare(lowercase_text_data->GetText()));
 }
 
 }  // namespace ml

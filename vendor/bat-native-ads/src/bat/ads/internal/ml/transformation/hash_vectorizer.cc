@@ -50,7 +50,7 @@ int HashVectorizer::GetBucketCount() const {
   return bucket_count_;
 }
 
-int HashVectorizer::GetHash(const std::string& substring) {
+unsigned HashVectorizer::GetHash(const std::string& substring) {
   const auto* u8str = substring.c_str();
   auto rtn =
       crc32(crc32(0L, Z_NULL, 0), reinterpret_cast<const unsigned char*>(u8str),
@@ -63,7 +63,7 @@ std::map<unsigned, double> HashVectorizer::GetFrequencies(
   std::string data = html;
   std::map<unsigned, double> frequencies;
   if (data.length() > kMaximumHtmlLengthToClassify) {
-    data = data.substr(0, kMaximumHtmlLengthToClassify - 1);
+    data = data.substr(0, kMaximumHtmlLengthToClassify);
   }
   // get hashes of substrings for each of the substring lengths defined:
   for (auto const& substring_size : substring_sizes_) {
@@ -71,9 +71,9 @@ std::map<unsigned, double> HashVectorizer::GetFrequencies(
       break;
     }
     for (size_t i = 0; i < data.length() - substring_size + 1; ++i) {
-      auto ss = data.substr(i, substring_size);
-      auto idx = GetHash(ss);
-      ++frequencies[idx];
+      std::string ss = data.substr(i, substring_size);
+      unsigned idx = GetHash(ss);
+      ++frequencies[idx % static_cast<unsigned>(bucket_count_)];
     }
   }
   return frequencies;

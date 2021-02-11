@@ -24,7 +24,7 @@ class BatAdsHashedNGramsTest : public UnitTestBase {
 
 TEST_F(BatAdsHashedNGramsTest, HashingTest) {
   std::string test_string = "tiny";
-  std::shared_ptr<data::TextData> text_data =
+  const std::shared_ptr<data::Data> text_data =
       std::make_shared<data::TextData>(data::TextData(test_string));
 
   transformation::HashedNGrams hashed_ngrams;
@@ -47,7 +47,7 @@ TEST_F(BatAdsHashedNGramsTest, HashingTest) {
 
 TEST_F(BatAdsHashedNGramsTest, CustomHashingTest) {
   std::string test_string = "tiny";
-  std::shared_ptr<data::TextData> text_data =
+  const std::shared_ptr<data::Data> text_data =
       std::make_shared<data::TextData>(data::TextData(test_string));
 
   transformation::HashedNGrams hashed_ngrams(3, std::vector<int>{1, 2, 3});

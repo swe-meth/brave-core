@@ -66,10 +66,11 @@ void RunHashingExtractorTestCase(const std::string& test_case_name) {
   transformation::HashVectorizer vectorizer;
   auto frequencies = vectorizer.GetFrequencies(input_value);
   auto idx_list = idx->GetList();
+  auto count_list = count->GetList();
   ASSERT_EQ(idx_list.size(), frequencies.size());
   for (size_t i = 0; i < frequencies.size(); ++i) {
     const base::Value& idx_val = idx_list[i];
-    const base::Value& count_val = idx_list[i];
+    const base::Value& count_val = count_list[i];
     EXPECT_TRUE(count_val.GetInt() - frequencies[idx_val.GetInt()] < kTolerance);
   }
 }

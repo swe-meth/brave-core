@@ -20,18 +20,20 @@ Lowercase::~Lowercase() = default;
 
 std::shared_ptr<data::Data> Lowercase::Get(
     const std::shared_ptr<data::Data>& input_data) {
+
   if (input_data->GetType() != data::DataType::TEXT_DATA) {
     return std::make_shared<data::Data>(data::TextData(""));
   }
 
-  data::TextData text_data =
-      *std::static_pointer_cast<data::TextData>(input_data);
+  const std::shared_ptr<data::TextData> text_data =
+      std::static_pointer_cast<data::TextData>(input_data);
 
-  std::string lowercase_text = text_data.GetText();
+  std::string lowercase_text = text_data->GetText();
+
   std::transform(lowercase_text.begin(), lowercase_text.end(),
                  lowercase_text.begin(), ::tolower);
 
-  return std::make_shared<data::Data>(data::TextData(lowercase_text));
+  return std::make_shared<data::TextData>(data::TextData(lowercase_text));
 }
 
 }  // namespace transformation

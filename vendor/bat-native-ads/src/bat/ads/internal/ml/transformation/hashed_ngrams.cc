@@ -46,7 +46,7 @@ std::shared_ptr<data::Data> HashedNGrams::Get(
   auto frequences = hash_vectorizer->GetFrequencies(text_data.GetText());
   int dimension_count = hash_vectorizer->GetBucketCount();
 
-  return std::make_shared<data::Data>(
+  return std::make_shared<data::VectorData>(
       data::VectorData(dimension_count, frequences));
 }
 
