@@ -8,7 +8,11 @@
 
 namespace unstoppable_domains {
 
-extern const char kResolveMethod[];
+// Used to determine which method should be used to resolve unstoppable
+// domains, between:
+// Disabled: Disable all unstoppable domains resolution.
+// DNS Over HTTPS: Resolve domain name using a public DNS over HTTPS server.
+constexpr char kResolveMethod[] = "brave.unstoppable_domains.resolve_method";
 
 }  // namespace unstoppable_domains
 
