@@ -1,0 +1,20 @@
+diff --git a/chrome/browser/web_applications/BUILD.gn b/chrome/browser/web_applications/BUILD.gn
+index 563646b2e10960985a8bad5bf2f1b1d622261fb2..81f7b959943a9ce70b3a3ca1b4f87a404b6cc3a1 100644
+--- a/chrome/browser/web_applications/BUILD.gn
++++ b/chrome/browser/web_applications/BUILD.gn
+@@ -3,6 +3,7 @@
+ # found in the LICENSE file.
+ 
+ import("//build/config/chromeos/ui_mode.gni")
++import("//brave/test/browser_tests_exclusions.gni")
+ 
+ group("web_app_group") {
+   public_configs = [ "//build/config/compiler:wexit_time_destructors" ]
+@@ -268,6 +269,7 @@ source_set("web_applications_browser_tests") {
+     "web_app_migration_manager_browsertest.cc",
+     "web_app_mover_browsertest.cc",
+   ]
++  sources -= brave_chromium_browser_test_exclusions_web_applications
+ 
+   defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+ 

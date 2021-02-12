@@ -1,0 +1,29 @@
+diff --git a/chrome/test/data/webui/BUILD.gn b/chrome/test/data/webui/BUILD.gn
+index c0784192fd77aec1c63006ef770e45b0c351e40f..2a90ff252230906096351c5daaa4c4e7a99b3963 100644
+--- a/chrome/test/data/webui/BUILD.gn
++++ b/chrome/test/data/webui/BUILD.gn
+@@ -12,6 +12,7 @@ import("//third_party/closure_compiler/compile_js.gni")
+ import("//ui/webui/resources/tools/js_modulizer.gni")
+ import("//ui/webui/webui_features.gni")
+ import("./namespace_rewrites.gni")
++import("//brave/test/exclusions.gni")
+ 
+ if (include_js_tests) {
+   js2gtest("interactive_ui_tests_js_webui") {
+@@ -190,7 +191,7 @@ if (include_js_tests) {
+     if (!is_android) {
+       sources += [ "commander/commander_browsertest.js" ]
+     }
+-
++    sources -= brave_chromium_browser_test_exclusions_webui_tests_js
+     deps = [
+       ":modulize",
+       "settings:preprocess",
+@@ -435,6 +436,7 @@ if (include_js_tests) {
+     if (is_win || is_mac || is_linux || is_chromeos) {
+       sources += [ "discards/discards_browsertest.js" ]
+     }
++    sources -= brave_chromium_browser_test_exclusions_webui_tests_js_mojo
+     defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+     data = [ "mojo_webui_test_support.js" ]
+     extra_js_files = [ "//chrome/browser/resources/downloads/constants.js" ]

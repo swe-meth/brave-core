@@ -1,0 +1,337 @@
+# Copyright (c) 2021 The Brave Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//build/config/ui.gni")
+import("//chrome/common/features.gni")
+import("//components/captive_portal/core/features.gni")
+import("//components/safe_browsing/buildflags.gni")
+import("//components/signin/features.gni")
+import("//printing/buildflags/buildflags.gni")
+
+# List of files containing browser tests from upstream that we know are going to
+# fail due to the explicit ways in which Brave modifies the browser behaviour.
+brave_chromium_browser_test_exclusions = []
+
+if (is_android) {
+  brave_chromium_browser_test_exclusions += [
+    "../browser/metrics/metrics_service_user_demographics_browsertest.cc",
+    "../browser/metrics/ukm_browsertest.cc",
+  ]
+} else {
+  # !is_android
+  brave_chromium_browser_test_exclusions += [
+    "../../apps/load_and_launch_browsertest.cc",
+    "../browser/apps/guest_view/web_view_browsertest.cc",
+    "../browser/background_fetch/background_fetch_browsertest.cc",
+    "../browser/browser_encoding_browsertest.cc",
+    "../browser/browsing_data/access_context_audit_browsertest.cc",
+    "../browser/browsing_data/browsing_data_remover_browsertest.cc",
+    "../browser/browsing_data/chrome_browsing_data_lifetime_manager_browsertest.cc",
+    "../browser/browsing_data/counters/browsing_data_counter_utils_browsertest.cc",
+    "../browser/browsing_data/counters/sync_aware_counter_browsertest.cc",
+    "../browser/chrome_navigation_browsertest.cc",
+    "../browser/client_hints/client_hints_browsertest.cc",
+    "../browser/content_settings/content_settings_browsertest.cc",
+    "../browser/devtools/devtools_sanity_browsertest.cc",
+    "../browser/devtools/global_confirm_info_bar_browsertest.cc",
+    "../browser/devtools/protocol/devtools_protocol_browsertest.cc",
+    "../browser/dom_distiller/distillable_page_utils_browsertest.cc",
+    "../browser/dom_distiller/tab_utils_browsertest.cc",
+    "../browser/domain_reliability/browsertest.cc",
+    "../browser/download/download_browsertest.cc",
+    "../browser/download/download_browsertest.h",
+    "../browser/download/download_frame_policy_browsertest.cc",
+    "../browser/download/save_page_browsertest.cc",
+    "../browser/enterprise/connectors/content_analysis_dialog_browsertest.cc",
+    "../browser/extensions/protocol_handler_apitest.cc",
+    "../browser/external_protocol/external_protocol_handler_browsertest.cc",
+    "../browser/federated_learning/floc_id_provider_browsertest.cc",
+    "../browser/first_run/first_run_browsertest.cc",
+    "../browser/history/history_browsertest.cc",
+    "../browser/infobars/infobars_browsertest.cc",
+    "../browser/lifetime/browser_close_manager_browsertest.cc",
+    "../browser/login_detection/password_store_sites_browsertest.cc",
+    "../browser/lookalikes/lookalike_url_navigation_throttle_browsertest.cc",
+    "../browser/media/cast_mirroring_performance_browsertest.cc",
+    "../browser/media/media_engagement_browsertest.cc",
+    "../browser/media/webrtc/webrtc_desktop_capture_browsertest.cc",
+    "../browser/media/webrtc/webrtc_pan_tilt_zoom_browsertest.cc",
+    "../browser/metrics/cloned_install_client_id_reset_browsertest.cc",
+    "../browser/metrics/metrics_service_browsertest.cc",
+    "../browser/metrics/metrics_service_user_demographics_browsertest.cc",
+    "../browser/metrics/ukm_browsertest.cc",
+    "../browser/metrics/variations/variations_http_headers_browsertest.cc",
+    "../browser/navigation_predictor/navigation_predictor_browsertest.cc",
+    "../browser/navigation_predictor/navigation_predictor_preconnect_client_browsertest.cc",
+    "../browser/navigation_predictor/search_engine_preconnector_browsertest.cc",
+    "../browser/net/cookie_policy_browsertest.cc",
+    "../browser/net/dns_probe_browsertest.cc",
+    "../browser/net/ftp_browsertest.cc",
+    "../browser/net/network_context_configuration_browsertest.cc",
+    "../browser/net/network_request_metrics_browsertest.cc",
+    "../browser/net/proxy_browsertest.cc",
+    "../browser/net/reporting_browsertest.cc",
+    "../browser/page_load_metrics/observers/ad_metrics/ads_page_load_metrics_observer_browsertest.cc",
+    "../browser/page_load_metrics/observers/back_forward_cache_page_load_metrics_observer_browsertest.cc",
+    "../browser/page_load_metrics/observers/third_party_metrics_observer_browsertest.cc",
+    "../browser/page_load_metrics/page_load_metrics_browsertest.cc",
+    "../browser/password_manager/credential_manager_browsertest.cc",
+    "../browser/password_manager/password_manager_browsertest.cc",
+    "../browser/pdf/pdf_extension_test.cc",
+    "../browser/performance_manager/frame_node_impl_browsertest.cc",
+    "../browser/performance_manager/page_load_tracker_decorator_browsertest.cc",
+    "../browser/picture_in_picture/picture_in_picture_window_controller_browsertest.cc",
+    "../browser/policy/component_updater_policy_browsertest.cc",
+    "../browser/policy/content_settings_policy_browsertest.cc",
+    "../browser/policy/policy_browsertest.cc",
+    "../browser/policy/policy_prefs_browsertest.cc",
+    "../browser/policy/safe_browsing_policy_browsertest.cc",
+    "../browser/policy/signed_exchange_browsertest.cc",
+    "../browser/predictors/loading_predictor_browsertest.cc",
+    "../browser/prefetch/no_state_prefetch/prerender_nostate_prefetch_browsertest.cc",
+    "../browser/prefetch/prefetch_proxy/prefetch_proxy_browsertest.cc",
+    "../browser/prefetch/search_prefetch/search_prefetch_service_browsertest.cc",
+    "../browser/prefs/pref_functional_browsertest.cc",
+    "../browser/previews/lazyload_browsertest.cc",
+    "../browser/profiles/profile_browsertest.cc",
+    "../browser/profiles/profile_list_desktop_browsertest.cc",
+    "../browser/profiles/profile_manager_browsertest.cc",
+    "../browser/profiles/profile_theme_update_service_browsertest.cc",
+    "../browser/push_messaging/push_messaging_browsertest.cc",
+    "../browser/referrer_policy_browsertest.cc",
+    "../browser/renderer_context_menu/accessibility_labels_menu_observer_browsertest.cc",
+    "../browser/renderer_context_menu/render_view_context_menu_browsertest.cc",
+    "../browser/renderer_context_menu/spelling_menu_observer_browsertest.cc",
+    "../browser/renderer_host/render_process_host_chrome_browsertest.cc",
+    "../browser/resource_coordinator/tab_manager_browsertest.cc",
+    "../browser/safe_browsing/download_protection/deep_scanning_browsertest.cc",
+    "../browser/safe_browsing/download_protection/download_protection_service_browsertest.cc",
+    "../browser/search/local_ntp_navigation_browsertest.cc",
+    "../browser/sessions/session_restore_browsertest.cc",
+    "../browser/site_isolation/chrome_site_per_process_browsertest.cc",
+    "../browser/site_isolation/site_details_browsertest.cc",
+    "../browser/ssl/known_interception_disclosure_infobar_browsertest.cc",
+    "../browser/ssl/security_state_tab_helper_browsertest.cc",
+    "../browser/ssl/ssl_browsertest.cc",
+    "../browser/storage_access_api/api_browsertest.cc",
+    "../browser/tab_contents/navigation_metrics_recorder_browsertest.cc",
+    "../browser/task_manager/providers/web_contents/background_contents_tag_browsertest.cc",
+    "../browser/task_manager/providers/web_contents/devtools_tag_browsertest.cc",
+    "../browser/task_manager/providers/web_contents/extension_tag_browsertest.cc",
+    "../browser/task_manager/providers/web_contents/subframe_task_browsertest.cc",
+    "../browser/task_manager/providers/web_contents/tab_contents_tag_browsertest.cc",
+    "../browser/task_manager/task_manager_browsertest.cc",
+    "../browser/translate/translate_manager_browsertest.cc",
+    "../browser/ui/browser_browsertest.cc",
+    "../browser/ui/content_settings/content_setting_image_model_browsertest.cc",
+    "../browser/ui/extensions/hosted_app_browsertest.cc",
+    "../browser/ui/find_bar/find_bar_host_browsertest.cc",
+    "../browser/ui/login/login_handler_browsertest.cc",
+    "../browser/ui/managed_ui_browsertest.cc",
+    "../browser/ui/passwords/well_known_change_password_navigation_throttle_browsertest.cc",
+    "../browser/ui/search/local_ntp_browsertest.cc",
+    "../browser/ui/search/local_ntp_doodle_browsertest.cc",
+    "../browser/ui/search/local_ntp_js_browsertest.cc",
+    "../browser/ui/search/new_tab_page_navigation_throttle_browsertest.cc",
+    "../browser/ui/search/third_party_ntp_browsertest.cc",
+    "../browser/ui/signin_reauth_view_controller_browsertest.cc",
+    "../browser/ui/startup/startup_browser_creator_browsertest.cc",
+    "../browser/ui/views/accessibility/accessibility_focus_highlight_browsertest.cc",
+    "../browser/ui/views/apps/app_info_dialog/app_info_dialog_views_browsertest.cc",
+    "../browser/ui/views/reader_mode/reader_mode_icon_view_browsertest.cc",
+    "../browser/ui/views/sharing/click_to_call_browsertest.cc",
+    "../browser/ui/views/sharing/shared_clipboard_browsertest.cc",
+    "../browser/ui/webui/chrome_url_data_manager_browsertest.cc",
+    "../browser/ui/webui/extensions/extension_settings_browsertest.cc",
+    "../browser/ui/webui/log_web_ui_url_browsertest.cc",
+    "../browser/ui/webui/new_tab_page/webui_ntp_browsertest.cc",
+    "../browser/ui/webui/ntp/new_tab_ui_browsertest.cc",
+    "../browser/ukm_worker_browsertest.cc",
+    "base/in_process_browser_test_browsertest.cc",
+    "ppapi/ppapi_browsertest.cc",
+  ]
+}
+
+if (is_mac || is_win || is_linux) {
+  brave_chromium_browser_test_exclusions += [
+    "../browser/browser_switcher/browser_switcher_service_browsertest.cc",
+    "../browser/ui/views/profiles/profile_picker_view_browsertest.cc",
+  ]
+
+  if (is_linux) {
+    brave_chromium_browser_test_exclusions +=
+        [ "../browser/error_reporting/webui_js_error_reporting_browsertest.cc" ]
+  }
+
+  if (!is_mac) {
+    brave_chromium_browser_test_exclusions += [ "../browser/renderer_context_menu/spelling_options_submenu_observer_browsertest.cc" ]
+  }
+
+  if (!is_win) {
+    brave_chromium_browser_test_exclusions +=
+        [ "../browser/first_run/first_run_internal_posix_browsertest.cc" ]
+  }
+}
+
+if (enable_captive_portal_detection) {
+  brave_chromium_browser_test_exclusions += [
+    "../browser/ssl/captive_portal_blocking_page_browsertest.cc",
+    "../browser/captive_portal/captive_portal_browsertest.cc",
+  ]
+}
+
+if (enable_dice_support) {
+  brave_chromium_browser_test_exclusions += [
+    "../browser/policy/cloud/user_policy_signin_service_browsertest.cc",
+    "../browser/signin/dice_browsertest.cc",
+    "../browser/signin/dice_web_signin_interceptor_browsertest.cc",
+    "../browser/unified_consent/unified_consent_browsertest.cc",
+  ]
+}
+
+if (enable_extensions) {
+  brave_chromium_browser_test_exclusions += [
+    "../browser/extensions/active_tab_apitest.cc",
+    "../browser/extensions/api/activity_log_private/activity_log_private_apitest.cc",
+    "../browser/extensions/api/automation/automation_apitest.cc",
+    "../browser/extensions/api/browsing_data/browsing_data_test.cc",
+    "../browser/extensions/api/context_menus/context_menu_apitest.cc",
+    "../browser/extensions/api/debugger/debugger_apitest.cc",
+    "../browser/extensions/api/declarative_content/declarative_content_apitest.cc",
+    "../browser/extensions/api/declarative_net_request/declarative_net_request_browsertest.cc",
+    "../browser/extensions/api/gcm/gcm_apitest.cc",
+    "../browser/extensions/api/identity/identity_apitest.cc",
+    "../browser/extensions/api/instance_id/instance_id_apitest.cc",
+    "../browser/extensions/api/messaging/native_messaging_apitest.cc",
+    "../browser/extensions/api/preference/preference_apitest.cc",
+    "../browser/extensions/api/tabs/tabs_test.cc",
+    "../browser/extensions/api/web_navigation/web_navigation_apitest.cc",
+    "../browser/extensions/api/web_request/web_request_apitest.cc",
+    "../browser/extensions/api/webrtc_audio_private/webrtc_audio_private_browsertest.cc",
+    "../browser/extensions/api/webrtc_logging_private/webrtc_logging_private_apitest.cc",
+    "../browser/extensions/api/webrtc_logging_private/webrtc_logging_private_browsertest.cc",
+    "../browser/extensions/chrome_theme_url_browsertest.cc",
+    "../browser/extensions/content_script_apitest.cc",
+    "../browser/extensions/content_verifier_browsertest.cc",
+    "../browser/extensions/corb_and_cors_extension_browsertest.cc",
+    "../browser/extensions/extension_bindings_apitest.cc",
+    "../browser/extensions/extension_context_menu_browsertest.cc",
+    "../browser/extensions/extension_function_registration_test.cc",
+    "../browser/extensions/extension_functional_browsertest.cc",
+    "../browser/extensions/extension_install_ui_browsertest.cc",
+    "../browser/extensions/extension_override_apitest.cc",
+    "../browser/extensions/extension_url_rewrite_browsertest.cc",
+    "../browser/extensions/gpu_browsertest.cc",
+    "../browser/extensions/lazy_background_page_apitest.cc",
+    "../browser/extensions/native_bindings_apitest.cc",
+    "../browser/extensions/options_page_apitest.cc",
+    "../browser/extensions/process_management_browsertest.cc",
+    "../browser/extensions/process_manager_browsertest.cc",
+    "../browser/extensions/service_worker_apitest.cc",
+    "../browser/extensions/startup_helper_browsertest.cc",
+    "../browser/extensions/stubs_apitest.cc",
+    "../browser/extensions/updater/update_service_browsertest.cc",
+    "../browser/extensions/user_script_listener_browsertest.cc",
+    "../browser/extensions/wake_event_page_apitest.cc",
+    "../browser/policy/extension_policy_browsertest.cc",
+    "../browser/ui/views/extensions/extension_dialog_browsertest.cc",
+    "../browser/ui/web_applications/test/system_web_app_ui_browsertest.cc",
+  ]
+}
+
+if (enable_print_preview) {
+  brave_chromium_browser_test_exclusions +=
+      [ "../browser/printing/print_preview_dialog_controller_browsertest.cc" ]
+}
+
+if (safe_browsing_mode == 1) {
+  brave_chromium_browser_test_exclusions += [
+    "../browser/safe_browsing/certificate_reporting_service_browsertest.cc",
+    "../browser/safe_browsing/chrome_password_protection_service_sync_browsertest.cc",
+    "../browser/safe_browsing/safe_browsing_blocking_page_test.cc",
+  ]
+}
+
+if (toolkit_views) {
+  brave_chromium_browser_test_exclusions += [
+    "../browser/ui/media_router/presentation_receiver_window_controller_browsertest.cc",
+    "../browser/ui/views/autofill/payments/local_card_migration_browsertest.cc",
+    "../browser/ui/views/autofill/payments/save_card_bubble_views_browsertest.cc",
+    "../browser/ui/views/bookmarks/bookmark_bubble_sign_in_delegate_browsertest.cc",
+    "../browser/ui/views/bookmarks/bookmark_bubble_view_browsertest.cc",
+    "../browser/ui/views/collected_cookies_views_browsertest.cc",
+    "../browser/ui/views/file_system_access/file_system_access_browsertest.cc",
+    "../browser/ui/views/frame/browser_non_client_frame_view_browsertest.cc",
+    "../browser/ui/views/frame/browser_view_browsertest.cc",
+    "../browser/ui/views/frame/opaque_browser_frame_view_browsertest.cc",
+    "../browser/ui/views/location_bar/content_setting_bubble_dialog_browsertest.cc",
+    "../browser/ui/views/media_router/media_router_dialog_controller_views_browsertest.cc",
+    "../browser/ui/views/media_router/media_router_ui_browsertest.cc",
+    "../browser/ui/views/omnibox/omnibox_popup_contents_view_browsertest.cc",
+    "../browser/ui/views/page_info/page_info_bubble_view_sync_browsertest.cc",
+    "../browser/ui/views/passwords/password_bubble_browsertest.cc",
+    "../browser/ui/views/payments/credit_card_editor_view_controller_browsertest.cc",
+    "../browser/ui/views/payments/modifiers_browsertest.cc",
+    "../browser/ui/views/payments/shipping_address_editor_view_controller_browsertest.cc",
+    "../browser/ui/views/profiles/profile_menu_view_browsertest.cc",
+    "../browser/ui/views/sync/inline_login_ui_browsertest.cc",
+    "../browser/ui/views/tab_sharing/tab_sharing_ui_views_browsertest.cc",
+    "../browser/ui/views/translate/translate_language_browsertest.cc",
+  ]
+}
+
+
+# Exclusions for //chrome/browser/payments
+brave_chromium_browser_test_exclusions_payments = [
+  "payment_request_can_make_payment_browsertest.cc",
+]
+
+
+# Exclusions for unit tests from //chrome/browser/media/router
+brave_chromium_browser_test_exclusions_media_router = [
+    "media_router_e2e_browsertest.cc",
+    "media_router_e2e_browsertest.h",
+    "media_router_e2e_ui_browsertest.cc",
+    "media_router_integration_browsertest.cc",
+    "media_router_integration_browsertest.h",
+    "media_router_integration_ui_browsertest.cc",
+    "media_router_one_ua_integration_browsertest.cc",
+]
+
+
+# Exclusions for //chrome/browser/web_applications
+brave_chromium_browser_test_exclusions_web_applications = [
+  "web_app_mover_browsertest.cc",
+]
+
+
+# Exclusions for //chrome/test/data/webui:browser_tests_js_mojo_webui
+brave_chromium_browser_test_exclusions_webui_tests_js_mojo = [
+  "cr_components/cr_components_mojo_browsertest.js",
+]
+
+
+# Exclusions for //chrome/test/data/webui:browser_tests_js_webui
+brave_chromium_browser_test_exclusions_webui_tests_js = [
+  "history/history_browsertest.js",
+  "settings/a11y/v3_a11y_browsertest.js",
+  "settings/cr_settings_v3_browsertest.js",
+  "signin/signin_browsertest.js",
+  "text_defaults_browsertest.js",
+  "welcome/a11y_tests.js",
+]
+
+if (enable_extensions) {
+  brave_chromium_browser_test_exclusions_webui_tests_js += [
+    "extensions/a11y/extensions_a11y_test.js",
+    "extensions/cr_extensions_browsertest.js",
+  ]
+}
+
+if (enable_print_preview) {
+  brave_chromium_browser_test_exclusions_webui_tests_js += [
+    "print_preview/print_preview_ui_browsertest.js"
+  ]
+}

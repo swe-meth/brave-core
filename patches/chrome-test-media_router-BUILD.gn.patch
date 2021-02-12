@@ -1,0 +1,20 @@
+diff --git a/chrome/test/media_router/BUILD.gn b/chrome/test/media_router/BUILD.gn
+index 1ebfd0ac06ca4495fb3624d892ddacb2e1bd2111..fe6ba4f2dc0b6e3ceb78fa5f2c3a442b7a5252a6 100644
+--- a/chrome/test/media_router/BUILD.gn
++++ b/chrome/test/media_router/BUILD.gn
+@@ -1,6 +1,7 @@
+ # Copyright 2015 The Chromium Authors. All rights reserved.
+ # Use of this source code is governed by a BSD-style license that can be
+ # found in the LICENSE file.
++import("//brave/test/exclusions.gni")
+ 
+ declare_args() {
+   # Many of the targets defined in this file have dependencies that cannot be
+@@ -24,6 +25,7 @@ source_set("browser_tests") {
+     "media_router_ui_for_test.cc",
+     "media_router_ui_for_test.h",
+   ]
++  sources -= brave_chromium_browser_test_exclusions_media_router
+   deps = [
+     ":test_support",
+     "//build:chromeos_buildflags",

@@ -1,8 +1,16 @@
 diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
-index 0096bead803507ffb0856548bae26431daf24d9d..6eb57b3e46fd59cb23595ef778bda80663eb8d39 100644
+index bbeda5c83d65a8280e3c1114793966b092a27929..4c84c14db313296b838f645dc660128ca0d1975b 100644
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -878,6 +878,7 @@ if (!is_android) {
+@@ -44,6 +44,7 @@ import("//ui/gl/features.gni")
+ import("//ui/views/features.gni")
+ import("//ui/webui/webui_features.gni")
+ import("//v8/gni/v8.gni")
++import("//brave/test/exclusions.gni")
+ 
+ assert(!is_ios, "Chromium/iOS shouldn't use anything in //chrome")
+ 
+@@ -878,6 +879,7 @@ if (!is_android) {
        "//v8",
      ]
  
@@ -10,7 +18,15 @@ index 0096bead803507ffb0856548bae26431daf24d9d..6eb57b3e46fd59cb23595ef778bda806
      # Runtime dependencies
      data_deps = [
        "//chrome:browser_tests_pak",
-@@ -4215,6 +4216,7 @@ test("unit_tests") {
+@@ -3212,6 +3214,7 @@ if (!is_android) {
+     }
+ 
+     sources += metric_integration_sources
++    sources -= brave_chromium_browser_test_exclusions
+   }
+ }
+ 
+@@ -4282,6 +4285,7 @@ test("unit_tests") {
      "//ui/web_dialogs:web_dialogs_unittests",
      "//v8",
    ]
