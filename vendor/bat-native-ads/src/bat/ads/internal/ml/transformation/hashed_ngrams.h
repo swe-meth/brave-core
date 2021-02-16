@@ -7,6 +7,8 @@
 #define BAT_ADS_INTERNAL_ML_TRANSFORMATION_HASHED_NGRAMS_H_  // NOLINT
 
 #include <memory>
+#include <string>
+#include <vector>
 
 #include "bat/ads/internal/ml/transformation/hash_vectorizer.h"
 #include "bat/ads/internal/ml/transformation/transformation.h"

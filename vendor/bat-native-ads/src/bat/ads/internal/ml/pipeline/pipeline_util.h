@@ -6,6 +6,7 @@
 #ifndef BAT_ADS_INTERNAL_ML_PIPELINE_PIPELINE_UTIL_H_  // NOLINT
 #define BAT_ADS_INTERNAL_ML_PIPELINE_PIPELINE_UTIL_H_  // NOLINT
 
+#include <string>
 #include <vector>
 
 #include "base/json/json_reader.h"

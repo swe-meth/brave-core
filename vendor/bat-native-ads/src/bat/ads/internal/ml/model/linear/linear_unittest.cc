@@ -82,7 +82,7 @@ TEST_F(BatAdsLinearSVMTest, BinaryClassifierPredictionTest) {
 
   model::Linear linear(weights, biases);
 
-  data::VectorData data_vector_0 = (std::vector<double>{1.07, 1.52, 0.91});
+  data::VectorData data_vector_0(std::vector<double>{1.07, 1.52, 0.91});
   auto res_0 = linear.Predict(data_vector_0);
   ASSERT_EQ(res_0.size(), static_cast<size_t>(1));
 

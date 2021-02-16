@@ -8,6 +8,7 @@
 
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "bat/ads/internal/ml/data/data.h"
@@ -24,7 +25,7 @@ class VectorData : public Data {
 
   VectorData(const VectorData& vector_data);
 
-  VectorData(const std::vector<double>& data);
+  explicit VectorData(const std::vector<double>& data);
 
   VectorData& operator=(const VectorData& vector_data);
 

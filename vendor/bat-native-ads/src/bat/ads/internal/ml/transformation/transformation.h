@@ -6,7 +6,6 @@
 #ifndef BAT_ADS_INTERNAL_ML_TRANSFORMATION_TRANSFORMATION_H_  // NOLINT
 #define BAT_ADS_INTERNAL_ML_TRANSFORMATION_TRANSFORMATION_H_  // NOLINT
 
-#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
@@ -25,7 +24,7 @@ enum class TransformationType {
 
 class Transformation {
  public:
-  Transformation(const TransformationType& type);
+  explicit Transformation(const TransformationType& type);
 
   Transformation(const Transformation& t);
 

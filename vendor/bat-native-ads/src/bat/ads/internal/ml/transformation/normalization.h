@@ -6,6 +6,8 @@
 #ifndef BAT_ADS_INTERNAL_ML_TRANSFORMATION_NORMALIZATION_H_  // NOLINT
 #define BAT_ADS_INTERNAL_ML_TRANSFORMATION_NORMALIZATION_H_  // NOLINT
 
+#include <memory>
+
 #include "bat/ads/internal/ml/transformation/transformation.h"
 
 namespace ads {

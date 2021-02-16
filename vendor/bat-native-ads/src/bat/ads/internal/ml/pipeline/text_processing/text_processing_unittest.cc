@@ -151,13 +151,13 @@ TEST_F(BatAdsTextProcessingPipelineTest, TopPredUnitTest) {
   ASSERT_TRUE(opt_value.has_value());
 
   const std::string model_json = opt_value.value();
-  EXPECT_TRUE(text_proc_pipeline.FromJson(model_json));
+  ASSERT_TRUE(text_proc_pipeline.FromJson(model_json));
 
   std::string test_page = "ethereum bitcoin bat zcash crypto tokens!";
   auto preds = text_proc_pipeline.ClassifyPage(test_page);
-  EXPECT_TRUE(preds.size());
-  EXPECT_TRUE(preds.size() < 100);
-  EXPECT_TRUE(preds.count("crypto-crypto"));
+  ASSERT_TRUE(preds.size());
+  ASSERT_LT(preds.size(), static_cast<size_t>(100));
+  ASSERT_TRUE(preds.count("crypto-crypto"));
   for (auto const& pred : preds) {
     EXPECT_TRUE(pred.second <= preds["crypto-crypto"]);
   }
@@ -171,7 +171,7 @@ TEST_F(BatAdsTextProcessingPipelineTest, TextCMCCrashTest) {
   ASSERT_TRUE(opt_value.has_value());
 
   const std::string model_json = opt_value.value();
-  EXPECT_TRUE(text_proc_pipeline.FromJson(model_json));
+  ASSERT_TRUE(text_proc_pipeline.FromJson(model_json));
 
   const base::Optional<std::string> opt_text_value =
       ReadFileFromTestPathToString(kTextCMCCrash);
@@ -179,9 +179,9 @@ TEST_F(BatAdsTextProcessingPipelineTest, TextCMCCrashTest) {
   const std::string bad_text = opt_text_value.value();
 
   auto preds = text_proc_pipeline.ClassifyPage(bad_text);
-  EXPECT_TRUE(preds.size() < 100);
-  EXPECT_TRUE(preds.size() > 2);
-  EXPECT_TRUE(preds.count("personal finance-personal finance"));
+  ASSERT_LT(preds.size(), static_cast<size_t>(100));
+  ASSERT_GT(preds.size(), static_cast<size_t>(2));
+  ASSERT_TRUE(preds.count("personal finance-personal finance"));
   for (auto const& pred : preds) {
     EXPECT_TRUE(pred.second <= preds["personal finance-personal finance"]);
   }

@@ -18,7 +18,7 @@ enum class DataType { TEXT_DATA = 0, VECTOR_DATA = 1 };
 
 class Data {
  public:
-  Data(const DataType& type);
+  explicit Data(const DataType& type);
 
   virtual ~Data();
 
