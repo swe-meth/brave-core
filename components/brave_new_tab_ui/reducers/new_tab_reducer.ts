@@ -170,6 +170,15 @@ export const newTabReducer: Reducer<NewTab.State | undefined> = (state: NewTab.S
       break
     }
 
+    case types.SET_SHOW_EDIT_TOP_SITE: {
+      const { showEditTopSite } = payload
+      state = {
+        ...state,
+        showEditTopSite
+      }
+      break
+    }
+
     case types.TOP_SITES_STATE_UPDATED: {
       const { newShowTopSites, newCustomLinksEnabled } = payload
       state = {

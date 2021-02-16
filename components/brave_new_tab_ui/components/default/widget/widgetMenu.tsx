@@ -9,6 +9,7 @@ import { StyledWidgetMenuContainer, StyledWidgetMenu, StyledWidgetButton, Styled
 import { IconButton } from '../../default'
 import EllipsisIcon from './assets/ellipsis'
 import HideIcon from './assets/hide'
+import AddSiteIcon from './assets/add-site'
 import LearnMoreIcon from './assets/learn-more'
 import DisconnectIcon from './assets/disconnect'
 import RefreshIcon from './assets/refresh'
@@ -154,7 +155,7 @@ export default class WidgetMenu extends React.PureComponent<Props, State> {
           {
             onAddSite
             ? <StyledWidgetButton onClick={this.addSite.bind(this, onAddSite)}>
-                <StyledWidgetIcon><HideIcon/></StyledWidgetIcon>
+                <StyledWidgetIcon><AddSiteIcon/></StyledWidgetIcon>
                 <StyledSpan>{getLocale('addSiteMenuLabel')}</StyledSpan>
               </StyledWidgetButton>
             : null

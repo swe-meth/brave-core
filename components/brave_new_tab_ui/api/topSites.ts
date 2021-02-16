@@ -23,6 +23,10 @@ export function deleteMostVisitedTile (url: string): void {
   chrome.send('deleteMostVisitedTile', [url])
 }
 
+export function addNewTopSite (title: string, url: string): void {
+  chrome.send('addNewTopSite', [url, title])
+}
+
 export function reorderMostVisitedTile (url: string, newPos: number): void {
   chrome.send('reorderMostVisitedTile', [url, newPos])
 }

@@ -17,6 +17,7 @@ import {
   BinanceWidget as Binance,
   GeminiWidget as Gemini,
   CryptoDotComWidget as CryptoDotCom,
+  EditTopSite,
   EditCards
 } from '../../components/default'
 import * as Page from '../../components/default/page'
@@ -25,6 +26,7 @@ import { brandedWallpaperLogoClicked } from '../../api/brandedWallpaper'
 import BraveTodayHint from '../../components/default/braveToday/hint'
 import BraveToday from '../../components/default/braveToday'
 import BAPDeprecationModal from '../../components/default/rewards/bapDeprecationModal'
+import { addNewTopSite } from '../../api/topSites'
 
 // Helpers
 import VisibilityTimer from '../../helpers/visibilityTimer'
@@ -235,10 +237,6 @@ class NewTabPage extends React.Component<Props, State> {
     this.props.actions.setMostVisitedSettings(showTopSites, customLinksEnabled)
   }
 
-  addTopSite = () => {
-    console.log('Launch add topsites dialog')
-  }
-
   toggleShowRewards = () => {
     this.props.saveShowRewards(!this.props.newTabData.showRewards)
   }
@@ -399,6 +397,19 @@ class NewTabPage extends React.Component<Props, State> {
       showSettingsMenu: false,
       activeSettingsTab: null
     })
+  }
+
+  closeEditTopSite = () => {
+    this.props.actions.setShowEditTopSite(false)
+  }
+
+  saveNewTopSite = (title: string, url: string) => {
+    addNewTopSite(title, url)
+    this.closeEditTopSite()
+  }
+
+  showEditTopSite = () => {
+    this.props.actions.setShowEditTopSite(true)
   }
 
   openSettings = (activeTab?: SettingsTabType) => {
@@ -1059,7 +1070,7 @@ class NewTabPage extends React.Component<Props, State> {
                   gridSites={gridSitesData.gridSites}
                   menuPosition={'right'}
                   hideWidget={this.toggleShowTopSites}
-                  onAddSite={this.addTopSite}
+                  onAddSite={this.showEditTopSite}
                   textDirection={newTabData.textDirection}
                 />
               </Page.GridItemTopSites>
@@ -1167,6 +1178,12 @@ class NewTabPage extends React.Component<Props, State> {
           todayPublishers={this.props.todayData.publishers}
           cardsHidden={this.allWidgetsHidden()}
           toggleCards={this.toggleAllCards}
+        />
+        <EditTopSite
+          showEditTopSite={this.props.newTabData.showEditTopSite}
+          textDirection={newTabData.textDirection}
+          onClose={this.closeEditTopSite}
+          onSave={this.saveNewTopSite}
         />
         <BAPDeprecationModal rewardsState={this.props.newTabData.rewardsState} />
       </Page.App>

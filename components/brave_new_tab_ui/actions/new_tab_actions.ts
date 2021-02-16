@@ -46,6 +46,9 @@ export const setInitialData = (initialData: InitialData) =>
 export const setMostVisitedSettings = (showTopSites: boolean, customLinksEnabled: boolean) =>
   action(types.SET_MOST_VISITED_SITES, { showTopSites, customLinksEnabled })
 
+export const setShowEditTopSite = (showEditTopSite: boolean) =>
+  action(types.SET_SHOW_EDIT_TOP_SITE, { showEditTopSite })
+
 export const topSitesStateUpdated = (newShowTopSites: boolean, newCustomLinksEnabled: boolean) =>
   action(types.TOP_SITES_STATE_UPDATED, { newShowTopSites, newCustomLinksEnabled })
 

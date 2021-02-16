@@ -78,6 +78,11 @@ void InstantServiceMessageHandler::RegisterMessages() {
     base::BindRepeating(
       &InstantServiceMessageHandler::HandleSetMostVisitedSettings,
       base::Unretained(this)));
+  web_ui()->RegisterMessageCallback(
+      "addNewTopSite",
+      base::BindRepeating(
+          &InstantServiceMessageHandler::HandleAddNewTopSite,
+          base::Unretained(this)));
 }
 
 // InstantServiceObserver:
@@ -236,4 +241,31 @@ void InstantServiceMessageHandler::HandleSetMostVisitedSettings(
   if (toggleCustomLinksEnabled) {
     instant_service_->ToggleMostVisitedOrCustomLinks();
   }
+}
+
+void InstantServiceMessageHandler::HandleAddNewTopSite(
+    const base::ListValue* args) {
+  AllowJavascript();
+
+  std::string url;
+  if (!args->GetString(0, &url))
+    return;
+
+  std::string title;
+  if (!args->GetString(1, &title)) {
+    title = url;
+  }
+
+  // Normalize url if invalid.
+  // TODO(simonhong): It's very simple. Use more better way.
+  if (!GURL(url).is_valid())
+    url = "https://" + url;
+
+  // when user adds new top sites, set to favorite mode.
+  auto pair = instant_service_->GetCurrentShortcutSettings();
+  const bool custom_links_enabled = !pair.first;
+  if (!custom_links_enabled)
+    instant_service_->ToggleMostVisitedOrCustomLinks();
+
+  instant_service_->AddCustomLink(GURL(url), title);
 }
