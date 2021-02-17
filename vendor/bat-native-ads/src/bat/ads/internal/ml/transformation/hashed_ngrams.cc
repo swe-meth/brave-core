@@ -34,7 +34,7 @@ HashedNGrams::HashedNGrams(int bucket_count, const std::vector<int>& subgrams)
       std::make_shared<HashVectorizer>(HashVectorizer(bucket_count, subgrams));
 }
 
-std::shared_ptr<data::Data> HashedNGrams::Get(
+std::shared_ptr<data::Data> HashedNGrams::Apply(
     const std::shared_ptr<data::Data>& input_data) {
   if (input_data->GetType() != data::DataType::TEXT_DATA) {
     return std::make_shared<data::Data>(

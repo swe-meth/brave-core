@@ -21,7 +21,7 @@ class Lowercase : public Transformation {
 
   ~Lowercase() override;
 
-  std::shared_ptr<data::Data> Get(
+  std::shared_ptr<data::Data> Apply(
       const std::shared_ptr<data::Data>& input_data) override;
 };
 

@@ -29,7 +29,7 @@ class HashedNGrams : public Transformation {
 
   explicit HashedNGrams(const std::string& parameters);
 
-  std::shared_ptr<data::Data> Get(
+  std::shared_ptr<data::Data> Apply(
       const std::shared_ptr<data::Data>& input_data) override;
 
   std::shared_ptr<HashVectorizer> hash_vectorizer;

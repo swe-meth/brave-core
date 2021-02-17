@@ -12,8 +12,7 @@
 #include <vector>
 
 #include "bat/ads/internal/ml/data/data.h"
-
-typedef std::pair<unsigned, double> SparseVectorElement;
+#include "bat/ads/internal/ml/data/vector_data_aliases.h"
 
 namespace ads {
 namespace ml {

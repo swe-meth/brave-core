@@ -12,6 +12,7 @@
 #include "base/json/json_reader.h"
 #include "base/values.h"
 #include "bat/ads/internal/ml/model/linear/linear.h"
+#include "bat/ads/internal/ml/pipeline/pipeline_info.h"
 #include "bat/ads/internal/ml/transformation/hashed_ngrams.h"
 #include "bat/ads/internal/ml/transformation/lowercase.h"
 #include "bat/ads/internal/ml/transformation/normalization.h"
@@ -28,13 +29,7 @@ bool ParseTransformationsJSON(
 bool ParseClassifierJSON(base::Value* classifier_value,
                          model::Linear& linear_model);
 
-bool ParsePipelineJSON(
-    const std::string& json,
-    uint16_t& version,
-    std::string& timestamp,
-    std::string& locale,
-    std::vector<transformation::TransformationPtr>& transformations,
-    model::Linear& linear_model);
+base::Optional<PipelineInfo> ParsePipelineJSON(const std::string& json);
 
 }  // namespace pipeline
 }  // namespace ml

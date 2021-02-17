@@ -17,6 +17,7 @@
 #include "bat/ads/internal/ml/data/data.h"
 #include "bat/ads/internal/ml/data/text_data.h"
 #include "bat/ads/internal/ml/model/linear/linear.h"
+#include "bat/ads/internal/ml/pipeline/pipeline_info.h"
 #include "bat/ads/internal/ml/transformation/transformation.h"
 
 namespace ads {
@@ -39,6 +40,8 @@ class TextProcessing {
 
   bool IsInitialized();
 
+  void SetInfo(const PipelineInfo& info);
+
   bool FromJson(const std::string& json);
 
   std::map<std::string, double> Apply(
@@ -50,10 +53,10 @@ class TextProcessing {
   const std::map<std::string, double> ClassifyPage(const std::string& content);
 
  private:
-  bool is_initialized_;
-  uint16_t version_;
-  std::string timestamp_;
-  std::string locale_;
+  bool is_initialized_ = false;
+  uint16_t version_ = 0;
+  std::string timestamp_ = "";
+  std::string locale_ = "en";
   std::vector<transformation::TransformationPtr> transformations_;
   model::Linear linear_model_;
 };

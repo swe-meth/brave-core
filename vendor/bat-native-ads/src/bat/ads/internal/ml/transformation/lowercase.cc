@@ -18,7 +18,7 @@ Lowercase::Lowercase() : Transformation(TransformationType::LOWERCASE) {}
 
 Lowercase::~Lowercase() = default;
 
-std::shared_ptr<data::Data> Lowercase::Get(
+std::shared_ptr<data::Data> Lowercase::Apply(
     const std::shared_ptr<data::Data>& input_data) {
   if (input_data->GetType() != data::DataType::TEXT_DATA) {
     return std::make_shared<data::Data>(data::TextData(""));

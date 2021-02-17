@@ -154,49 +154,48 @@ bool ParseClassifierJSON(base::Value* classifier_value,
   return true;
 }
 
-bool ParsePipelineJSON(
-    const std::string& json,
-    uint16_t& version,
-    std::string& timestamp,
-    std::string& locale,
-    std::vector<transformation::TransformationPtr>& transformations,
-    model::Linear& linear_model) {
+base::Optional<PipelineInfo> ParsePipelineJSON(const std::string& json) {
   base::Optional<base::Value> root = base::JSONReader::Read(json);
 
   if (!root) {
-    return false;
+    return base::nullopt;
   }
 
   base::Optional<int> version_value = root->FindIntKey("version");
   if (!version_value.has_value()) {
-    return false;
+    return base::nullopt;
   }
   int version_number = version_value.value();
-  version = static_cast<uint16_t>(version_number);
+  uint16_t version = static_cast<uint16_t>(version_number);
 
   std::string* timestamp_value = root->FindStringKey("timestamp");
   if (!timestamp_value) {
-    return false;
+    return base::nullopt;
   }
-  timestamp = *timestamp_value;
+  std::string timestamp = *timestamp_value;
 
   std::string* locale_value = root->FindStringKey("locale");
   if (!locale_value) {
-    return false;
+    return base::nullopt;
   }
-  locale = *locale_value;
+  std::string locale = *locale_value;
 
+  std::vector<transformation::TransformationPtr> transformations;
   base::Value* transformations_value = root->FindKey("transformations");
   if (!ParseTransformationsJSON(transformations_value, transformations)) {
-    return false;
+    return base::nullopt;
   }
 
+  model::Linear linear_model;
   base::Value* classifier_value = root->FindKey("classifier");
   if (!ParseClassifierJSON(classifier_value, linear_model)) {
-    return false;
+    return base::nullopt;
   }
 
-  return true;
+  base::Optional<PipelineInfo> pipeline_info =
+      PipelineInfo(version, timestamp, locale, transformations, linear_model);
+
+  return pipeline_info;
 }
 
 }  // namespace pipeline

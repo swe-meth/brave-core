@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "bat/ads/internal/ml/data/vector_data.h"
+#include "bat/ads/internal/ml/pipeline/pipeline_info.h"
 #include "bat/ads/internal/ml/pipeline/pipeline_util.h"
 #include "bat/ads/internal/ml/pipeline/text_processing/text_processing.h"
 #include "bat/ads/internal/ml/transformation/hashed_ngrams.h"
@@ -25,12 +26,7 @@ bool TextProcessing::IsInitialized() {
   return is_initialized_;
 }
 
-TextProcessing::TextProcessing() : is_initialized_(false) {
-  version_ = 0;
-  timestamp_ = "";
-  locale_ = "en";
-  transformations_ = {};
-}
+TextProcessing::TextProcessing() : is_initialized_(false) {}
 
 TextProcessing::TextProcessing(const TextProcessing& text_proc) = default;
 
@@ -44,9 +40,23 @@ TextProcessing::TextProcessing(
   linear_model_ = linear_model;
 }
 
+void TextProcessing::SetInfo(const PipelineInfo& info) {
+  version_ = info.version;
+  timestamp_ = info.timestamp;
+  locale_ = info.locale;
+  transformations_ = info.transformations;
+  linear_model_ = info.linear_model;
+}
+
 bool TextProcessing::FromJson(const std::string& json) {
-  is_initialized_ = ParsePipelineJSON(json, version_, timestamp_, locale_,
-                                      transformations_, linear_model_);
+  base::Optional<PipelineInfo> pipeline_info = ParsePipelineJSON(json);
+
+  if (pipeline_info.has_value()) {
+    SetInfo(pipeline_info.value());
+    is_initialized_ = true;
+  } else {
+    is_initialized_ = false;
+  }
 
   return is_initialized_;
 }
@@ -56,7 +66,7 @@ std::map<std::string, double> TextProcessing::Apply(
   std::shared_ptr<data::Data> current_data = input_data;
 
   for (auto& transformation : transformations_) {
-    current_data = transformation->Get(current_data);
+    current_data = transformation->Apply(current_data);
   }
 
   if (current_data->GetType() != data::DataType::VECTOR_DATA) {
