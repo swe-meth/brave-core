@@ -25,10 +25,10 @@ PipelineInfo::PipelineInfo(
     const std::vector<transformation::TransformationPtr>& transformations,
     const model::Linear& linear_model)
     : version(version),
-    timestamp(timestamp),
-    locale(locale),
-    transformations(transformations),
-    linear_model(linear_model) {}
+      timestamp(timestamp),
+      locale(locale),
+      transformations(transformations),
+      linear_model(linear_model) {}
 
 }  // namespace pipeline
 }  // namespace ml

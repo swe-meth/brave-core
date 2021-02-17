@@ -3,8 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef BAT_ADS_INTERNAL_ML_PIPELINE_TEXT_PROCESSING_H_  // NOLINT
-#define BAT_ADS_INTERNAL_ML_PIPELINE_TEXT_PROCESSING_H_  // NOLINT
+#ifndef BAT_ADS_INTERNAL_ML_PIPELINE_TEXT_PROCESSING_H_
+#define BAT_ADS_INTERNAL_ML_PIPELINE_TEXT_PROCESSING_H_
 
 #include <cstdint>
 #include <map>
@@ -65,4 +65,4 @@ class TextProcessing {
 }  // namespace ml
 }  // namespace ads
 
-#endif  // BAT_ADS_INTERNAL_ML_PIPELINE_TEXT_PROCESSING_H_  // NOLINT
+#endif  // BAT_ADS_INTERNAL_ML_PIPELINE_TEXT_PROCESSING_H_

@@ -9,8 +9,8 @@
 #include <string>
 #include <vector>
 
-#include "bat/ads/internal/ml/transformation/transformation.h"
 #include "bat/ads/internal/ml/model/linear/linear.h"
+#include "bat/ads/internal/ml/transformation/transformation.h"
 
 namespace ads {
 namespace ml {
@@ -24,11 +24,11 @@ struct PipelineInfo {
   ~PipelineInfo();
 
   PipelineInfo(
-    const uint16_t& version,
-    const std::string& timestamp,
-    const std::string& locale,
-    const std::vector<transformation::TransformationPtr>& transformations,
-    const model::Linear& linear_model);
+      const uint16_t& version,
+      const std::string& timestamp,
+      const std::string& locale,
+      const std::vector<transformation::TransformationPtr>& transformations,
+      const model::Linear& linear_model);
 
   uint16_t version;
   std::string timestamp;
@@ -41,4 +41,4 @@ struct PipelineInfo {
 }  // namespace ml
 }  // namespace ads
 
-#endif  // BAT_ADS_INTERNAL_ML_PIPELINE_PIPELINE_INFO_H_  // NOLINT
+#endif  // BAT_ADS_INTERNAL_ML_PIPELINE_PIPELINE_INFO_H_

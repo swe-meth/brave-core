@@ -8,6 +8,7 @@
 
 #include <map>
 #include <memory>
+#include <string>
 
 #include "bat/ads/internal/ml/data/vector_data.h"
 
@@ -19,4 +20,4 @@ using PredictionMap = std::map<std::string, data::VectorData>;
 }  // namespace ml
 }  // namespace ads
 
-#endif  // BAT_ADS_INTERNAL_ML_ML_ALIASES_H_  // NOLINT
+#endif  // BAT_ADS_INTERNAL_ML_ML_ALIASES_H_

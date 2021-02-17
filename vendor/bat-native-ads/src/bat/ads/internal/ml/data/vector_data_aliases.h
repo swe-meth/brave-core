@@ -18,4 +18,4 @@ using SparseVectorElement = std::pair<unsigned, double>;
 }  // namespace ml
 }  // namespace ads
 
-#endif  // BAT_ADS_INTERNAL_ML_DATA_VECTOR_DATA_ALIASES_H_  // NOLINT
+#endif  // BAT_ADS_INTERNAL_ML_DATA_VECTOR_DATA_ALIASES_H_
