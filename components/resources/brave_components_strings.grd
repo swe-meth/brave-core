@@ -197,7 +197,10 @@
       <message name="IDS_BRAVE_NEW_TAB_CLOCK_FORMAT_12" desc="Text for choice '12-hour clock' Clock>Format setting">12-hour clock</message>
       <message name="IDS_BRAVE_NEW_TAB_CLOCK_FORMAT_24" desc="Text for choice '24-hour clock' Clock>Format setting">24-hour clock</message>
 
-      <message name="IDS_BRAVE_NEW_TAB_ADD_TOP_SITE_DIALOG_TITLE" desc="Text for settings show top sites option">Add site</message>
+      <message name="IDS_BRAVE_NEW_TAB_ADD_TOP_SITE_DIALOG_TITLE" desc="Title text for adding top site dialog ">Add site</message>
+      <message name="IDS_BRAVE_NEW_TAB_EDIT_TOP_SITE_DIALOG_TITLE" desc="Title text for editing top site dialog">Edit site</message>
+      <message name="IDS_BRAVE_NEW_TAB_EDIT_SITE_TILE_MENU_ITEM" desc="Text for editing site tile menu item">Edit site</message>
+      <message name="IDS_BRAVE_NEW_TAB_REMOVE_TILE_MENU_ITEM" desc="Text for removing top site tile menu item">Remove</message>
       <message name="IDS_BRAVE_NEW_TAB_ADD_TOP_SITE_DIALOG_URL_LABEL" desc="Text for settings show top sites option">URL</message>
       <message name="IDS_BRAVE_NEW_TAB_ADD_TOP_SITE_DIALOG_URL_INPUT_PLACEHOLDER" desc="Text for settings show top sites option">Website address</message>
       <message name="IDS_BRAVE_NEW_TAB_ADD_TOP_SITE_DIALOG_NAME_LABEL" desc="Text for settings show top sites option">Name</message>

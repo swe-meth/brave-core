@@ -26,7 +26,7 @@ import { brandedWallpaperLogoClicked } from '../../api/brandedWallpaper'
 import BraveTodayHint from '../../components/default/braveToday/hint'
 import BraveToday from '../../components/default/braveToday'
 import BAPDeprecationModal from '../../components/default/rewards/bapDeprecationModal'
-import { addNewTopSite } from '../../api/topSites'
+import { addNewTopSite, editTopSite } from '../../api/topSites'
 
 // Helpers
 import VisibilityTimer from '../../helpers/visibilityTimer'
@@ -408,8 +408,12 @@ class NewTabPage extends React.Component<Props, State> {
     this.props.actions.setShowEditTopSite(false)
   }
 
-  saveNewTopSite = (title: string, url: string) => {
-    addNewTopSite(title, url)
+  saveNewTopSite = (title: string, url: string, newUrl: string) => {
+    if (url) {
+      editTopSite(title, url, newUrl === url ? '' : newUrl)
+    } else {
+      addNewTopSite(title, newUrl);
+    }
     this.closeEditTopSite()
   }
 
@@ -1187,6 +1191,7 @@ class NewTabPage extends React.Component<Props, State> {
         />
         <EditTopSite
           showEditTopSite={this.props.newTabData.showEditTopSite}
+          targetTopSiteForEditing={this.props.newTabData.targetTopSiteForEditing}
           textDirection={newTabData.textDirection}
           onClose={this.closeEditTopSite}
           onSave={this.saveNewTopSite}

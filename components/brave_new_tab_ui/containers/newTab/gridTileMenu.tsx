@@ -5,59 +5,33 @@
 
 import * as React from 'react'
 
-import {
-  StyledDialogWrapper,
-  StyledDialog,
-  DialogTitle,
-  StyledCloseIcon,
-  StyledInputLabel,
-  StyledInput,
-  StyledButtonsContainer,
-  StyledButton,
-} from './style'
-import { getLocale } from '../../../../common/locale'
-import CloseIcon from './assets/close-icon'
+import { getLocale } from '../../../common/locale'
 
 interface Props {
-  showEditTopSite: boolean
-  targetTopSiteForEditing?: NewTab.Site
-  textDirection: string
+  onEdit: (title: string, url: string) => void
   onClose: () => void
-  onSave: (title: string, url: string, newUrl: string) => void
 }
 
-export default class EditTopSite extends React.PureComponent<Props, {}> {
-  editTopSiteDialogRef: React.RefObject<any>
-  nameInputRef: React.RefObject<any>
-  urlInputRef: React.RefObject<any>
+export default class GridTileMenu extends React.PureComponent<Props, {}> {
+  tileMenuRef: React.RefObject<any>
   constructor (props: Props) {
     super(props)
-    this.editTopSiteDialogRef = React.createRef()
-    this.nameInputRef = React.createRef()
-    this.urlInputRef = React.createRef()
+    this.tileMenuRef = React.createRef()
   }
 
   componentDidMount () {
     document.addEventListener('mousedown', this.handleClickOutside)
-    document.addEventListener('keydown', this.onKeyPressSettings)
   }
 
   componentWillUnmount () {
     document.removeEventListener('mousedown', this.handleClickOutside)
-    document.removeEventListener('keydown', this.onKeyPressSettings)
-  }
-
-  onKeyPressSettings = (event: KeyboardEvent) => {
-    if (event.key === 'Escape') {
-      this.props.onClose()
-    }
   }
 
   handleClickOutside = (event: Event) => {
     if (
-      this.editTopSiteDialogRef &&
-      this.editTopSiteDialogRef.current &&
-      !this.editTopSiteDialogRef.current.contains(event.target)
+      this.tileMenuRef &&
+      this.tileMenuRef.current &&
+      !this.tileMenuRef.current.contains(event.target)
     ) {
       this.props.onClose()
     }
@@ -65,29 +39,18 @@ export default class EditTopSite extends React.PureComponent<Props, {}> {
 
   saveNewTopSite = () => {
     this.props.onSave(this.nameInputRef.current.value,
-                      this.props.targetTopSiteForEditing ? this.props.targetTopSiteForEditing.url
-                                                         : '',
                       this.urlInputRef.current.value)
   }
 
   render () {
     const {
       showEditTopSite,
-      targetTopSiteForEditing,
       textDirection,
       onClose,
     } = this.props
 
     if (!showEditTopSite) {
       return null
-    }
-
-    let url = ''
-    let title = ''
-    if (targetTopSiteForEditing) {
-      console.log(`${targetTopSiteForEditing.title} ${targetTopSiteForEditing.url}`)
-      title = targetTopSiteForEditing.title
-      url = targetTopSiteForEditing.url
     }
 
     return (
@@ -97,8 +60,7 @@ export default class EditTopSite extends React.PureComponent<Props, {}> {
           textDirection={textDirection}
         >
           <DialogTitle>
-            {targetTopSiteForEditing ? getLocale('editTopSiteDialogTitle')
-                                     : getLocale('addTopSiteDialogTitle')}
+            {getLocale('addTopSiteDialogTitle')}
           </DialogTitle>
           <StyledCloseIcon onClick={onClose}>
             <CloseIcon/>
@@ -110,7 +72,6 @@ export default class EditTopSite extends React.PureComponent<Props, {}> {
             autoFocus
             innerRef={this.nameInputRef}
             type="text"
-            defaultValue={title}
             placeholder={getLocale('addTopSiteDialogNameInputPlaceHolder')}
           />
           <StyledInputLabel>
@@ -119,7 +80,6 @@ export default class EditTopSite extends React.PureComponent<Props, {}> {
           <StyledInput
             innerRef={this.urlInputRef}
             type="url"
-            defaultValue={url}
             placeholder={getLocale('addTopSiteDialogURLInputPlaceHolder')}
           />
           <StyledButtonsContainer>

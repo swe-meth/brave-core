@@ -32,13 +32,23 @@ interface Props {
   gridSites: NewTab.Site[]
 }
 
+interface State {
+  isDragging: boolean
+}
+
 type DynamicListProps = SortableContainerProps & { blockNumber: number }
 const DynamicList = SortableContainer((props: DynamicListProps) => {
   return <List {...props} />
 })
 
-class TopSitesList extends React.PureComponent<Props, {}> {
+class TopSitesList extends React.PureComponent<Props, State> {
+  updateBeforeSortStart = () => {
+    this.setState({ isDragging: true})
+  }
+
   onSortEnd = ({ oldIndex, newIndex }: SortEnd) => {
+    this.setState({ isDragging: false})
+
     // User can't change order in "Most Visited" mode
     // and they can't change position of super referral tiles
     if (this.props.gridSites[newIndex].defaultSRTopSite ||
@@ -48,12 +58,20 @@ class TopSitesList extends React.PureComponent<Props, {}> {
     this.props.actions.tilesReordered(this.props.gridSites, oldIndex, newIndex)
   }
 
+  constructor (props: Props) {
+    super(props)
+    this.state = {
+      isDragging: false
+    }
+  }
+
   render () {
     const { actions, gridSites } = this.props
     return (
       <>
         <DynamicList
           blockNumber={MAX_GRID_SIZE}
+          updateBeforeSortStart={this.updateBeforeSortStart}
           onSortEnd={this.onSortEnd}
           axis='xy'
           lockToContainerEdges={true}
@@ -72,6 +90,7 @@ class TopSitesList extends React.PureComponent<Props, {}> {
                   actions={actions}
                   index={index}
                   siteData={siteData}
+                  isDragging={this.state.isDragging}
                   // User can't change order in "Most Visited" mode
                   // and they can't change position of super referral tiles
                   disabled={siteData.defaultSRTopSite || !this.props.customLinksEnabled}

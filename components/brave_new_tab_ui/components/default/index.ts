@@ -5,7 +5,7 @@
 
 import { StatsContainer, StatsItem } from './stats'
 export * from './settings'
-import { ListWidget, Tile, TileActionsContainer, TileAction, TileFavicon } from './gridSites'
+import { ListWidget, Tile, TileActionsContainer, TileAction, TileFavicon, TileMenu, TileMenuItem } from './gridSites'
 import { SiteRemovalNotification, SiteRemovalText, SiteRemovalAction } from './notification'
 import { ClockWidget } from './clock'
 import { RewardsWidget } from './rewards'
@@ -27,6 +27,8 @@ export {
   TileActionsContainer,
   TileAction,
   TileFavicon,
+  TileMenu,
+  TileMenuItem,
   SiteRemovalNotification,
   SiteRemovalText,
   SiteRemovalAction,

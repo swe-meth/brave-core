@@ -3,7 +3,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this file,
 // you can obtain one at http://mozilla.org/MPL/2.0/.
 
-import styled from 'brave-ui/theme'
+import styled, { css } from 'brave-ui/theme'
+
+const isDarkTheme = (p: any) => {
+  return p.theme.name === 'Brave Dark'
+}
 
 interface ListProps {
   blockNumber: number
@@ -32,47 +36,77 @@ export const TileActionsContainer = styled<{}, 'nav'>('nav')`
   visibility: hidden;
   transition: 0.15s opacity linear;
   position: absolute;
-  z-index: 2;
-  top: 0;
-  right: 0;
-  text-align: center;
+  width: 32px;
+  height: 32px;
+  z-index: 1;
+  top: -12px;
+  right: -12px;
   display: flex;
-  justify-content: space-between;
-  margin: 6px;
-  border-radius: 4px;
-  background-color: #FFFFFF;
 `
 
-interface TileActionProps {
-  standalone?: boolean
-}
+export const TileMenu = styled<{}, 'div'>('div')`
+  position: absolute;
+  top: 15px;
+  left: 80px;
+  min-width: 185px;
+  height: 72px;
+  padding: 8px 0;
+  background: ${p => isDarkTheme(p) ? '#3B3E4F' : '#FFF'};
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+  box-shadow: 0px 0px 16px 0px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+`
 
-export const TileAction = styled<TileActionProps, 'button'>('button')`
+export const TileMenuItem = styled<{}, 'div'>('div')`
+  width: 100%;
+  height: 30px;
+  font-family: Poppins;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0.01em;
+  text-align: left;
+  padding: 4px 13px;
+  background: inherit;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 11px;
+  color: ${p => p.theme.color.contextMenuHoverForeground};
+
+  &:hover {
+    background-color: ${p => p.theme.color.contextMenuHoverBackground};
+    color: ${p => p.theme.color.contextMenuHoverForeground};
+  }
+`
+
+export const TileAction = styled<{}, 'button'>('button')`
   -webkit-appearance: none;
   box-sizing: border-box;
   transition: color 0.1s linear;
-  color: #424242;
-  font-size: 14px;
-  width: 20px;
-  height: 20px;
-  padding: 2px 4px;
-  background: ${p => p.standalone && '#FFFFFF'};
-  position: ${p => p.standalone && 'absolute'};
-  top: ${p => p.standalone && '6px'};
-  left: ${p => p.standalone && '6px'};
-  border-radius: ${p => p.standalone && '4px'};
+  background: #DADCEB;
+  width: 100%;
+  border-radius: 50%;
   margin: 0;
-  display: block;
-  cursor: pointer;
+  padding: 0;
   border: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: unset;
 
-  &:hover {
-    color: #000;
+  &:focus {
+    background: #AEB1C2;
   }
 `
 
 interface TileProps {
-  isDragging?: boolean
+  isDragging: boolean
+  isMenuShowing: boolean
 }
 
 export const Tile = styled<TileProps, 'div'>('div')`
@@ -88,15 +122,26 @@ export const Tile = styled<TileProps, 'div'>('div')`
   width: 80px;
   height: 80px;
   font-size: 38px;
-  z-index: 3;
   cursor: grab;
+  // Menu goes behind in other Tiles when tils has z-index.
+  // Give z-index while dragging to make dragging tile moves over other tiles.
+  z-index: ${p => p.isDragging ? 3 : 'unset' }
 
-  &:hover {
+  ${p => !p.isDragging && !p.isMenuShowing && css`
+    &:hover {
+      ${TileActionsContainer} {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+  `}
+
+  ${p => p.isMenuShowing && css`
     ${TileActionsContainer} {
       opacity: 1;
       visibility: visible;
     }
-  }
+  `}
 `
 
 export const TileFavicon = styled<{}, 'img'>('img')`

@@ -123,6 +123,7 @@ declare namespace NewTab {
     showBackgroundImage: boolean
     customLinksEnabled: boolean
     showEditTopSite: boolean
+    targetTopSiteForEditing?: Site
     showTogether: boolean
     showBinance: boolean
     showGemini: boolean
