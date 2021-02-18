@@ -24,6 +24,8 @@ export interface WidgetProps {
   onDisconnect?: () => void
   onRefreshData?: () => void
   onAddSite?: () => void
+  customLinksEnabled? : boolean
+  onToggleCustomLinksEnabled?: () => void
 }
 
 export interface WidgetState {
@@ -63,7 +65,9 @@ const createWidget = <P extends object>(WrappedComponent: React.ComponentType<P>
         onLearnMore,
         onDisconnect,
         onRefreshData,
-        onAddSite
+        onAddSite,
+        customLinksEnabled,
+        onToggleCustomLinksEnabled
       } = this.props
       const { widgetMenuPersist } = this.state
 
@@ -88,6 +92,8 @@ const createWidget = <P extends object>(WrappedComponent: React.ComponentType<P>
             onDisconnect={onDisconnect}
             onRefreshData={onRefreshData}
             onAddSite={onAddSite}
+            customLinksEnabled={customLinksEnabled}
+            onToggleCustomLinksEnabled={onToggleCustomLinksEnabled}
             isForeground={isForeground}
             widgetMenuPersist={widgetMenuPersist}
             textDirection={textDirection}

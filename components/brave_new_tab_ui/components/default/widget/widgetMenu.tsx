@@ -10,6 +10,8 @@ import { IconButton } from '../../default'
 import EllipsisIcon from './assets/ellipsis'
 import HideIcon from './assets/hide'
 import AddSiteIcon from './assets/add-site'
+import FrecencyIcon from './assets/frecency'
+import FavoritesIcon from './assets/favorites'
 import LearnMoreIcon from './assets/learn-more'
 import DisconnectIcon from './assets/disconnect'
 import RefreshIcon from './assets/refresh'
@@ -28,6 +30,8 @@ interface Props {
   onDisconnect?: () => void
   onRefreshData?: () => void
   onAddSite?: () => void
+  customLinksEnabled? : boolean
+  onToggleCustomLinksEnabled?: () => void
   lightWidget?: boolean
   paddingType: 'none' | 'right' | 'default'
 }
@@ -84,7 +88,7 @@ export default class WidgetMenu extends React.PureComponent<Props, State> {
     this.closeMenu()
   }
 
-  addSite = (action: any) => {
+  doTopSiteAction = (action: any) => {
     action()
     this.closeMenu()
   }
@@ -101,7 +105,9 @@ export default class WidgetMenu extends React.PureComponent<Props, State> {
       onLearnMore,
       onDisconnect,
       onRefreshData,
-      onAddSite
+      onAddSite,
+      onToggleCustomLinksEnabled,
+      customLinksEnabled
     } = this.props
     const { showMenu } = this.state
     const hideString = widgetTitle ? `${getLocale('hide')} ${widgetTitle}` : getLocale('hide')
@@ -154,9 +160,22 @@ export default class WidgetMenu extends React.PureComponent<Props, State> {
           }
           {
             onAddSite
-            ? <StyledWidgetButton onClick={this.addSite.bind(this, onAddSite)}>
+            ? <StyledWidgetButton onClick={this.doTopSiteAction.bind(this, onAddSite)}>
                 <StyledWidgetIcon><AddSiteIcon/></StyledWidgetIcon>
                 <StyledSpan>{getLocale('addSiteMenuLabel')}</StyledSpan>
+              </StyledWidgetButton>
+            : null
+          }
+          {
+            onToggleCustomLinksEnabled
+            ? <StyledWidgetButton onClick={this.doTopSiteAction.bind(this, onToggleCustomLinksEnabled)}>
+                <StyledWidgetIcon>
+                  {customLinksEnabled ? <FrecencyIcon/> : <FavoritesIcon/>}
+                </StyledWidgetIcon>
+                <StyledSpan>
+                  {customLinksEnabled ? getLocale('showFrecencyMenuLabel')
+                                      : getLocale('showFavoritesMenuLabel')}
+                </StyledSpan>
               </StyledWidgetButton>
             : null
           }

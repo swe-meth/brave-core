@@ -233,6 +233,11 @@ class NewTabPage extends React.Component<Props, State> {
     this.props.actions.setMostVisitedSettings(!showTopSites, customLinksEnabled)
   }
 
+  toggleCustomLinksEnabled = () => {
+    const { showTopSites, customLinksEnabled } = this.props.newTabData
+    this.props.actions.setMostVisitedSettings(showTopSites, !customLinksEnabled)
+  }
+
   setMostVisitedSettings = (showTopSites: boolean, customLinksEnabled: boolean) => {
     this.props.actions.setMostVisitedSettings(showTopSites, customLinksEnabled)
   }
@@ -1071,6 +1076,7 @@ class NewTabPage extends React.Component<Props, State> {
                   menuPosition={'right'}
                   hideWidget={this.toggleShowTopSites}
                   onAddSite={this.showEditTopSite}
+                  onToggleCustomLinksEnabled={this.toggleCustomLinksEnabled}
                   textDirection={newTabData.textDirection}
                 />
               </Page.GridItemTopSites>
