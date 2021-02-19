@@ -44,11 +44,11 @@ const DynamicList = SortableContainer((props: DynamicListProps) => {
 
 class TopSitesList extends React.PureComponent<Props, State> {
   updateBeforeSortStart = () => {
-    this.setState({ isDragging: true})
+    this.setState({ isDragging: true })
   }
 
   onSortEnd = ({ oldIndex, newIndex }: SortEnd) => {
-    this.setState({ isDragging: false})
+    this.setState({ isDragging: false })
 
     // User can't change order in "Most Visited" mode
     // and they can't change position of super referral tiles

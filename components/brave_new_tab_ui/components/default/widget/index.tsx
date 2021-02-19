@@ -24,7 +24,7 @@ export interface WidgetProps {
   onDisconnect?: () => void
   onRefreshData?: () => void
   onAddSite?: () => void
-  customLinksEnabled? : boolean
+  customLinksEnabled?: boolean
   onToggleCustomLinksEnabled?: () => void
 }
 

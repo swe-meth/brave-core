@@ -80,14 +80,12 @@ void InstantServiceMessageHandler::RegisterMessages() {
       base::Unretained(this)));
   web_ui()->RegisterMessageCallback(
       "addNewTopSite",
-      base::BindRepeating(
-          &InstantServiceMessageHandler::HandleAddNewTopSite,
-          base::Unretained(this)));
+      base::BindRepeating(&InstantServiceMessageHandler::HandleAddNewTopSite,
+                          base::Unretained(this)));
   web_ui()->RegisterMessageCallback(
       "editTopSite",
-      base::BindRepeating(
-          &InstantServiceMessageHandler::HandleEditTopSite,
-          base::Unretained(this)));
+      base::BindRepeating(&InstantServiceMessageHandler::HandleEditTopSite,
+                          base::Unretained(this)));
 }
 
 // InstantServiceObserver:

@@ -5,11 +5,14 @@
 
 source_set("unit_tests") {
   testonly = true
-  sources = [ "brave_new_tab_ui_unittest.cc" ]
 
-  deps = [
-    "//components/history/core/browser",
-    "//components/ntp_tiles",
-    "//testing/gtest",
-  ]
+  if (!is_android) {
+    sources = [ "brave_new_tab_ui_unittest.cc" ]
+
+    deps = [
+      "//components/history/core/browser",
+      "//components/ntp_tiles",
+      "//testing/gtest",
+    ]
+  }
 }

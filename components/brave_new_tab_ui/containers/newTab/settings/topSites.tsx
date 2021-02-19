@@ -67,7 +67,8 @@ class TopSitesSettings extends React.PureComponent<Props, {}> {
         <StyledTopSitesCustomizationSettings>
           <StyledTopSitesCustomizationSettingsOption>
             <StyledTopSitesCustomizationImageBorder
-              selected={favoritesSelected}>
+              selected={favoritesSelected}
+            >
               <StyledTopSitesCustomizationImage
                 imgSrcLight={favoritesSelected ? favoritesSelectedLight : favoritesUnselectedLight}
                 imgSrcDark={favoritesSelected ? favoritesSelectedDark : favoritesUnselectedDark}
@@ -84,7 +85,8 @@ class TopSitesSettings extends React.PureComponent<Props, {}> {
           </StyledTopSitesCustomizationSettingsOption>
           <StyledTopSitesCustomizationSettingsOption>
             <StyledTopSitesCustomizationImageBorder
-              selected={frecencySelected} >
+              selected={frecencySelected}
+            >
               <StyledTopSitesCustomizationImage
                 imgSrcLight={frecencySelected ? frecencySelectedLight : frecencyUnselectedLight}
                 imgSrcDark={frecencySelected ? frecencySelectedDark : frecencyUnselectedDark}

@@ -13,7 +13,7 @@ import {
   StyledInputLabel,
   StyledInput,
   StyledButtonsContainer,
-  StyledButton,
+  StyledButton
 } from './style'
 import { getLocale } from '../../../../common/locale'
 import CloseIcon from './assets/close-icon'
@@ -75,7 +75,7 @@ export default class EditTopSite extends React.PureComponent<Props, {}> {
       showEditTopSite,
       targetTopSiteForEditing,
       textDirection,
-      onClose,
+      onClose
     } = this.props
 
     if (!showEditTopSite) {
@@ -107,9 +107,9 @@ export default class EditTopSite extends React.PureComponent<Props, {}> {
             {getLocale('addTopSiteDialogNameLabel')}
           </StyledInputLabel>
           <StyledInput
-            autoFocus
+            autoFocus={true}
             innerRef={this.nameInputRef}
-            type="text"
+            type='text'
             defaultValue={title}
             placeholder={getLocale('addTopSiteDialogNameInputPlaceHolder')}
           />
@@ -118,7 +118,7 @@ export default class EditTopSite extends React.PureComponent<Props, {}> {
           </StyledInputLabel>
           <StyledInput
             innerRef={this.urlInputRef}
-            type="url"
+            type='url'
             defaultValue={url}
             placeholder={getLocale('addTopSiteDialogURLInputPlaceHolder')}
           />

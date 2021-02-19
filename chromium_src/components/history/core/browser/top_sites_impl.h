@@ -7,7 +7,8 @@
 #define BRAVE_CHROMIUM_SRC_COMPONENTS_HISTORY_CORE_BROWSER_TOP_SITES_IMPL_H_
 
 // Needs 12 items for our NTP top site tiles.
-#define kTopSitesNumber kTopSitesNumber = 12; \
+#define kTopSitesNumber \
+  kTopSitesNumber = 12; \
   static constexpr size_t kTopSitesNumber_Unused
 
 #include "../../../../../../components/history/core/browser/top_sites_impl.h"

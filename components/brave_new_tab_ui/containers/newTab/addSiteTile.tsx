@@ -8,7 +8,7 @@ import { SortableElement, SortableElementProps } from 'react-sortable-hoc'
 import { AddSiteTile } from '../../components/default'
 
 // Icons
-import AddSiteTileIcon  from '../../components/default/gridSites/assets/add-site-tile'
+import AddSiteTileIcon from '../../components/default/gridSites/assets/add-site-tile'
 
 interface Props {
   showEditTopSite: () => void

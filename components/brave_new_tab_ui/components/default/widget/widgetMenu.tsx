@@ -30,7 +30,7 @@ interface Props {
   onDisconnect?: () => void
   onRefreshData?: () => void
   onAddSite?: () => void
-  customLinksEnabled? : boolean
+  customLinksEnabled?: boolean
   onToggleCustomLinksEnabled?: () => void
   lightWidget?: boolean
   paddingType: 'none' | 'right' | 'default'

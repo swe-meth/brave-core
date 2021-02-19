@@ -412,7 +412,7 @@ class NewTabPage extends React.Component<Props, State> {
     if (url) {
       editTopSite(title, url, newUrl === url ? '' : newUrl)
     } else {
-      addNewTopSite(title, newUrl);
+      addNewTopSite(title, newUrl)
     }
     this.closeEditTopSite()
   }

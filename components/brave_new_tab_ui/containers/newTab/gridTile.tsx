@@ -14,13 +14,13 @@ import {
   TileAction,
   TileFavicon,
   TileMenu,
-  TileMenuItem,
+  TileMenuItem
 } from '../../components/default'
 
 // Icons
-import EditIcon  from '../../components/default/gridSites/assets/edit'
-import EditMenuIcon  from '../../components/default/gridSites/assets/edit-menu'
-import TrashIcon  from '../../components/default/gridSites/assets/trash'
+import EditIcon from '../../components/default/gridSites/assets/edit'
+import EditMenuIcon from '../../components/default/gridSites/assets/edit-menu'
+import TrashIcon from '../../components/default/gridSites/assets/trash'
 
 // Types
 import * as newTabActions from '../../actions/new_tab_actions'
@@ -70,7 +70,7 @@ class TopSite extends React.PureComponent<Props, State> {
 
   onKeyPressSettings = (event: KeyboardEvent) => {
     if (event.key === 'Escape') {
-      this.setState({showMenu: false})
+      this.setState({ showMenu: false })
     }
   }
 
@@ -80,7 +80,7 @@ class TopSite extends React.PureComponent<Props, State> {
       this.tileMenuRef.current &&
       !this.tileMenuRef.current.contains(event.target)
     ) {
-      this.setState({showMenu: false})
+      this.setState({ showMenu: false })
     }
   }
 
@@ -90,18 +90,22 @@ class TopSite extends React.PureComponent<Props, State> {
       this.tileMenuRef.current &&
       !this.tileMenuRef.current.contains(event.target)
     ) {
-      this.setState({showMenu: false})
+      this.setState({ showMenu: false })
     }
   }
 
   onIgnoredTopSite (site: NewTab.Site) {
-    this.setState({showMenu: false})
+    this.setState({ showMenu: false })
     this.props.actions.tileRemoved(site.url)
   }
 
   onEditTopSite (site: NewTab.Site) {
-    this.setState({showMenu: false})
+    this.setState({ showMenu: false })
     this.props.actions.setShowEditTopSite(true, site)
+  }
+
+  onShowTileMenu = () => {
+    this.setState({ showMenu: true })
   }
 
   render () {
@@ -116,7 +120,7 @@ class TopSite extends React.PureComponent<Props, State> {
         {
           !siteData.defaultSRTopSite
           ? <TileActionsContainer>
-              <TileAction onClick={() => this.setState({showMenu: true})}>
+              <TileAction onClick={this.onShowTileMenu}>
                 <EditIcon/>
               </TileAction>
             </TileActionsContainer>
