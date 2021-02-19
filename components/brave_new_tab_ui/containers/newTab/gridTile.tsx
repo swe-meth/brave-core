@@ -33,6 +33,7 @@ interface Props {
   siteData: NewTab.Site
   disabled: boolean
   isDragging: boolean
+  onShowEditTopSite: (targetTopSiteForEditing?: NewTab.Site) => void
 }
 
 interface State {
@@ -101,7 +102,7 @@ class TopSite extends React.PureComponent<Props, State> {
 
   onEditTopSite (site: NewTab.Site) {
     this.setState({ showMenu: false })
-    this.props.actions.setShowEditTopSite(true, site)
+    this.props.onShowEditTopSite(site)
   }
 
   onShowTileMenu = () => {

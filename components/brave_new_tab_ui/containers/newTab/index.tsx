@@ -69,6 +69,8 @@ interface Props {
 interface State {
   onlyAnonWallet: boolean
   showSettingsMenu: boolean
+  showEditTopSite: boolean
+  targetTopSiteForEditing?: NewTab.Site
   backgroundHasLoaded: boolean
   activeSettingsTab: SettingsTabType | null
 }
@@ -105,6 +107,7 @@ class NewTabPage extends React.Component<Props, State> {
   state: State = {
     onlyAnonWallet: false,
     showSettingsMenu: false,
+    showEditTopSite: false,
     backgroundHasLoaded: false,
     activeSettingsTab: null
   }
@@ -404,8 +407,17 @@ class NewTabPage extends React.Component<Props, State> {
     })
   }
 
+  showEditTopSite = (targetTopSiteForEditing?: NewTab.Site) => {
+    this.setState({
+      showEditTopSite: true,
+      targetTopSiteForEditing
+    })
+  }
+
   closeEditTopSite = () => {
-    this.props.actions.setShowEditTopSite(false)
+    this.setState({
+      showEditTopSite: false
+    })
   }
 
   saveNewTopSite = (title: string, url: string, newUrl: string) => {
@@ -415,10 +427,6 @@ class NewTabPage extends React.Component<Props, State> {
       addNewTopSite(title, newUrl)
     }
     this.closeEditTopSite()
-  }
-
-  showEditTopSite = () => {
-    this.props.actions.setShowEditTopSite(true)
   }
 
   openSettings = (activeTab?: SettingsTabType) => {
@@ -1012,7 +1020,7 @@ class NewTabPage extends React.Component<Props, State> {
 
   render () {
     const { newTabData, gridSitesData, actions } = this.props
-    const { showSettingsMenu } = this.state
+    const { showSettingsMenu, showEditTopSite, targetTopSiteForEditing } = this.state
 
     if (!newTabData) {
       return null
@@ -1074,6 +1082,7 @@ class NewTabPage extends React.Component<Props, State> {
                   actions={actions}
                   paddingType={'right'}
                   customLinksEnabled={newTabData.customLinksEnabled}
+                  onShowEditTopSite={this.showEditTopSite}
                   widgetTitle={getLocale('topSitesTitle')}
                   gridSites={gridSitesData.gridSites}
                   menuPosition={'right'}
@@ -1189,8 +1198,8 @@ class NewTabPage extends React.Component<Props, State> {
           toggleCards={this.toggleAllCards}
         />
         <EditTopSite
-          showEditTopSite={this.props.newTabData.showEditTopSite}
-          targetTopSiteForEditing={this.props.newTabData.targetTopSiteForEditing}
+          showEditTopSite={showEditTopSite}
+          targetTopSiteForEditing={targetTopSiteForEditing}
           textDirection={newTabData.textDirection}
           onClose={this.closeEditTopSite}
           onSave={this.saveNewTopSite}

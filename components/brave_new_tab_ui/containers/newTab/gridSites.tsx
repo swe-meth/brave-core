@@ -31,6 +31,7 @@ interface Props {
   actions: typeof newTabActions & typeof gridSitesActions
   customLinksEnabled: boolean
   gridSites: NewTab.Site[]
+  onShowEditTopSite: (targetTopSiteForEditing?: NewTab.Site) => void
 }
 
 interface State {
@@ -66,18 +67,15 @@ class TopSitesList extends React.PureComponent<Props, State> {
     }
   }
 
-  showEditTopSite = () => {
-    this.props.actions.setShowEditTopSite(true)
-  }
-
   render () {
-    const { actions, gridSites } = this.props
-    const insertAddSiteTile = gridSites.length !== MAX_GRID_SIZE
-    const forceToShowAddSiteTile = gridSites.length === 0
+    const { actions, gridSites, onShowEditTopSite, customLinksEnabled } = this.props
+    const insertAddSiteTile = customLinksEnabled && gridSites.length !== MAX_GRID_SIZE
+    const forceToShowAddSiteTile = customLinksEnabled && gridSites.length === 0
+    const maxGridSize = customLinksEnabled ? MAX_GRID_SIZE : (MAX_GRID_SIZE / 2)
     return (
       <>
         <DynamicList
-          blockNumber={MAX_GRID_SIZE}
+          blockNumber={maxGridSize}
           isDragging={this.state.isDragging}
           showAddSiteTile={forceToShowAddSiteTile}
           updateBeforeSortStart={this.updateBeforeSortStart}
@@ -92,7 +90,7 @@ class TopSitesList extends React.PureComponent<Props, State> {
           distance={2}
         >
           {
-            gridSites.slice(0, MAX_GRID_SIZE)
+            gridSites.slice(0, maxGridSize)
               .map((siteData: NewTab.Site, index: number) => (
                 <GridSiteTile
                   key={siteData.id}
@@ -100,6 +98,7 @@ class TopSitesList extends React.PureComponent<Props, State> {
                   index={index}
                   siteData={siteData}
                   isDragging={this.state.isDragging}
+                  onShowEditTopSite={onShowEditTopSite}
                   // User can't change order in "Most Visited" mode
                   // and they can't change position of super referral tiles
                   disabled={siteData.defaultSRTopSite || !this.props.customLinksEnabled}
@@ -111,7 +110,7 @@ class TopSitesList extends React.PureComponent<Props, State> {
             <AddSiteTile
               index={gridSites.length}
               disabled={true}
-              showEditTopSite={this.showEditTopSite}
+              showEditTopSite={onShowEditTopSite}
             />
           }
         </DynamicList>
