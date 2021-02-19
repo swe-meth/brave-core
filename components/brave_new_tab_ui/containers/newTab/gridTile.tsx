@@ -95,10 +95,12 @@ class TopSite extends React.PureComponent<Props, State> {
   }
 
   onIgnoredTopSite (site: NewTab.Site) {
+    this.setState({showMenu: false})
     this.props.actions.tileRemoved(site.url)
   }
 
   onEditTopSite (site: NewTab.Site) {
+    this.setState({showMenu: false})
     this.props.actions.setShowEditTopSite(true, site)
   }
 

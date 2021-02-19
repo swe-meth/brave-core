@@ -24,7 +24,7 @@ export function deleteMostVisitedTile (url: string): void {
 }
 
 export function addNewTopSite (title: string, url: string): void {
-  chrome.send('editTopSite', [url, title])
+  chrome.send('addNewTopSite', [url, title])
 }
 
 export function editTopSite (title: string, url: string, newUrl: string): void {

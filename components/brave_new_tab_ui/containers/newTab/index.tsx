@@ -1020,7 +1020,6 @@ class NewTabPage extends React.Component<Props, State> {
 
     const hasImage = this.imageSource !== undefined
     const isShowingBrandedWallpaper = newTabData.brandedWallpaperData ? true : false
-    const showTopSites = !!this.props.gridSitesData.gridSites.length && newTabData.showTopSites
     const cryptoContent = this.renderCryptoContent()
 
     return (
@@ -1039,7 +1038,7 @@ class NewTabPage extends React.Component<Props, State> {
             showRewards={!!cryptoContent}
             showTogether={newTabData.showTogether && newTabData.togetherSupported}
             showBinance={newTabData.showBinance}
-            showTopSites={showTopSites}
+            showTopSites={newTabData.showTopSites}
             showBrandedWallpaper={isShowingBrandedWallpaper}
         >
           {newTabData.showStats &&
@@ -1068,7 +1067,7 @@ class NewTabPage extends React.Component<Props, State> {
           </Page.GridItemClock>
           }
           {
-            showTopSites
+            newTabData.showTopSites
               ? (
               <Page.GridItemTopSites>
                 <TopSitesGrid

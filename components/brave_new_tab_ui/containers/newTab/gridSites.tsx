@@ -13,11 +13,12 @@ import {
 } from 'react-sortable-hoc'
 
 // Feature-specific components
-import { List } from '../../components/default/gridSites'
+import { List, ListProps } from '../../components/default/gridSites'
 import createWidget from '../../components/default/widget'
 
 // Component groups
 import GridSiteTile from './gridTile'
+import AddSiteTile from './addSiteTile'
 
 // Constants
 import { MAX_GRID_SIZE } from '../../constants/new_tab_ui'
@@ -36,7 +37,7 @@ interface State {
   isDragging: boolean
 }
 
-type DynamicListProps = SortableContainerProps & { blockNumber: number }
+type DynamicListProps = SortableContainerProps & ListProps
 const DynamicList = SortableContainer((props: DynamicListProps) => {
   return <List {...props} />
 })
@@ -65,12 +66,20 @@ class TopSitesList extends React.PureComponent<Props, State> {
     }
   }
 
+  showEditTopSite = () => {
+    this.props.actions.setShowEditTopSite(true)
+  }
+
   render () {
     const { actions, gridSites } = this.props
+    const insertAddSiteTile = gridSites.length !== MAX_GRID_SIZE
+    const forceToShowAddSiteTile = gridSites.length === 0
     return (
       <>
         <DynamicList
           blockNumber={MAX_GRID_SIZE}
+          isDragging={this.state.isDragging}
+          showAddSiteTile={forceToShowAddSiteTile}
           updateBeforeSortStart={this.updateBeforeSortStart}
           onSortEnd={this.onSortEnd}
           axis='xy'
@@ -95,7 +104,16 @@ class TopSitesList extends React.PureComponent<Props, State> {
                   // and they can't change position of super referral tiles
                   disabled={siteData.defaultSRTopSite || !this.props.customLinksEnabled}
                 />
-          ))}
+              ))
+          }
+          {
+            insertAddSiteTile &&
+            <AddSiteTile
+              index={gridSites.length}
+              disabled={true}
+              showEditTopSite={this.showEditTopSite}
+            />
+          }
         </DynamicList>
       </>
     )

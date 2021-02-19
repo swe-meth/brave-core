@@ -9,9 +9,28 @@ const isDarkTheme = (p: any) => {
   return p.theme.name === 'Brave Dark'
 }
 
-interface ListProps {
+export interface ListProps {
   blockNumber: number
+  isDragging: boolean
+  showAddSiteTile: boolean
 }
+
+export const AddSiteTile = styled<{}, 'div'>('div')`
+  box-shadow: 1px 1px 6px 2px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
+  border-radius: 8px;
+  margin: 6px;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.1s opacity linear;
+  opacity: 0;
+  visibility: hidden;
+  cursor: pointer;
+`
 
 export const List = styled<ListProps, 'div'>('div')`
   justify-self: start;
@@ -28,6 +47,22 @@ export const List = styled<ListProps, 'div'>('div')`
   @media screen and (max-width: 390px) {
     grid-template-columns: repeat(${p => Math.min(p.blockNumber, 2).toString()}, 92px);
   }
+
+  ${p => p.showAddSiteTile && css`
+    ${AddSiteTile} {
+      opacity: 1;
+      visibility: visible;
+    }
+  `}
+
+  ${p => !p.isDragging && css`
+    &:hover {
+      ${AddSiteTile} {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+  `}
 `
 
 export const TileActionsContainer = styled<{}, 'nav'>('nav')`
@@ -150,5 +185,3 @@ export const TileFavicon = styled<{}, 'img'>('img')`
   padding: 16px;
   object-fit: contain;
 `
-
-export const ListWidget = List
