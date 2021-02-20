@@ -18,12 +18,11 @@ PipelineInfo::PipelineInfo(const PipelineInfo& pinfo) = default;
 
 PipelineInfo::~PipelineInfo() = default;
 
-PipelineInfo::PipelineInfo(
-    const uint16_t& version,
-    const std::string& timestamp,
-    const std::string& locale,
-    const TransformationVector& transformations,
-    const model::Linear& linear_model)
+PipelineInfo::PipelineInfo(const uint16_t& version,
+                           const std::string& timestamp,
+                           const std::string& locale,
+                           const TransformationVector& transformations,
+                           const model::Linear& linear_model)
     : version(version),
       timestamp(timestamp),
       locale(locale),

@@ -8,8 +8,8 @@
 #include <string>
 #include <vector>
 
-#include "bat/ads/internal/ml/pipeline/pipeline_util.h"
 #include "bat/ads/internal/ml/ml_aliases.h"
+#include "bat/ads/internal/ml/pipeline/pipeline_util.h"
 
 namespace ads {
 namespace ml {
@@ -83,7 +83,8 @@ base::Optional<TransformationVector> ParseTransformationsJSON(
   return base::Optional<TransformationVector>(transformations);
 }
 
-base::Optional<model::Linear> ParseClassifierJSON(base::Value* classifier_value) {
+base::Optional<model::Linear> ParseClassifierJSON(
+    base::Value* classifier_value) {
   if (!classifier_value) {
     return base::nullopt;
   }

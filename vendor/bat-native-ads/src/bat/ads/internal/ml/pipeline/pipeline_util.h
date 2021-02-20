@@ -27,7 +27,7 @@ base::Optional<TransformationVector> ParseTransformationsJSON(
     base::Value* transformations_value);
 
 base::Optional<model::Linear> ParseClassifierJSON(
-	base::Value* classifier_value);
+    base::Value* classifier_value);
 
 base::Optional<PipelineInfo> ParsePipelineJSON(const std::string& json);
 

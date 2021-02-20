@@ -13,9 +13,9 @@
 #include <vector>
 
 #include "base/values.h"
-#include "bat/ads/internal/ml/ml_aliases.h"
 #include "bat/ads/internal/ml/data/data.h"
 #include "bat/ads/internal/ml/data/text_data.h"
+#include "bat/ads/internal/ml/ml_aliases.h"
 #include "bat/ads/internal/ml/model/linear/linear.h"
 #include "bat/ads/internal/ml/pipeline/pipeline_info.h"
 #include "bat/ads/internal/ml/transformation/transformation.h"
@@ -32,9 +32,8 @@ class TextProcessing {
 
   TextProcessing(const TextProcessing& pipeline);
 
-  TextProcessing(
-      const TransformationVector& transformations,
-      const model::Linear& linear_model);
+  TextProcessing(const TransformationVector& transformations,
+                 const model::Linear& linear_model);
 
   ~TextProcessing();
 

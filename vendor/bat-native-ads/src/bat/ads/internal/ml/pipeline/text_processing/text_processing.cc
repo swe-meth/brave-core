@@ -33,9 +33,8 @@ TextProcessing::TextProcessing(const TextProcessing& text_proc) = default;
 
 TextProcessing::~TextProcessing() = default;
 
-TextProcessing::TextProcessing(
-    const TransformationVector& transformations,
-    const model::Linear& linear_model)
+TextProcessing::TextProcessing(const TransformationVector& transformations,
+                               const model::Linear& linear_model)
     : is_initialized_(true) {
   transformations_ = transformations;
   linear_model_ = linear_model;
