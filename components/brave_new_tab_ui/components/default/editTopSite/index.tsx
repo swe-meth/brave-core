@@ -50,6 +50,10 @@ export default class EditTopSite extends React.PureComponent<Props, {}> {
   onKeyPressSettings = (event: KeyboardEvent) => {
     if (event.key === 'Escape') {
       this.props.onClose()
+    } else if (event.key === 'Enter') {
+      if (this.urlInputRef.current && this.urlInputRef.current.value) {
+        this.saveNewTopSite()
+      }
     }
   }
 
@@ -85,7 +89,6 @@ export default class EditTopSite extends React.PureComponent<Props, {}> {
     let url = ''
     let title = ''
     if (targetTopSiteForEditing) {
-      console.log(`${targetTopSiteForEditing.title} ${targetTopSiteForEditing.url}`)
       title = targetTopSiteForEditing.title
       url = targetTopSiteForEditing.url
     }

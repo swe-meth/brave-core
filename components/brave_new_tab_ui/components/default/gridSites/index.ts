@@ -110,6 +110,7 @@ export const TileMenuItem = styled<{}, 'div'>('div')`
   flex-direction: row;
   align-items: center;
   gap: 11px;
+  cursor: pointer;
   color: ${p => p.theme.color.contextMenuHoverForeground};
 
   &:hover {
@@ -157,7 +158,7 @@ export const Tile = styled<TileProps, 'div'>('div')`
   width: 80px;
   height: 80px;
   font-size: 38px;
-  cursor: grab;
+  cursor: pointer;
   // Menu goes behind in other Tiles when tils has z-index.
   // Give z-index while dragging to make dragging tile moves over other tiles.
   z-index: ${p => p.isDragging ? 3 : 'unset' }
