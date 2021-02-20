@@ -8,6 +8,7 @@
 
 #include "bat/ads/internal/ml/data/text_data.h"
 #include "bat/ads/internal/ml/data/vector_data.h"
+#include "bat/ads/internal/ml/ml_static_values.h"
 #include "bat/ads/internal/ml/transformation/hashed_ngrams.h"
 
 #include "bat/ads/internal/unittest_base.h"
@@ -40,7 +41,7 @@ TEST_F(BatAdsHashedNGramsTest, HashingTest) {
       std::static_pointer_cast<data::VectorData>(hashed_data);
 
   // 10000 is the default size
-  ASSERT_EQ(hashed_vect_data->GetDimensionCount(), 10000);
+  ASSERT_EQ(hashed_vect_data->GetDimensionCount(), kNumBuckets);
 
   // Hashes for [t, i, n, y, ti, in, ny, tin, iny, tiny] -- 10 in total
   size_t expected_element_count = 10;

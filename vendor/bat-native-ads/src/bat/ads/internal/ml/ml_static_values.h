@@ -9,11 +9,11 @@
 namespace ads {
 namespace ml {
 
-static const int kMinimumWordsToClassify = 20;
-static const int kMaximumWordsToClassify = 1234;
-static const int kMaximumHtmlLengthToClassify = (1 << 20);
-static const int kMaxSubLen = 6;
-static const int kNumBuckets = 10000;
+const int kMinimumWordsToClassify = 20;
+const int kMaximumWordsToClassify = 1234;
+const int kMaximumHtmlLengthToClassify = (1 << 20);
+const int kMaxSubLen = 6;
+const int kNumBuckets = 10000;
 
 }  // namespace ml
 }  // namespace ads
