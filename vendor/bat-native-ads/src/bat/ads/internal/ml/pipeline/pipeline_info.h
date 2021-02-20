@@ -11,6 +11,7 @@
 
 #include "bat/ads/internal/ml/model/linear/linear.h"
 #include "bat/ads/internal/ml/transformation/transformation.h"
+#include "bat/ads/internal/ml/ml_aliases.h"
 
 namespace ads {
 namespace ml {
@@ -27,13 +28,13 @@ struct PipelineInfo {
       const uint16_t& version,
       const std::string& timestamp,
       const std::string& locale,
-      const std::vector<transformation::TransformationPtr>& transformations,
+      const TransformationVector& transformations,
       const model::Linear& linear_model);
 
   uint16_t version;
   std::string timestamp;
   std::string locale;
-  std::vector<transformation::TransformationPtr> transformations;
+  TransformationVector transformations;
   model::Linear linear_model;
 };
 

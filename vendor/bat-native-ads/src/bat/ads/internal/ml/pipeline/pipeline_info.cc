@@ -22,7 +22,7 @@ PipelineInfo::PipelineInfo(
     const uint16_t& version,
     const std::string& timestamp,
     const std::string& locale,
-    const std::vector<transformation::TransformationPtr>& transformations,
+    const TransformationVector& transformations,
     const model::Linear& linear_model)
     : version(version),
       timestamp(timestamp),

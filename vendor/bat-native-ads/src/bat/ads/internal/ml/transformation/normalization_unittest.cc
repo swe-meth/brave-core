@@ -9,6 +9,7 @@
 
 #include "bat/ads/internal/ml/data/text_data.h"
 #include "bat/ads/internal/ml/data/vector_data.h"
+#include "bat/ads/internal/ml/ml_aliases.h"
 #include "bat/ads/internal/ml/transformation/hashed_ngrams.h"
 #include "bat/ads/internal/ml/transformation/lowercase.h"
 #include "bat/ads/internal/ml/transformation/normalization.h"
@@ -37,10 +38,10 @@ TEST_F(BatAdsNormalizationTest, NormalizationTest) {
       std::make_shared<data::TextData>(text_data);
 
   transformation::HashedNGrams hashed_ngrams(10, std::vector<int>{3, 4});
-  data = hashed_ngrams.Get(data);
+  data = hashed_ngrams.Apply(data);
 
   transformation::Normalization normalization;
-  data = normalization.Get(data);
+  data = normalization.Apply(data);
 
   ASSERT_EQ(data->GetType(), data::DataType::VECTOR_DATA);
 
@@ -58,7 +59,7 @@ TEST_F(BatAdsNormalizationTest, NormalizationTest) {
 }
 
 TEST_F(BatAdsNormalizationTest, ChainingTest) {
-  std::vector<transformation::TransformationPtr> chain;
+  TransformationVector chain;
 
   transformation::Lowercase lowercase;
   chain.push_back(std::make_shared<transformation::Lowercase>(lowercase));
@@ -76,7 +77,7 @@ TEST_F(BatAdsNormalizationTest, ChainingTest) {
   std::shared_ptr<data::Data> data =
       std::make_shared<data::TextData>(text_data);
   for (size_t i = 0; i < chain.size(); ++i) {
-    data = chain[i]->Get(data);
+    data = chain[i]->Apply(data);
   }
 
   ASSERT_EQ(data->GetType(), data::DataType::VECTOR_DATA);

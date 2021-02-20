@@ -9,13 +9,17 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "bat/ads/internal/ml/data/vector_data.h"
+#include "bat/ads/internal/ml/transformation/transformation.h"
 
 namespace ads {
 namespace ml {
 
 using PredictionMap = std::map<std::string, data::VectorData>;
+using TransformationPtr = std::shared_ptr<transformation::Transformation>;
+using TransformationVector = std::vector<TransformationPtr>;
 
 }  // namespace ml
 }  // namespace ads

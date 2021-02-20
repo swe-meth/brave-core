@@ -13,7 +13,7 @@
 #include <vector>
 
 #include "base/values.h"
-
+#include "bat/ads/internal/ml/ml_aliases.h"
 #include "bat/ads/internal/ml/data/data.h"
 #include "bat/ads/internal/ml/data/text_data.h"
 #include "bat/ads/internal/ml/model/linear/linear.h"
@@ -33,7 +33,7 @@ class TextProcessing {
   TextProcessing(const TextProcessing& pipeline);
 
   TextProcessing(
-      const std::vector<transformation::TransformationPtr>& transformations,
+      const TransformationVector& transformations,
       const model::Linear& linear_model);
 
   ~TextProcessing();
@@ -57,7 +57,7 @@ class TextProcessing {
   uint16_t version_ = 0;
   std::string timestamp_ = "";
   std::string locale_ = "en";
-  std::vector<transformation::TransformationPtr> transformations_;
+  TransformationVector transformations_;
   model::Linear linear_model_;
 };
 

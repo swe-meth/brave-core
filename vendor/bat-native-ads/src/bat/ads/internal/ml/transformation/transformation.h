@@ -39,8 +39,6 @@ class Transformation {
   const TransformationType type_;
 };
 
-typedef std::shared_ptr<Transformation> TransformationPtr;
-
 }  // namespace transformation
 }  // namespace ml
 }  // namespace ads

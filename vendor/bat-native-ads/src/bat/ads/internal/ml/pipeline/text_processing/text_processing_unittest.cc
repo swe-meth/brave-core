@@ -47,7 +47,7 @@ class BatAdsTextProcessingPipelineTest : public UnitTestBase {
 TEST_F(BatAdsTextProcessingPipelineTest, BuildSimplePipeline) {
   const double kTolerance = 1e-6;
 
-  std::vector<transformation::TransformationPtr> transformations;
+  TransformationVector transformations;
   transformation::Lowercase lowercase;
   transformations.push_back(
       std::make_shared<transformation::Lowercase>(lowercase));

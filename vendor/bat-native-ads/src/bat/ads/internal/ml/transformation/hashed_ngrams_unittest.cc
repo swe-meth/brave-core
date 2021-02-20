@@ -31,7 +31,8 @@ TEST_F(BatAdsHashedNGramsTest, HashingTest) {
       std::make_shared<data::TextData>(data::TextData(test_string));
 
   transformation::HashedNGrams hashed_ngrams;
-  const std::shared_ptr<data::Data> hashed_data = hashed_ngrams.Get(text_data);
+  const std::shared_ptr<data::Data> hashed_data =
+      hashed_ngrams.Apply(text_data);
 
   ASSERT_EQ(hashed_data->GetType(), data::DataType::VECTOR_DATA);
 
@@ -52,7 +53,8 @@ TEST_F(BatAdsHashedNGramsTest, CustomHashingTest) {
       std::make_shared<data::TextData>(data::TextData(test_string));
 
   transformation::HashedNGrams hashed_ngrams(3, std::vector<int>{1, 2, 3});
-  const std::shared_ptr<data::Data> hashed_data = hashed_ngrams.Get(text_data);
+  const std::shared_ptr<data::Data> hashed_data =
+      hashed_ngrams.Apply(text_data);
 
   ASSERT_EQ(hashed_data->GetType(), data::DataType::VECTOR_DATA);
 

@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "bat/ads/internal/ml/data/vector_data.h"
+#include "bat/ads/internal/ml/ml_aliases.h"
 #include "bat/ads/internal/ml/pipeline/pipeline_info.h"
 #include "bat/ads/internal/ml/pipeline/pipeline_util.h"
 #include "bat/ads/internal/ml/pipeline/text_processing/text_processing.h"
@@ -33,7 +34,7 @@ TextProcessing::TextProcessing(const TextProcessing& text_proc) = default;
 TextProcessing::~TextProcessing() = default;
 
 TextProcessing::TextProcessing(
-    const std::vector<transformation::TransformationPtr>& transformations,
+    const TransformationVector& transformations,
     const model::Linear& linear_model)
     : is_initialized_(true) {
   transformations_ = transformations;

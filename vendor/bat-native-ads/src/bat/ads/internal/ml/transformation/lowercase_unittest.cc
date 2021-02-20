@@ -33,7 +33,7 @@ TEST_F(BatAdsLowercaseTest, LowercaseTest) {
   transformation::Lowercase lowercase;
 
   const std::shared_ptr<data::Data> lowercase_data =
-      lowercase.Get(uppercase_data);
+      lowercase.Apply(uppercase_data);
 
   ASSERT_EQ(lowercase_data->GetType(), data::DataType::TEXT_DATA);
 

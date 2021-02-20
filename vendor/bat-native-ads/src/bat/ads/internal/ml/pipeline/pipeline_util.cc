@@ -9,19 +9,19 @@
 #include <vector>
 
 #include "bat/ads/internal/ml/pipeline/pipeline_util.h"
+#include "bat/ads/internal/ml/ml_aliases.h"
 
 namespace ads {
 namespace ml {
 namespace pipeline {
 
-bool ParseTransformationsJSON(
-    base::Value* transformations_value,
-    std::vector<transformation::TransformationPtr>& transformations) {
+base::Optional<TransformationVector> ParseTransformationsJSON(
+    base::Value* transformations_value) {
   if (!transformations_value || !transformations_value->is_list()) {
-    return false;
+    return base::nullopt;
   }
 
-  transformations.clear();
+  TransformationVector transformations;
   auto transformation_list = transformations_value->GetList();
   for (size_t i = 0; i < transformation_list.size(); i++) {
     const base::Value& transformation = transformation_list[i];
@@ -30,7 +30,7 @@ bool ParseTransformationsJSON(
         transformation.FindStringKey("transformation_type");
 
     if (!transformation_type) {
-      return false;
+      return base::nullopt;
     }
 
     std::string parsed_transformation_type = *transformation_type;
@@ -50,13 +50,13 @@ bool ParseTransformationsJSON(
           transformation.FindKey("params");
 
       if (!transformation_params) {
-        return false;
+        return base::nullopt;
       }
 
       const base::Optional<int> nb =
           transformation_params->FindIntKey("num_buckets");
       if (!nb.has_value()) {
-        return false;
+        return base::nullopt;
       }
 
       int num_buckets = nb.value();
@@ -65,7 +65,7 @@ bool ParseTransformationsJSON(
           transformation_params->FindListKey("ngrams_range");
 
       if (!n_gram_sizes) {
-        return false;
+        return base::nullopt;
       }
 
       std::vector<int> ngram_range;
@@ -80,13 +80,12 @@ bool ParseTransformationsJSON(
     }
   }
 
-  return true;
+  return base::Optional<TransformationVector>(transformations);
 }
 
-bool ParseClassifierJSON(base::Value* classifier_value,
-                         model::Linear& linear_model) {
+base::Optional<model::Linear> ParseClassifierJSON(base::Value* classifier_value) {
   if (!classifier_value) {
-    return false;
+    return base::nullopt;
   }
 
   std::vector<std::string> classes;
@@ -94,18 +93,18 @@ bool ParseClassifierJSON(base::Value* classifier_value,
       classifier_value->FindStringKey("classifier_type");
 
   if (!classifier_type) {
-    return false;
+    return base::nullopt;
   }
 
   std::string parsed_classifier_type = *classifier_type;
 
   if (parsed_classifier_type.compare("LINEAR")) {
-    return false;
+    return base::nullopt;
   }
 
   base::Value* specified_classes = classifier_value->FindListKey("classes");
   if (!specified_classes) {
-    return false;
+    return base::nullopt;
   }
 
   auto specified_classes_list = specified_classes->GetList();
@@ -116,14 +115,14 @@ bool ParseClassifierJSON(base::Value* classifier_value,
 
   base::Value* class_weights = classifier_value->FindDictKey("class_weights");
   if (!class_weights) {
-    return false;
+    return base::nullopt;
   }
 
   std::map<std::string, data::VectorData> weights;
   for (size_t i = 0; i < classes.size(); i++) {
     base::Value* this_class = class_weights->FindListKey(classes[i]);
     if (!this_class) {
-      return false;
+      return base::nullopt;
     }
     std::vector<double> class_coef_weights;
     auto this_class_list = this_class->GetList();
@@ -137,12 +136,12 @@ bool ParseClassifierJSON(base::Value* classifier_value,
   std::map<std::string, double> specified_biases;
   base::Value* biases = classifier_value->FindListKey("biases");
   if (!biases) {
-    return false;
+    return base::nullopt;
   }
 
   auto biases_list = biases->GetList();
   if (biases_list.size() != classes.size()) {
-    return false;
+    return base::nullopt;
   }
 
   for (size_t i = 0; i < biases_list.size(); i++) {
@@ -150,8 +149,9 @@ bool ParseClassifierJSON(base::Value* classifier_value,
     specified_biases[classes[i]] = this_bias.GetDouble();
   }
 
-  linear_model = model::Linear(weights, specified_biases);
-  return true;
+  base::Optional<model::Linear> linear_model =
+      model::Linear(weights, specified_biases);
+  return linear_model;
 }
 
 base::Optional<PipelineInfo> ParsePipelineJSON(const std::string& json) {
@@ -180,17 +180,22 @@ base::Optional<PipelineInfo> ParsePipelineJSON(const std::string& json) {
   }
   std::string locale = *locale_value;
 
-  std::vector<transformation::TransformationPtr> transformations;
   base::Value* transformations_value = root->FindKey("transformations");
-  if (!ParseTransformationsJSON(transformations_value, transformations)) {
+  base::Optional<TransformationVector> transformations_opt =
+      ParseTransformationsJSON(transformations_value);
+  if (!transformations_opt.has_value()) {
     return base::nullopt;
   }
 
-  model::Linear linear_model;
   base::Value* classifier_value = root->FindKey("classifier");
-  if (!ParseClassifierJSON(classifier_value, linear_model)) {
+  const base::Optional<model::Linear> linear_model_opt =
+      ParseClassifierJSON(classifier_value);
+  if (!linear_model_opt.has_value()) {
     return base::nullopt;
   }
+
+  const TransformationVector transformations = transformations_opt.value();
+  const model::Linear linear_model = linear_model_opt.value();
 
   base::Optional<PipelineInfo> pipeline_info =
       PipelineInfo(version, timestamp, locale, transformations, linear_model);
