@@ -936,6 +936,16 @@ void RewardsServiceImpl::LoadURL(
     return;
   }
 
+  // Do not allow any network requests from the browser unless the user has
+  // opted-in to rewards.
+  if (!IsRewardsEnabled()) {
+    ledger::type::UrlResponse response;
+    response.error = "Network requets cannot be made without user consent";
+    response.status_code = net::HTTP_BAD_REQUEST;
+    callback(response);
+    return;
+  }
+
   GURL parsed_url(request->url);
   if (!parsed_url.is_valid()) {
     ledger::type::UrlResponse response;
@@ -3495,6 +3505,22 @@ void RewardsServiceImpl::SetAdsEnabled(const bool is_enabled) {
   CreateWallet(base::BindOnce(
       &RewardsServiceImpl::OnWalletCreatedForSetAdsEnabled,
       AsWeakPtr()));
+}
+
+void RewardsServiceImpl::IsRewardsEnabled() {
+  // TODO(zenparsing): What scenarios does this leave out? A user that has
+  // opted-in, but disabled ads and disabled AC?
+  if (profile_->GetPrefs()->GetBoolean(prefs::kEnabled))
+    return true;
+
+  if (profile_->GetPrefs()->GetBoolean(prefs::kAutoContributeEnabled))
+    return true;
+
+  auto* ads_service = brave_ads::AdsServiceFactory::GetForProfile(profile_);
+  if (ads_service && ads_service->IsEnabled())
+    return true;
+
+  return false;
 }
 
 void RewardsServiceImpl::OnStartProcessForSetAdsEnabled(
