@@ -17,9 +17,11 @@
 #include "brave/common/pref_names.h"
 #include "brave/components/ntp_background_images/browser/ntp_background_images_data.h"
 #include "brave/components/ntp_background_images/browser/view_counter_service.h"
+#include "chrome/browser/ntp_tiles/chrome_most_visited_sites_factory.h"
 #include "chrome/browser/profiles/profile.h"
 #include "chrome/browser/search/instant_service.h"
 #include "chrome/browser/search/instant_service_factory.h"
+#include "components/ntp_tiles/most_visited_sites.h"
 
 using ntp_background_images::ViewCounterServiceFactory;
 
@@ -142,6 +144,11 @@ void InstantServiceMessageHandler::MostVisitedInfoChanged(
   result.SetBoolKey("custom_links_enabled", !info.use_most_visited);
   result.SetKey("tiles", std::move(tiles));
   result.SetBoolKey("visible", info.is_visible);
+  auto most_visited_sites =
+      ChromeMostVisitedSitesFactory::NewForProfile(profile_);
+  result.SetIntKey(
+      "custom_links_num",
+      most_visited_sites ? most_visited_sites->GetCustomLinkNum() : 0);
   top_site_tiles_ = std::move(result);
 
   // Notify listeners of this update (ex: new tab page)

@@ -47,6 +47,7 @@ import { BraveTodayState } from '../../reducers/today'
 
 // NTP features
 import Settings, { TabType as SettingsTabType } from './settings'
+import { MAX_GRID_SIZE } from '../../constants/new_tab_ui'
 
 interface Props {
   newTabData: NewTab.State
@@ -1029,6 +1030,7 @@ class NewTabPage extends React.Component<Props, State> {
     const hasImage = this.imageSource !== undefined
     const isShowingBrandedWallpaper = newTabData.brandedWallpaperData ? true : false
     const cryptoContent = this.renderCryptoContent()
+    const showAddNewSiteMenuItem = newTabData.customLinksNum !== MAX_GRID_SIZE
 
     return (
       <Page.App
@@ -1087,7 +1089,7 @@ class NewTabPage extends React.Component<Props, State> {
                   gridSites={gridSitesData.gridSites}
                   menuPosition={'right'}
                   hideWidget={this.toggleShowTopSites}
-                  onAddSite={this.showEditTopSite}
+                  onAddSite={showAddNewSiteMenuItem ? this.showEditTopSite : undefined}
                   onToggleCustomLinksEnabled={this.toggleCustomLinksEnabled}
                   textDirection={newTabData.textDirection}
                 />

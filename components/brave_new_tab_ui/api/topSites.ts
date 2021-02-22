@@ -6,6 +6,7 @@
 export type MostVisitedInfoChanged = {
   tiles: NewTab.Site[]
   custom_links_enabled: boolean
+  custom_links_num: number
   visible: boolean
 }
 
