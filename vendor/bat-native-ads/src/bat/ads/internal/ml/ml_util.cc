@@ -10,7 +10,7 @@
 #include <memory>
 #include <string>
 
-#include "base/values.h"
+#include "base/notreached.h"
 #include "bat/ads/internal/ml/ml_util.h"
 
 namespace ads {
@@ -57,7 +57,7 @@ TransformationPtr GetTransformationCopy(const TransformationPtr& tr_ptr) {
     return std::make_unique<transformation::Normalization>(normalization_copy);
   }
 
-  DCHECK(false);
+  NOTREACHED();
   return TransformationPtr(nullptr);
 }
 

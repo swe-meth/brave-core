@@ -17,7 +17,7 @@
 namespace ads {
 namespace ml {
 
-using PredictionMap = std::map<std::string, data::VectorData>;
+using PredictionMap = std::map<std::string, double>;
 using TransformationPtr = std::unique_ptr<transformation::Transformation>;
 using TransformationVector = std::vector<TransformationPtr>;
 

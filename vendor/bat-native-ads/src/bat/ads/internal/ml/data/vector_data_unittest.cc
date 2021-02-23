@@ -25,14 +25,14 @@ class BatAdsVectorDataTest : public UnitTestBase {
 
 TEST_F(BatAdsVectorDataTest, DenseVectorDataInitialization) {
   std::vector<double> v_5{1.0, 2.0, 3.0, 4.0, 5.0};
-  auto dense_data_vector_5 = data::VectorData(v_5);
+  data::VectorData dense_data_vector_5(v_5);
 
   EXPECT_EQ(dense_data_vector_5.GetDimensionCount(), 5);
 }
 
 TEST_F(BatAdsVectorDataTest, SparseVectorDataInitialization) {
   std::map<unsigned, double> s_6 = {{0UL, 1.0}, {2UL, 3.0}, {3UL, -2.0}};
-  auto sparse_data_vector_6 = data::VectorData(6, s_6);
+  data::VectorData sparse_data_vector_6(6, s_6);
 
   EXPECT_EQ(sparse_data_vector_6.GetDimensionCount(), 6);
 }
@@ -41,10 +41,10 @@ TEST_F(BatAdsVectorDataTest, DenseDenseProduct) {
   const double kTolerance = 1e-6;
 
   std::vector<double> v_5{1.0, 2.0, 3.0, 4.0, 5.0};
-  auto dense_data_vector_5 = data::VectorData(v_5);
+  data::VectorData dense_data_vector_5(v_5);
 
   std::vector<double> v_3{1.0, 2.0, 3.0};
-  auto dense_data_vector_3 = data::VectorData(v_3);
+  data::VectorData dense_data_vector_3(v_3);
 
   std::vector<double> v_3_1{1.0, 1.0, 1.0};
   data::VectorData dense_data_vector_3_1(v_3_1);

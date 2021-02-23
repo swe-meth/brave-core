@@ -30,7 +30,7 @@ TEST_F(BatAdsMLToolsUtilTest, SoftmaxTest) {
   std::map<std::string, double> group_1 = {
       {"c1", -1.0}, {"c2", 2.0}, {"c3", 3.0}};
 
-  auto sm = Softmax(group_1);
+  PredictionMap sm = Softmax(group_1);
 
   ASSERT_TRUE(sm["c3"] > sm["c1"]);
   ASSERT_TRUE(sm["c3"] > sm["c2"]);
@@ -55,8 +55,8 @@ TEST_F(BatAdsMLToolsUtilTest, ExtendedSoftmaxTest) {
   std::map<std::string, double> group_2 = {
       {"c1", 3.0}, {"c2", 4.0}, {"c3", 5.0}};
 
-  auto sm_1 = Softmax(group_1);
-  auto sm_2 = Softmax(group_2);
+  PredictionMap sm_1 = Softmax(group_1);
+  PredictionMap sm_2 = Softmax(group_2);
   ASSERT_TRUE(std::fabs(sm_1["c1"] - sm_2["c1"]) < kEps);
   ASSERT_TRUE(std::fabs(sm_1["c2"] - sm_2["c2"]) < kEps);
   ASSERT_TRUE(std::fabs(sm_1["c3"] - sm_2["c3"]) < kEps);

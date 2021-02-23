@@ -95,10 +95,11 @@ std::map<std::string, double> TextProcessing::Apply(
 const std::map<std::string, double> TextProcessing::GetTopPredictions(
     const std::string& html) {
   data::TextData text_data(html);
-  auto predictions = Apply(std::make_unique<data::TextData>(text_data));
+  PredictionMap predictions =
+      Apply(std::make_unique<data::TextData>(text_data));
   double expected_prob =
       1.0 / std::max(1.0, static_cast<double>(predictions.size()));
-  std::map<std::string, double> rtn;
+  PredictionMap rtn;
   for (auto const& prediction : predictions) {
     if (prediction.second > expected_prob) {
       rtn[prediction.first] = prediction.second;
@@ -110,7 +111,7 @@ const std::map<std::string, double> TextProcessing::GetTopPredictions(
 const std::map<std::string, double> TextProcessing::ClassifyPage(
     const std::string& content) {
   if (!IsInitialized()) {
-    return std::map<std::string, double>();
+    return PredictionMap();
   }
 
   return GetTopPredictions(content);

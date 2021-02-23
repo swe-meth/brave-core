@@ -11,6 +11,7 @@
 
 #include "bat/ads/internal/ml/data/data.h"
 #include "bat/ads/internal/ml/data/vector_data.h"
+#include "bat/ads/internal/ml/ml_aliases.h"
 
 namespace ads {
 namespace ml {
@@ -29,10 +30,9 @@ class Linear {
 
   ~Linear();
 
-  std::map<std::string, double> Predict(const data::VectorData& x);
+  PredictionMap Predict(const data::VectorData& x);
 
-  std::map<std::string, double> TopPredictions(const data::VectorData& x,
-                                               int top_count = -1);
+  PredictionMap TopPredictions(const data::VectorData& x, int top_count = -1);
 
  private:
   std::map<std::string, data::VectorData> weights_;
