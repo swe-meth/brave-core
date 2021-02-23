@@ -7,6 +7,7 @@
 #include <memory>
 #include <string>
 
+#include "base/strings/string_util.h"
 #include "bat/ads/internal/ml/data/text_data.h"
 #include "bat/ads/internal/ml/transformation/lowercase.h"
 
@@ -26,10 +27,7 @@ std::unique_ptr<data::Data> Lowercase::Apply(
 
   data::TextData* text_data = static_cast<data::TextData*>(input_data.get());
 
-  std::string lowercase_text = text_data->GetText();
-
-  std::transform(lowercase_text.begin(), lowercase_text.end(),
-                 lowercase_text.begin(), ::tolower);
+  std::string lowercase_text = base::ToLowerASCII(text_data->GetText());
 
   return std::make_unique<data::TextData>(data::TextData(lowercase_text));
 }
