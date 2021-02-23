@@ -18,21 +18,20 @@ Lowercase::Lowercase() : Transformation(TransformationType::LOWERCASE) {}
 
 Lowercase::~Lowercase() = default;
 
-std::shared_ptr<data::Data> Lowercase::Apply(
-    const std::shared_ptr<data::Data>& input_data) {
+std::unique_ptr<data::Data> Lowercase::Apply(
+    const std::unique_ptr<data::Data>& input_data) {
   if (input_data->GetType() != data::DataType::TEXT_DATA) {
-    return std::make_shared<data::Data>(data::TextData(""));
+    return std::make_unique<data::Data>(data::TextData(""));
   }
 
-  const std::shared_ptr<data::TextData> text_data =
-      std::static_pointer_cast<data::TextData>(input_data);
+  data::TextData* text_data = static_cast<data::TextData*>(input_data.get());
 
   std::string lowercase_text = text_data->GetText();
 
   std::transform(lowercase_text.begin(), lowercase_text.end(),
                  lowercase_text.begin(), ::tolower);
 
-  return std::make_shared<data::TextData>(data::TextData(lowercase_text));
+  return std::make_unique<data::TextData>(data::TextData(lowercase_text));
 }
 
 }  // namespace transformation

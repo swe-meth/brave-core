@@ -5,7 +5,6 @@
 
 #include <cmath>
 #include <fstream>
-#include <iostream>
 #include <vector>
 
 #include "bat/ads/internal/ml/data/data.h"
@@ -50,10 +49,10 @@ TEST_F(BatAdsTextProcessingPipelineTest, BuildSimplePipeline) {
   TransformationVector transformations;
   transformation::Lowercase lowercase;
   transformations.push_back(
-      std::make_shared<transformation::Lowercase>(lowercase));
+      std::make_unique<transformation::Lowercase>(lowercase));
   transformation::HashedNGrams hashed_ngrams(3, std::vector<int>{1, 2, 3});
   transformations.push_back(
-      std::make_shared<transformation::HashedNGrams>(hashed_ngrams));
+      std::make_unique<transformation::HashedNGrams>(hashed_ngrams));
 
   std::map<std::string, data::VectorData> weights = {
       {"class_1", data::VectorData(std::vector<double>{1.0, 2.0, 3.0})},
@@ -99,8 +98,8 @@ TEST_F(BatAdsTextProcessingPipelineTest, TestLoadFromJson) {
                                            "junk"};
 
   for (size_t i = 0; i < train_texts.size(); i++) {
-    std::shared_ptr<data::Data> text_data =
-        std::make_shared<data::TextData>(data::TextData(train_texts[i]));
+    std::unique_ptr<data::Data> text_data =
+        std::make_unique<data::TextData>(data::TextData(train_texts[i]));
     auto preds = pipeline.Apply(text_data);
     for (auto const& pred : preds) {
       double other_prediction = pred.second;

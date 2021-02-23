@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "bat/ads/internal/ml/ml_util.h"
 #include "bat/ads/internal/ml/pipeline/pipeline_info.h"
 
 namespace ads {
@@ -14,20 +15,27 @@ namespace pipeline {
 
 PipelineInfo::PipelineInfo() = default;
 
-PipelineInfo::PipelineInfo(const PipelineInfo& pinfo) = default;
+PipelineInfo::PipelineInfo(const PipelineInfo& pinfo) {
+  version = pinfo.version;
+  timestamp = pinfo.timestamp;
+  locale = pinfo.locale;
+  linear_model = pinfo.linear_model;
+  transformations = GetTransformationVectorCopy(pinfo.transformations);
+}
 
 PipelineInfo::~PipelineInfo() = default;
 
 PipelineInfo::PipelineInfo(const uint16_t& version,
                            const std::string& timestamp,
                            const std::string& locale,
-                           const TransformationVector& transformations,
+                           const TransformationVector& new_transformations,
                            const model::Linear& linear_model)
     : version(version),
       timestamp(timestamp),
       locale(locale),
-      transformations(transformations),
-      linear_model(linear_model) {}
+      linear_model(linear_model) {
+  transformations = GetTransformationVectorCopy(new_transformations);
+}
 
 }  // namespace pipeline
 }  // namespace ml

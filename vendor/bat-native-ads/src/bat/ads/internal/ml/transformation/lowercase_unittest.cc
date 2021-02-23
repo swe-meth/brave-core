@@ -27,18 +27,18 @@ class BatAdsLowercaseTest : public UnitTestBase {
 TEST_F(BatAdsLowercaseTest, LowercaseTest) {
   const std::string uppercase_str = "LOWER CASE";
   const std::string lowercase_str = "lower case";
-  const std::shared_ptr<data::Data> uppercase_data =
-      std::make_shared<data::TextData>(uppercase_str);
+  const std::unique_ptr<data::Data> uppercase_data =
+      std::make_unique<data::TextData>(uppercase_str);
 
   transformation::Lowercase lowercase;
 
-  const std::shared_ptr<data::Data> lowercase_data =
+  const std::unique_ptr<data::Data> lowercase_data =
       lowercase.Apply(uppercase_data);
 
   ASSERT_EQ(lowercase_data->GetType(), data::DataType::TEXT_DATA);
 
-  const std::shared_ptr<data::TextData> lowercase_text_data =
-      std::static_pointer_cast<data::TextData>(lowercase_data);
+  data::TextData* lowercase_text_data =
+      static_cast<data::TextData*>(lowercase_data.get());
 
   EXPECT_FALSE(lowercase_str.compare(lowercase_text_data->GetText()));
 }

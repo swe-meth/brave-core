@@ -5,8 +5,6 @@
 
 #include <stddef.h>
 #include <cmath>
-#include <codecvt>
-#include <fstream>
 #include <utility>
 
 #include "bat/ads/internal/ml/transformation/hash_vectorizer.h"

@@ -7,6 +7,7 @@
 
 #include "bat/ads/internal/ml/data/vector_data.h"
 #include "bat/ads/internal/ml/ml_aliases.h"
+#include "bat/ads/internal/ml/ml_util.h"
 #include "bat/ads/internal/ml/pipeline/pipeline_info.h"
 #include "bat/ads/internal/ml/pipeline/pipeline_util.h"
 #include "bat/ads/internal/ml/pipeline/text_processing/text_processing.h"
@@ -29,23 +30,30 @@ bool TextProcessing::IsInitialized() {
 
 TextProcessing::TextProcessing() : is_initialized_(false) {}
 
-TextProcessing::TextProcessing(const TextProcessing& text_proc) = default;
+TextProcessing::TextProcessing(const TextProcessing& text_proc) {
+  is_initialized_ = text_proc.is_initialized_;
+  version_ = text_proc.version_;
+  timestamp_ = text_proc.timestamp_;
+  locale_ = text_proc.locale_;
+  linear_model_ = text_proc.linear_model_;
+  transformations_ = GetTransformationVectorCopy(text_proc.transformations_);
+}
 
 TextProcessing::~TextProcessing() = default;
 
 TextProcessing::TextProcessing(const TransformationVector& transformations,
                                const model::Linear& linear_model)
     : is_initialized_(true) {
-  transformations_ = transformations;
   linear_model_ = linear_model;
+  transformations_ = GetTransformationVectorCopy(transformations);
 }
 
 void TextProcessing::SetInfo(const PipelineInfo& info) {
   version_ = info.version;
   timestamp_ = info.timestamp;
   locale_ = info.locale;
-  transformations_ = info.transformations;
   linear_model_ = info.linear_model;
+  transformations_ = GetTransformationVectorCopy(info.transformations);
 }
 
 bool TextProcessing::FromJson(const std::string& json) {
@@ -62,19 +70,23 @@ bool TextProcessing::FromJson(const std::string& json) {
 }
 
 std::map<std::string, double> TextProcessing::Apply(
-    const std::shared_ptr<data::Data>& input_data) {
-  std::shared_ptr<data::Data> current_data = input_data;
+    const std::unique_ptr<data::Data>& input_data) {
+  data::VectorData vector_data;
+  size_t transformation_count = transformations_.size();
 
-  for (auto& transformation : transformations_) {
-    current_data = transformation->Apply(current_data);
+  if (!transformation_count) {
+    DCHECK(input_data->GetType() == data::DataType::VECTOR_DATA);
+    vector_data = *static_cast<data::VectorData*>(input_data.get());
+  } else {
+    std::unique_ptr<data::Data> current_data =
+        transformations_[0]->Apply(input_data);
+    for (size_t i = 1; i < transformation_count; ++i) {
+      current_data = transformations_[i]->Apply(current_data);
+    }
+
+    DCHECK(current_data->GetType() == data::DataType::VECTOR_DATA);
+    vector_data = *static_cast<data::VectorData*>(current_data.get());
   }
-
-  if (current_data->GetType() != data::DataType::VECTOR_DATA) {
-    return std::map<std::string, double>();
-  }
-
-  data::VectorData vector_data =
-      *std::static_pointer_cast<data::VectorData>(current_data);
 
   return linear_model_.TopPredictions(vector_data);
 }
@@ -82,8 +94,9 @@ std::map<std::string, double> TextProcessing::Apply(
 const std::map<std::string, double> TextProcessing::GetTopPredictions(
     const std::string& html) {
   data::TextData text_data(html);
-  auto predictions = Apply(std::make_shared<data::TextData>(text_data));
-  double expected_prob = 1.0 / static_cast<double>(predictions.size());
+  auto predictions = Apply(std::make_unique<data::TextData>(text_data));
+  double expected_prob =
+      1.0 / std::max(1.0, static_cast<double>(predictions.size()));
   std::map<std::string, double> rtn;
   for (auto const& prediction : predictions) {
     if (prediction.second > expected_prob) {

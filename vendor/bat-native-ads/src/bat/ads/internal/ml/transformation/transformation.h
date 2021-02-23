@@ -32,8 +32,8 @@ class Transformation {
 
   TransformationType GetType() const;
 
-  virtual std::shared_ptr<data::Data> Apply(
-      const std::shared_ptr<data::Data>& input_data) = 0;
+  virtual std::unique_ptr<data::Data> Apply(
+      const std::unique_ptr<data::Data>& input_data) = 0;
 
  protected:
   const TransformationType type_;

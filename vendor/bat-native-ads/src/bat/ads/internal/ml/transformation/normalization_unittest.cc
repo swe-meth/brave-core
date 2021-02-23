@@ -34,8 +34,8 @@ TEST_F(BatAdsNormalizationTest, NormalizationTest) {
 
   std::string test_string = "quite a small test string";
   data::TextData text_data(test_string);
-  std::shared_ptr<data::Data> data =
-      std::make_shared<data::TextData>(text_data);
+  std::unique_ptr<data::Data> data =
+      std::make_unique<data::TextData>(text_data);
 
   transformation::HashedNGrams hashed_ngrams(10, std::vector<int>{3, 4});
   data = hashed_ngrams.Apply(data);
@@ -45,8 +45,8 @@ TEST_F(BatAdsNormalizationTest, NormalizationTest) {
 
   ASSERT_EQ(data->GetType(), data::DataType::VECTOR_DATA);
 
-  const std::shared_ptr<data::VectorData> norm_data =
-      std::static_pointer_cast<data::VectorData>(data);
+  data::VectorData* norm_data =
+      static_cast<data::VectorData*>(data.release());
 
   double s = 0.0;
   for (auto const& x : norm_data->GetRawData()) {
@@ -62,28 +62,28 @@ TEST_F(BatAdsNormalizationTest, ChainingTest) {
   TransformationVector chain;
 
   transformation::Lowercase lowercase;
-  chain.push_back(std::make_shared<transformation::Lowercase>(lowercase));
+  chain.push_back(std::make_unique<transformation::Lowercase>(lowercase));
 
   transformation::HashedNGrams hashed_ngrams;
   chain.push_back(
-      std::make_shared<transformation::HashedNGrams>(hashed_ngrams));
+      std::make_unique<transformation::HashedNGrams>(hashed_ngrams));
 
   transformation::Normalization normalization;
   chain.push_back(
-      std::make_shared<transformation::Normalization>(normalization));
+      std::make_unique<transformation::Normalization>(normalization));
 
   std::string test_string = "TINY";
   data::TextData text_data(test_string);
-  std::shared_ptr<data::Data> data =
-      std::make_shared<data::TextData>(text_data);
+  std::unique_ptr<data::Data> data =
+      std::make_unique<data::TextData>(text_data);
   for (size_t i = 0; i < chain.size(); ++i) {
     data = chain[i]->Apply(data);
   }
 
   ASSERT_EQ(data->GetType(), data::DataType::VECTOR_DATA);
 
-  std::shared_ptr<data::VectorData> vect_data =
-      std::static_pointer_cast<data::VectorData>(data);
+  data::VectorData* vect_data =
+      static_cast<data::VectorData*>(data.get());
 
   EXPECT_EQ(vect_data->GetDimensionCount(), 10000);
 

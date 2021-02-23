@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "bat/ads/internal/ml/ml_aliases.h"
+#include "bat/ads/internal/ml/ml_util.h"
 #include "bat/ads/internal/ml/pipeline/pipeline_util.h"
 
 namespace ads {
@@ -21,7 +22,8 @@ base::Optional<TransformationVector> ParseTransformationsJSON(
     return base::nullopt;
   }
 
-  TransformationVector transformations;
+  base::Optional<TransformationVector> transformations =
+      TransformationVector();
   auto transformation_list = transformations_value->GetList();
   for (size_t i = 0; i < transformation_list.size(); i++) {
     const base::Value& transformation = transformation_list[i];
@@ -36,12 +38,12 @@ base::Optional<TransformationVector> ParseTransformationsJSON(
     std::string parsed_transformation_type = *transformation_type;
 
     if (parsed_transformation_type.compare("TO_LOWER") == 0) {
-      transformations.push_back(std::make_shared<transformation::Lowercase>(
+      transformations.value().push_back(std::make_unique<transformation::Lowercase>(
           transformation::Lowercase()));
     }
 
     if (parsed_transformation_type.compare("NORMALIZE") == 0) {
-      transformations.push_back(std::make_shared<transformation::Normalization>(
+      transformations.value().push_back(std::make_unique<transformation::Normalization>(
           transformation::Normalization()));
     }
 
@@ -75,12 +77,12 @@ base::Optional<TransformationVector> ParseTransformationsJSON(
         ngram_range.push_back(n.GetInt());
       }
       transformation::HashedNGrams hashed_ngrams(num_buckets, ngram_range);
-      transformations.push_back(
-          std::make_shared<transformation::HashedNGrams>(hashed_ngrams));
+      transformations.value().push_back(
+          std::make_unique<transformation::HashedNGrams>(hashed_ngrams));
     }
   }
 
-  return base::Optional<TransformationVector>(transformations);
+  return transformations;
 }
 
 base::Optional<model::Linear> ParseClassifierJSON(
@@ -195,7 +197,13 @@ base::Optional<PipelineInfo> ParsePipelineJSON(const std::string& json) {
     return base::nullopt;
   }
 
-  const TransformationVector transformations = transformations_opt.value();
+  TransformationVector transformations;
+  size_t transformation_count = transformations_opt.value().size();
+  for (size_t i = 0; i < transformation_count; ++i) {
+    transformations.push_back(
+        GetTransformationCopy(transformations_opt.value()[i]));
+  }
+
   const model::Linear linear_model = linear_model_opt.value();
 
   base::Optional<PipelineInfo> pipeline_info =

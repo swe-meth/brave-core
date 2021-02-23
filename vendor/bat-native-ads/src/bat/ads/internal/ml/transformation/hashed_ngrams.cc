@@ -18,12 +18,13 @@ namespace transformation {
 
 HashedNGrams::HashedNGrams()
     : Transformation(TransformationType::HASHED_NGRAMS) {
-  hash_vectorizer = std::make_shared<HashVectorizer>(HashVectorizer());
+  hash_vectorizer = std::make_unique<HashVectorizer>(HashVectorizer());
 }
 
 HashedNGrams::HashedNGrams(const HashedNGrams& hashed_ngrams)
     : Transformation(TransformationType::HASHED_NGRAMS) {
-  hash_vectorizer = hashed_ngrams.hash_vectorizer;
+  HashVectorizer hash_vectorizer_copy = *(hashed_ngrams.hash_vectorizer);
+  hash_vectorizer = std::make_unique<HashVectorizer>(hash_vectorizer_copy);
 }
 
 HashedNGrams::~HashedNGrams() = default;
@@ -31,23 +32,23 @@ HashedNGrams::~HashedNGrams() = default;
 HashedNGrams::HashedNGrams(int bucket_count, const std::vector<int>& subgrams)
     : Transformation(TransformationType::HASHED_NGRAMS) {
   hash_vectorizer =
-      std::make_shared<HashVectorizer>(HashVectorizer(bucket_count, subgrams));
+      std::make_unique<HashVectorizer>(HashVectorizer(bucket_count, subgrams));
 }
 
-std::shared_ptr<data::Data> HashedNGrams::Apply(
-    const std::shared_ptr<data::Data>& input_data) {
+std::unique_ptr<data::Data> HashedNGrams::Apply(
+    const std::unique_ptr<data::Data>& input_data) {
   if (input_data->GetType() != data::DataType::TEXT_DATA) {
-    return std::make_shared<data::Data>(
+    return std::make_unique<data::Data>(
         data::VectorData(0, std::map<unsigned, double>()));
   }
 
-  data::TextData text_data =
-      *std::static_pointer_cast<data::TextData>(input_data);
+  data::TextData* text_data = static_cast<data::TextData*>(input_data.get());
 
-  auto frequences = hash_vectorizer->GetFrequencies(text_data.GetText());
+  std::map<unsigned, double> frequences =
+      hash_vectorizer->GetFrequencies(text_data->GetText());
   int dimension_count = hash_vectorizer->GetBucketCount();
 
-  return std::make_shared<data::VectorData>(
+  return std::make_unique<data::VectorData>(
       data::VectorData(dimension_count, frequences));
 }
 

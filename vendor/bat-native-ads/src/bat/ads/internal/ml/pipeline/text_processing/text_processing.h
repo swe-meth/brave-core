@@ -44,7 +44,7 @@ class TextProcessing {
   bool FromJson(const std::string& json);
 
   std::map<std::string, double> Apply(
-      const std::shared_ptr<data::Data>& input_data);
+      const std::unique_ptr<data::Data>& input_data);
 
   const std::map<std::string, double> GetTopPredictions(
       const std::string& content);
