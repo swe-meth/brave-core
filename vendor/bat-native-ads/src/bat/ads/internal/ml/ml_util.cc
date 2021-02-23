@@ -42,23 +42,19 @@ TransformationPtr GetTransformationCopy(const TransformationPtr& tr_ptr) {
     return std::make_unique<transformation::Lowercase>(lowercase_copy);
   }
 
-  if (tr_ptr->GetType() ==
-        transformation::TransformationType::HASHED_NGRAMS) {
+  if (tr_ptr->GetType() == transformation::TransformationType::HASHED_NGRAMS) {
     transformation::HashedNGrams* hashed_n_grams_ptr =
         static_cast<transformation::HashedNGrams*>(tr_ptr.get());
-    transformation::HashedNGrams hashed_n_grams_ptr_copy =
-        *hashed_n_grams_ptr;
+    transformation::HashedNGrams hashed_n_grams_ptr_copy = *hashed_n_grams_ptr;
     return std::make_unique<transformation::HashedNGrams>(
         hashed_n_grams_ptr_copy);
   }
 
-  if (tr_ptr->GetType() ==
-        transformation::TransformationType::NORMALIZATION) {
+  if (tr_ptr->GetType() == transformation::TransformationType::NORMALIZATION) {
     transformation::Normalization* normalization_ptr =
         static_cast<transformation::Normalization*>(tr_ptr.get());
     transformation::Normalization normalization_copy = *normalization_ptr;
-    return std::make_unique<transformation::Normalization>(
-        normalization_copy);
+    return std::make_unique<transformation::Normalization>(normalization_copy);
   }
 
   DCHECK(false);
@@ -70,8 +66,7 @@ TransformationVector GetTransformationVectorCopy(
   TransformationVector tr_vect_copy;
   size_t transformation_count = tr_vect.size();
   for (size_t i = 0; i < transformation_count; ++i) {
-    tr_vect_copy.push_back(
-        GetTransformationCopy(tr_vect[i]));
+    tr_vect_copy.push_back(GetTransformationCopy(tr_vect[i]));
   }
   return tr_vect_copy;
 }

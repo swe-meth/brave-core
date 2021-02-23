@@ -22,8 +22,7 @@ base::Optional<TransformationVector> ParseTransformationsJSON(
     return base::nullopt;
   }
 
-  base::Optional<TransformationVector> transformations =
-      TransformationVector();
+  base::Optional<TransformationVector> transformations = TransformationVector();
   auto transformation_list = transformations_value->GetList();
   for (size_t i = 0; i < transformation_list.size(); i++) {
     const base::Value& transformation = transformation_list[i];
@@ -38,13 +37,15 @@ base::Optional<TransformationVector> ParseTransformationsJSON(
     std::string parsed_transformation_type = *transformation_type;
 
     if (parsed_transformation_type.compare("TO_LOWER") == 0) {
-      transformations.value().push_back(std::make_unique<transformation::Lowercase>(
-          transformation::Lowercase()));
+      transformations.value().push_back(
+          std::make_unique<transformation::Lowercase>(
+              transformation::Lowercase()));
     }
 
     if (parsed_transformation_type.compare("NORMALIZE") == 0) {
-      transformations.value().push_back(std::make_unique<transformation::Normalization>(
-          transformation::Normalization()));
+      transformations.value().push_back(
+          std::make_unique<transformation::Normalization>(
+              transformation::Normalization()));
     }
 
     if (parsed_transformation_type.compare("HASHED_NGRAMS") == 0) {

@@ -27,7 +27,8 @@ std::unique_ptr<data::Data> Normalization::Apply(
         data::VectorData(0, std::map<unsigned, double>()));
   }
 
-  data::VectorData* vector_data = static_cast<data::VectorData*>(input_data.get());
+  data::VectorData* vector_data =
+      static_cast<data::VectorData*>(input_data.get());
 
   data::VectorData vector_data_copy = *vector_data;
   vector_data_copy.Normalize();

@@ -45,8 +45,7 @@ TEST_F(BatAdsNormalizationTest, NormalizationTest) {
 
   ASSERT_EQ(data->GetType(), data::DataType::VECTOR_DATA);
 
-  data::VectorData* norm_data =
-      static_cast<data::VectorData*>(data.release());
+  data::VectorData* norm_data = static_cast<data::VectorData*>(data.release());
 
   double s = 0.0;
   for (auto const& x : norm_data->GetRawData()) {
@@ -82,8 +81,7 @@ TEST_F(BatAdsNormalizationTest, ChainingTest) {
 
   ASSERT_EQ(data->GetType(), data::DataType::VECTOR_DATA);
 
-  data::VectorData* vect_data =
-      static_cast<data::VectorData*>(data.get());
+  data::VectorData* vect_data = static_cast<data::VectorData*>(data.get());
 
   EXPECT_EQ(vect_data->GetDimensionCount(), 10000);
 
