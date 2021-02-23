@@ -22,10 +22,15 @@ class BatAdsTextDataTest : public UnitTestBase {
 };
 
 TEST_F(BatAdsTextDataTest, TextDataInitialization) {
+  // Arrange
   std::string original_text = "original text";
   data::TextData text_data(original_text);
 
-  EXPECT_EQ(text_data.GetText(), original_text);
+  // Act
+  std::string extracted_text = text_data.GetText();
+
+  // Assert
+  EXPECT_EQ(extracted_text, original_text);
 }
 
 }  // namespace ml

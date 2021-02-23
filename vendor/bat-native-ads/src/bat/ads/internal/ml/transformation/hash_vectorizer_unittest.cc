@@ -35,12 +35,14 @@ class BatAdsHashVectorizerTest : public UnitTestBase {
 };
 
 void RunHashingExtractorTestCase(const std::string& test_case_name) {
+  // Arrange
   const double kTolerance = 1e-7;
 
   const base::Optional<std::string> opt_value =
       ReadFileFromTestPathToString(kHashCheck);
-  ASSERT_TRUE(opt_value.has_value());
 
+  // Act
+  ASSERT_TRUE(opt_value.has_value());
   const std::string hash_check_json = opt_value.value();
 
   base::Optional<base::Value> root = base::JSONReader::Read(hash_check_json);
@@ -52,19 +54,20 @@ void RunHashingExtractorTestCase(const std::string& test_case_name) {
   std::string* input = case_params->FindStringKey("input");
   ASSERT_TRUE(input);
 
-  std::string input_value = *input;
-
   base::Value* idx = case_params->FindListKey("idx");
   ASSERT_TRUE(idx);
 
   base::Value* count = case_params->FindListKey("count");
   ASSERT_TRUE(count);
 
+  std::string input_value = *input;
   transformation::HashVectorizer vectorizer;
   std::map<unsigned, double> frequencies =
       vectorizer.GetFrequencies(input_value);
   auto idx_list = idx->GetList();
   auto count_list = count->GetList();
+
+  // Assert
   ASSERT_EQ(idx_list.size(), frequencies.size());
   for (size_t i = 0; i < frequencies.size(); ++i) {
     const base::Value& idx_val = idx_list[i];
@@ -75,6 +78,7 @@ void RunHashingExtractorTestCase(const std::string& test_case_name) {
 }
 
 TEST_F(BatAdsHashVectorizerTest, ValidJsonScheme) {
+  // Arrange
   base::Optional<base::Value> root = base::JSONReader::Read(
       "{"
       "  \"test\": {"
@@ -89,6 +93,9 @@ TEST_F(BatAdsHashVectorizerTest, ValidJsonScheme) {
       "  ]"
       "}");
 
+  // Act
+
+  // Assert
   ASSERT_TRUE(root);
   ASSERT_TRUE(root->is_dict());
 

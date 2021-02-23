@@ -24,20 +24,29 @@ class BatAdsVectorDataTest : public UnitTestBase {
 };
 
 TEST_F(BatAdsVectorDataTest, DenseVectorDataInitialization) {
+  // Arrange
   std::vector<double> v_5{1.0, 2.0, 3.0, 4.0, 5.0};
   data::VectorData dense_data_vector_5(v_5);
 
+  // Act
+
+  // Assert
   EXPECT_EQ(dense_data_vector_5.GetDimensionCount(), 5);
 }
 
 TEST_F(BatAdsVectorDataTest, SparseVectorDataInitialization) {
+  // Arrange
   std::map<unsigned, double> s_6 = {{0UL, 1.0}, {2UL, 3.0}, {3UL, -2.0}};
   data::VectorData sparse_data_vector_6(6, s_6);
 
+  // Act
+
+  // Assert
   EXPECT_EQ(sparse_data_vector_6.GetDimensionCount(), 6);
 }
 
 TEST_F(BatAdsVectorDataTest, DenseDenseProduct) {
+  // Arrange
   const double kTolerance = 1e-6;
 
   std::vector<double> v_5{1.0, 2.0, 3.0, 4.0, 5.0};
@@ -49,16 +58,19 @@ TEST_F(BatAdsVectorDataTest, DenseDenseProduct) {
   std::vector<double> v_3_1{1.0, 1.0, 1.0};
   data::VectorData dense_data_vector_3_1(v_3_1);
 
+  // Act
   double res_3x3 = dense_data_vector_3 * dense_data_vector_3;
   double res_5x5 = dense_data_vector_5 * dense_data_vector_5;
   double res_3x1 = dense_data_vector_3 * dense_data_vector_3_1;
 
+  // Assert
   EXPECT_TRUE(std::fabs(14.0 - res_3x3) < kTolerance &&
               std::fabs(55.0 - res_5x5) < kTolerance &&
               std::fabs(6.0 - res_3x1) < kTolerance);
 }
 
 TEST_F(BatAdsVectorDataTest, SparseSparseProduct) {
+  // Arrange
   const double kTolerance = 1e-6;
 
   // Dense equivalent is [1, 0, 2]
@@ -69,14 +81,17 @@ TEST_F(BatAdsVectorDataTest, SparseSparseProduct) {
   std::map<unsigned, double> s_5 = {{0UL, 1.0}, {2UL, 3.0}, {3UL, -2.0}};
   data::VectorData sparse_data_vector_5(5, s_5);
 
+  // Act
   double res_3x3 = sparse_data_vector_3 * sparse_data_vector_3;  // = 5
   double res_5x5 = sparse_data_vector_5 * sparse_data_vector_5;  // = 14
 
+  // Assert
   EXPECT_TRUE(std::fabs(5.0 - res_3x3) < kTolerance &&
               std::fabs(14.0 - res_5x5) < kTolerance);
 }
 
 TEST_F(BatAdsVectorDataTest, SparseDenseProduct) {
+  // Arrange
   const double kTolerance = 1e-6;
 
   std::vector<double> v_5{1.0, 2.0, 3.0, 4.0, 5.0};
@@ -93,11 +108,13 @@ TEST_F(BatAdsVectorDataTest, SparseDenseProduct) {
   std::map<unsigned, double> s_5 = {{0UL, 1.0}, {2UL, 3.0}, {3UL, -2.0}};
   data::VectorData sparse_data_vector_5(5, s_5);
 
+  // Act
   double mixed_res_3x3_1 = dense_data_vector_3 * sparse_data_vector_3;  // = 7
   double mixed_res_5x5_1 = dense_data_vector_5 * sparse_data_vector_5;  // = 2
   double mixed_res_3x3_2 = sparse_data_vector_3 * dense_data_vector_3;  // = 7
   double mixed_res_5x5_2 = sparse_data_vector_5 * dense_data_vector_5;  // = 2
 
+  // Assert
   EXPECT_TRUE(std::fabs(mixed_res_3x3_1 - mixed_res_3x3_2) < kTolerance &&
               std::fabs(mixed_res_5x5_1 - mixed_res_5x5_2) < kTolerance &&
               std::fabs(7.0 - mixed_res_3x3_1) < kTolerance &&
@@ -105,6 +122,7 @@ TEST_F(BatAdsVectorDataTest, SparseDenseProduct) {
 }
 
 TEST_F(BatAdsVectorDataTest, NonsenseProduct) {
+  // Arrange
   std::vector<double> v_5{1.0, 2.0, 3.0, 4.0, 5.0};
   data::VectorData dense_data_vector_5(v_5);
 
@@ -119,11 +137,13 @@ TEST_F(BatAdsVectorDataTest, NonsenseProduct) {
   std::map<unsigned, double> s_5 = {{0UL, 1.0}, {2UL, 3.0}, {3UL, -2.0}};
   data::VectorData sparse_data_vector_5(5, s_5);
 
+  // Act
   double wrong_dd = dense_data_vector_5 * dense_data_vector_3;
   double wrong_ss = sparse_data_vector_3 * sparse_data_vector_5;
   double wrong_sd = sparse_data_vector_3 * dense_data_vector_5;
   double wrong_ds = dense_data_vector_5 * sparse_data_vector_3;
 
+  // Assert
   EXPECT_TRUE(std::isnan(wrong_dd) && std::isnan(wrong_ss) &&
               std::isnan(wrong_sd) && std::isnan(wrong_ds));
 }

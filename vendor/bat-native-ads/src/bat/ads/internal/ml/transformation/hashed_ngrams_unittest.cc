@@ -27,11 +27,15 @@ class BatAdsHashedNGramsTest : public UnitTestBase {
 };
 
 TEST_F(BatAdsHashedNGramsTest, HashingTest) {
-  std::string test_string = "tiny";
+  // Arrange
+  const size_t kExpectedElementCount = 10;
+  const std::string kTestString = "tiny";
   const std::unique_ptr<data::Data> text_data =
-      std::make_unique<data::TextData>(data::TextData(test_string));
+      std::make_unique<data::TextData>(data::TextData(kTestString));
 
   transformation::HashedNGrams hashed_ngrams;
+
+  // Act
   const std::unique_ptr<data::Data> hashed_data =
       hashed_ngrams.Apply(text_data);
 
@@ -40,20 +44,24 @@ TEST_F(BatAdsHashedNGramsTest, HashingTest) {
   data::VectorData* hashed_vect_data =
       static_cast<data::VectorData*>(hashed_data.get());
 
+  // Assert
   // 10000 is the default size
   ASSERT_EQ(hashed_vect_data->GetDimensionCount(), kNumBuckets);
 
   // Hashes for [t, i, n, y, ti, in, ny, tin, iny, tiny] -- 10 in total
-  size_t expected_element_count = 10;
-  EXPECT_EQ(hashed_vect_data->GetRawData().size(), expected_element_count);
+  EXPECT_EQ(hashed_vect_data->GetRawData().size(), kExpectedElementCount);
 }
 
 TEST_F(BatAdsHashedNGramsTest, CustomHashingTest) {
-  std::string test_string = "tiny";
+  // Arrange
+  const size_t kExpectedElementCount = 3;
+  const std::string kTestString = "tiny";
   const std::unique_ptr<data::Data> text_data =
-      std::make_unique<data::TextData>(data::TextData(test_string));
+      std::make_unique<data::TextData>(data::TextData(kTestString));
 
   transformation::HashedNGrams hashed_ngrams(3, std::vector<int>{1, 2, 3});
+
+  // Act
   const std::unique_ptr<data::Data> hashed_data =
       hashed_ngrams.Apply(text_data);
 
@@ -62,10 +70,10 @@ TEST_F(BatAdsHashedNGramsTest, CustomHashingTest) {
   data::VectorData* hashed_vect_data =
       static_cast<data::VectorData*>(hashed_data.get());
 
+  // Assert
   ASSERT_EQ(hashed_vect_data->GetDimensionCount(), 3);
 
-  size_t expected_element_count = 3;
-  EXPECT_EQ(hashed_vect_data->GetRawData().size(), expected_element_count);
+  EXPECT_EQ(hashed_vect_data->GetRawData().size(), kExpectedElementCount);
 }
 
 }  // namespace ml

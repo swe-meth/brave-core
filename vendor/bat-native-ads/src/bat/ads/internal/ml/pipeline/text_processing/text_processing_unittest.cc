@@ -44,7 +44,10 @@ class BatAdsTextProcessingPipelineTest : public UnitTestBase {
 };
 
 TEST_F(BatAdsTextProcessingPipelineTest, BuildSimplePipeline) {
+  // Arrange
   const double kTolerance = 1e-6;
+  const unsigned kExpectedLen = 3;
+  const std::string kTestString = "Test String";
 
   TransformationVector transformations;
   transformation::Lowercase lowercase;
@@ -62,34 +65,26 @@ TEST_F(BatAdsTextProcessingPipelineTest, BuildSimplePipeline) {
   std::map<std::string, double> biases = {
       {"class_1", 0.0}, {"class_2", 0.0}, {"class_3", 0.0}};
 
-  unsigned expected_len = 3;
   model::Linear linear_model(weights, biases);
   pipeline::TextProcessing pipeline =
       pipeline::TextProcessing(transformations, linear_model);
 
   data::VectorData data_point_3(std::vector<double>{1.0, 0.0, 0.0});
 
+  // Act
   PredictionMap data_point_3_res = linear_model.Predict(data_point_3);
-  ASSERT_EQ(data_point_3_res.size(), expected_len);
+  PredictionMap res = pipeline.GetTopPredictions(kTestString);
 
-  std::string test_string = "Test String";
-  PredictionMap res = pipeline.GetTopPredictions(test_string);
-  ASSERT_TRUE(res.size() && res.size() <= expected_len);
+  // Assert
+  ASSERT_EQ(data_point_3_res.size(), kExpectedLen);
+  ASSERT_TRUE(res.size() && res.size() <= kExpectedLen);
   for (auto const& pred : res) {
     EXPECT_TRUE(pred.second > -kTolerance && pred.second < 1.0 + kTolerance);
   }
 }
 
 TEST_F(BatAdsTextProcessingPipelineTest, TestLoadFromJson) {
-  const base::Optional<std::string> opt_value =
-      ReadFileFromTestPathToString(kPipelineSpam);
-  ASSERT_TRUE(opt_value.has_value());
-
-  const std::string json = opt_value.value();
-  pipeline::TextProcessing pipeline;
-  bool load_success = pipeline.FromJson(json);
-  ASSERT_TRUE(load_success);
-
+  // Arrange
   std::vector<std::string> train_texts = {
       "This is a spam email.", "Another spam trying to sell you viagra",
       "Message from mom with no real subject",
@@ -97,63 +92,102 @@ TEST_F(BatAdsTextProcessingPipelineTest, TestLoadFromJson) {
   std::vector<std::string> train_labels = {"spam", "spam", "ham", "ham",
                                            "junk"};
 
+  const base::Optional<std::string> opt_value =
+      ReadFileFromTestPathToString(kPipelineSpam);
+  pipeline::TextProcessing pipeline;
+
+  // Act
+  ASSERT_TRUE(opt_value.has_value());
+  const std::string json = opt_value.value();
+  bool load_success = pipeline.FromJson(json);
+  ASSERT_TRUE(load_success);
+
+  std::vector<PredictionMap> prediction_maps(train_texts.size());
   for (size_t i = 0; i < train_texts.size(); i++) {
     std::unique_ptr<data::Data> text_data =
         std::make_unique<data::TextData>(data::TextData(train_texts[i]));
-    PredictionMap preds = pipeline.Apply(text_data);
-    for (auto const& pred : preds) {
+    PredictionMap prediction_map = pipeline.Apply(text_data);
+    prediction_maps[i] = prediction_map;
+  }
+
+  // Assert
+  for (size_t i = 0; i < prediction_maps.size(); i++) {
+    PredictionMap& prediction_map = prediction_maps[i];
+    for (auto const& pred : prediction_map) {
       double other_prediction = pred.second;
-      EXPECT_TRUE(preds[train_labels[i]] >= other_prediction);
+      EXPECT_TRUE(prediction_map[train_labels[i]] >= other_prediction);
     }
   }
 }
 
 TEST_F(BatAdsTextProcessingPipelineTest, InitValidModelTest) {
+  // Arrange
   pipeline::TextProcessing text_proc_pipeline;
-
   const base::Optional<std::string> opt_value =
       ReadFileFromTestPathToString(kHashingModel);
-  ASSERT_TRUE(opt_value.has_value());
 
+  // Act
+  ASSERT_TRUE(opt_value.has_value());
   const std::string model_json = opt_value.value();
-  EXPECT_TRUE(text_proc_pipeline.FromJson(model_json));
+  bool loaded_successfully = text_proc_pipeline.FromJson(model_json);
+
+  // Assert
+  EXPECT_TRUE(loaded_successfully);
 }
 
 TEST_F(BatAdsTextProcessingPipelineTest, InvalidModelTest) {
+  // Arrange
   pipeline::TextProcessing text_proc_pipeline;
-
   const base::Optional<std::string> opt_value =
       ReadFileFromTestPathToString(kInvalidModel);
-  ASSERT_TRUE(opt_value.has_value());
 
+  // Act
+  ASSERT_TRUE(opt_value.has_value());
   const std::string model_json = opt_value.value();
-  EXPECT_FALSE(text_proc_pipeline.FromJson(model_json));
+  bool loaded_successfully = text_proc_pipeline.FromJson(model_json);
+
+  // Assert
+  EXPECT_FALSE(loaded_successfully);
 }
 
 TEST_F(BatAdsTextProcessingPipelineTest, EmptyModelTest) {
+  // Arrange
   pipeline::TextProcessing text_proc_pipeline;
   const std::string empty_model_json = "{}";
-  EXPECT_FALSE(text_proc_pipeline.FromJson(empty_model_json));
+
+  // Act
+  bool loaded_successfully = text_proc_pipeline.FromJson(empty_model_json);
+
+  // Assert
+  EXPECT_FALSE(loaded_successfully);
 }
 
 TEST_F(BatAdsTextProcessingPipelineTest, MissingModelTest) {
+  // Arrange
   pipeline::TextProcessing text_proc_pipeline;
+
+  // Act
   const std::string missing_model_json = "";
-  EXPECT_FALSE(text_proc_pipeline.FromJson(missing_model_json));
+  bool loaded_successfully = text_proc_pipeline.FromJson(missing_model_json);
+
+  // Assert
+  EXPECT_FALSE(loaded_successfully);
 }
 
 TEST_F(BatAdsTextProcessingPipelineTest, TopPredUnitTest) {
+  // Arrange
+  const std::string kTestPage = "ethereum bitcoin bat zcash crypto tokens!";
   pipeline::TextProcessing text_proc_pipeline;
-
   const base::Optional<std::string> opt_value =
       ReadFileFromTestPathToString(kHashingModel);
-  ASSERT_TRUE(opt_value.has_value());
 
+  // Act
+  ASSERT_TRUE(opt_value.has_value());
   const std::string model_json = opt_value.value();
   ASSERT_TRUE(text_proc_pipeline.FromJson(model_json));
+  PredictionMap preds = text_proc_pipeline.ClassifyPage(kTestPage);
 
-  std::string test_page = "ethereum bitcoin bat zcash crypto tokens!";
-  PredictionMap preds = text_proc_pipeline.ClassifyPage(test_page);
+  // Assert
   ASSERT_TRUE(preds.size());
   ASSERT_LT(preds.size(), static_cast<size_t>(100));
   ASSERT_TRUE(preds.count("crypto-crypto"));
@@ -163,6 +197,7 @@ TEST_F(BatAdsTextProcessingPipelineTest, TopPredUnitTest) {
 }
 
 TEST_F(BatAdsTextProcessingPipelineTest, TextCMCCrashTest) {
+  // Arrange
   pipeline::TextProcessing text_proc_pipeline;
 
   const base::Optional<std::string> opt_value =
@@ -174,10 +209,13 @@ TEST_F(BatAdsTextProcessingPipelineTest, TextCMCCrashTest) {
 
   const base::Optional<std::string> opt_text_value =
       ReadFileFromTestPathToString(kTextCMCCrash);
+
+  // Act
   ASSERT_TRUE(opt_text_value.has_value());
   const std::string bad_text = opt_text_value.value();
-
   PredictionMap preds = text_proc_pipeline.ClassifyPage(bad_text);
+
+  // Assert
   ASSERT_LT(preds.size(), static_cast<size_t>(100));
   ASSERT_GT(preds.size(), static_cast<size_t>(2));
   ASSERT_TRUE(preds.count("personal finance-personal finance"));
