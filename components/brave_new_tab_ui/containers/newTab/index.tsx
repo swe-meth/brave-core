@@ -1032,6 +1032,13 @@ class NewTabPage extends React.Component<Props, State> {
     const cryptoContent = this.renderCryptoContent()
     const showAddNewSiteMenuItem = newTabData.customLinksNum !== MAX_GRID_SIZE
 
+    let showTopSites = newTabData.showTopSites
+    // In favorites mode, add site tile is visible by default if there is no
+    // item. In frecency, top sites widget is hidden with empty tiles.
+    if (!newTabData.customLinksEnabled) {
+      showTopSites = this.props.gridSitesData.gridSites.length !== 0
+    }
+
     return (
       <Page.App
         dataIsReady={newTabData.initialDataLoaded}
@@ -1048,7 +1055,7 @@ class NewTabPage extends React.Component<Props, State> {
             showRewards={!!cryptoContent}
             showTogether={newTabData.showTogether && newTabData.togetherSupported}
             showBinance={newTabData.showBinance}
-            showTopSites={newTabData.showTopSites}
+            showTopSites={showTopSites}
             showBrandedWallpaper={isShowingBrandedWallpaper}
         >
           {newTabData.showStats &&
@@ -1077,7 +1084,7 @@ class NewTabPage extends React.Component<Props, State> {
           </Page.GridItemClock>
           }
           {
-            newTabData.showTopSites
+            showTopSites
               ? (
               <Page.GridItemTopSites>
                 <TopSitesGrid
