@@ -9,7 +9,9 @@
 
 #include "bat/ads/internal/ml/data/text_data.h"
 #include "bat/ads/internal/ml/data/vector_data.h"
+#include "bat/ads/internal/ml/data/vector_data_aliases.h"
 #include "bat/ads/internal/ml/ml_aliases.h"
+#include "bat/ads/internal/ml/ml_static_values.h"
 #include "bat/ads/internal/ml/transformation/hashed_ngrams.h"
 #include "bat/ads/internal/ml/transformation/lowercase.h"
 #include "bat/ads/internal/ml/transformation/normalization.h"
@@ -48,7 +50,7 @@ TEST_F(BatAdsNormalizationTest, NormalizationTest) {
   data::VectorData* norm_data = static_cast<data::VectorData*>(data.release());
 
   double s = 0.0;
-  for (auto const& x : norm_data->GetRawData()) {
+  for (data::SparseVectorElement const& x : norm_data->GetRawData()) {
     ASSERT_TRUE(x.second >= 0.0);
     ASSERT_TRUE(x.second <= 1.0);
     s += x.second * x.second;
@@ -83,7 +85,7 @@ TEST_F(BatAdsNormalizationTest, ChainingTest) {
 
   data::VectorData* vect_data = static_cast<data::VectorData*>(data.get());
 
-  EXPECT_EQ(vect_data->GetDimensionCount(), 10000);
+  EXPECT_EQ(vect_data->GetDimensionCount(), kNumBuckets);
 
   // Hashes for [t, i, n, y, ti, in, ny, tin, iny, tiny] -- 10 in total
   size_t expected_element_count = 10;

@@ -69,11 +69,11 @@ TEST_F(BatAdsTextProcessingPipelineTest, BuildSimplePipeline) {
 
   data::VectorData data_point_3(std::vector<double>{1.0, 0.0, 0.0});
 
-  auto data_point_3_res = linear_model.Predict(data_point_3);
+  PredictionMap data_point_3_res = linear_model.Predict(data_point_3);
   ASSERT_EQ(data_point_3_res.size(), expected_len);
 
   std::string test_string = "Test String";
-  auto res = pipeline.GetTopPredictions(test_string);
+  PredictionMap res = pipeline.GetTopPredictions(test_string);
   ASSERT_TRUE(res.size() && res.size() <= expected_len);
   for (auto const& pred : res) {
     EXPECT_TRUE(pred.second > -kTolerance && pred.second < 1.0 + kTolerance);
@@ -100,7 +100,7 @@ TEST_F(BatAdsTextProcessingPipelineTest, TestLoadFromJson) {
   for (size_t i = 0; i < train_texts.size(); i++) {
     std::unique_ptr<data::Data> text_data =
         std::make_unique<data::TextData>(data::TextData(train_texts[i]));
-    auto preds = pipeline.Apply(text_data);
+    PredictionMap preds = pipeline.Apply(text_data);
     for (auto const& pred : preds) {
       double other_prediction = pred.second;
       EXPECT_TRUE(preds[train_labels[i]] >= other_prediction);
@@ -153,7 +153,7 @@ TEST_F(BatAdsTextProcessingPipelineTest, TopPredUnitTest) {
   ASSERT_TRUE(text_proc_pipeline.FromJson(model_json));
 
   std::string test_page = "ethereum bitcoin bat zcash crypto tokens!";
-  auto preds = text_proc_pipeline.ClassifyPage(test_page);
+  PredictionMap preds = text_proc_pipeline.ClassifyPage(test_page);
   ASSERT_TRUE(preds.size());
   ASSERT_LT(preds.size(), static_cast<size_t>(100));
   ASSERT_TRUE(preds.count("crypto-crypto"));
@@ -177,7 +177,7 @@ TEST_F(BatAdsTextProcessingPipelineTest, TextCMCCrashTest) {
   ASSERT_TRUE(opt_text_value.has_value());
   const std::string bad_text = opt_text_value.value();
 
-  auto preds = text_proc_pipeline.ClassifyPage(bad_text);
+  PredictionMap preds = text_proc_pipeline.ClassifyPage(bad_text);
   ASSERT_LT(preds.size(), static_cast<size_t>(100));
   ASSERT_GT(preds.size(), static_cast<size_t>(2));
   ASSERT_TRUE(preds.count("personal finance-personal finance"));

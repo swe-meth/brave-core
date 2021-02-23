@@ -4,10 +4,8 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include <algorithm>
-#include <codecvt>
 #include <cstring>
-#include <iostream>
-#include <sstream>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -51,7 +49,7 @@ int HashVectorizer::GetBucketCount() const {
 }
 
 unsigned HashVectorizer::GetHash(const std::string& substring) {
-  const auto* u8str = substring.c_str();
+  const char* u8str = substring.c_str();
   auto rtn =
       crc32(crc32(0L, Z_NULL, 0), reinterpret_cast<const unsigned char*>(u8str),
             strlen(u8str));
@@ -66,7 +64,7 @@ std::map<unsigned, double> HashVectorizer::GetFrequencies(
     data = data.substr(0, kMaximumHtmlLengthToClassify);
   }
   // get hashes of substrings for each of the substring lengths defined:
-  for (auto const& substring_size : substring_sizes_) {
+  for (unsigned const& substring_size : substring_sizes_) {
     if (substring_size > data.length()) {
       break;
     }
