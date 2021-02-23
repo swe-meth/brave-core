@@ -65,7 +65,9 @@ class TopSitesSettings extends React.PureComponent<Props, {}> {
           />
         </SettingsRow>
         <StyledTopSitesCustomizationSettings>
-          <StyledTopSitesCustomizationSettingsOption>
+          <StyledTopSitesCustomizationSettingsOption
+            onClick={this.onClickFavorites}
+          >
             <StyledTopSitesCustomizationImageBorder
               selected={favoritesSelected}
             >
@@ -73,7 +75,6 @@ class TopSitesSettings extends React.PureComponent<Props, {}> {
                 imgSrcLight={favoritesSelected ? favoritesSelectedLight : favoritesUnselectedLight}
                 imgSrcDark={favoritesSelected ? favoritesSelectedDark : favoritesUnselectedDark}
                 selected={favoritesSelected}
-                onClick={this.onClickFavorites}
               />
             </StyledTopSitesCustomizationImageBorder>
             <StyledTopSitesCustomizationOptionTitle>
@@ -83,7 +84,9 @@ class TopSitesSettings extends React.PureComponent<Props, {}> {
               {getLocale('showFavoritesDesc')}
             </StyledTopSitesCustomizationOptionDesc>
           </StyledTopSitesCustomizationSettingsOption>
-          <StyledTopSitesCustomizationSettingsOption>
+          <StyledTopSitesCustomizationSettingsOption
+            onClick={this.onClickFrecency}
+          >
             <StyledTopSitesCustomizationImageBorder
               selected={frecencySelected}
             >
@@ -91,7 +94,6 @@ class TopSitesSettings extends React.PureComponent<Props, {}> {
                 imgSrcLight={frecencySelected ? frecencySelectedLight : frecencyUnselectedLight}
                 imgSrcDark={frecencySelected ? frecencySelectedDark : frecencyUnselectedDark}
                 selected={frecencySelected}
-                onClick={this.onClickFrecency}
               />
             </StyledTopSitesCustomizationImageBorder>
             <StyledTopSitesCustomizationOptionTitle>
