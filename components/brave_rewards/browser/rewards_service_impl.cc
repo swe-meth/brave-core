@@ -3544,4 +3544,22 @@ void RewardsServiceImpl::OnWalletCreatedForSetAdsEnabled(
   }
 }
 
+
+void RewardsServiceImpl::ProcessSKU(
+    std::vector<ledger::type::SKUOrderItemPtr> items,
+    const std::string& wallet_type,
+    ProcessSKUCallback callback) {
+  bat_ledger_->ProcessSKU(std::move(items),
+                           wallet_type,
+                           std::move(callback));
+}
+
+void RewardsServiceImpl::OnSKUProcessed(
+    ProcessSKUCallback callback,
+    const ledger::type::Result result,
+    const std::string& order_id) {
+  std::move(callback).Run(result, order_id);
+}
+
+
 }  // namespace brave_rewards

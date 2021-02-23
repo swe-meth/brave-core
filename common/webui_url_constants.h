@@ -20,6 +20,8 @@ extern const char kBraveUIRewardsURL[];
 extern const char kBraveUIAdblockURL[];
 extern const char kBraveUIIPFSURL[];
 extern const char kBraveUIWebcompatReporterURL[];
+extern const char kBraveUICheckoutHost[];
+extern const char kBraveUICheckoutURL[];
 extern const char kBraveUITipHost[];
 extern const char kBraveUITipURL[];
 extern const char kBraveUIWalletURL[];
