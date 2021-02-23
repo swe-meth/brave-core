@@ -31,14 +31,6 @@ using ntp_background_images::ViewCounterServiceFactory;
 // For more info, see:
 // https://bugs.chromium.org/p/chromium/issues/detail?id=1084363
 
-namespace {
-
-bool ShouldExcludeFromTiles(const GURL& url) {
-  return url.spec().find("https://chrome.google.com/webstore") == 0;
-}
-
-}  // namespace
-
 InstantServiceMessageHandler::InstantServiceMessageHandler(Profile* profile)
         : profile_(profile) {
   instant_service_ = InstantServiceFactory::GetForProfile(profile_);
@@ -123,9 +115,6 @@ void InstantServiceMessageHandler::MostVisitedInfoChanged(
 
   // See chrome/common/search/instant_types.h for more info
   for (auto& tile : info.items) {
-    if (ShouldExcludeFromTiles(tile.url))
-      continue;
-
     base::Value tile_value(base::Value::Type::DICTIONARY);
     if (tile.title.empty()) {
       tile_value.SetStringKey("title", tile.url.spec());
