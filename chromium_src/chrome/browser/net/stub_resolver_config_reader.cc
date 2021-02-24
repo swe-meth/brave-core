@@ -26,6 +26,11 @@ void AddUnstoppableDomainsResolver(std::string* doh_templates,
 }
 #endif  // BUILDFLAG(UNSTOPPABLE_DOMAINS_ENABLED)
 
+// Add DoH servers to support Unstoppable Domains (and ENS in the future PR).
+// These servers are controlled using its own prefs and not
+// kDnsOverHttpsTemplates pref as the servers we added here are special and
+// only applies to certain TLD which is different from user's global DoH
+// provider settings.
 void AddDoHServers(std::string* doh_templates, PrefService* local_state) {
 #if BUILDFLAG(UNSTOPPABLE_DOMAINS_ENABLED)
   AddUnstoppableDomainsResolver(doh_templates, local_state);
