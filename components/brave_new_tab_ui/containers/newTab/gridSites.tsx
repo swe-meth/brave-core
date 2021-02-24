@@ -70,14 +70,12 @@ class TopSitesList extends React.PureComponent<Props, State> {
   render () {
     const { actions, gridSites, onShowEditTopSite, customLinksEnabled } = this.props
     const insertAddSiteTile = customLinksEnabled && gridSites.length !== MAX_GRID_SIZE
-    const forceToShowAddSiteTile = customLinksEnabled && gridSites.length === 0
     const maxGridSize = customLinksEnabled ? MAX_GRID_SIZE : (MAX_GRID_SIZE / 2)
     return (
       <>
         <DynamicList
           blockNumber={maxGridSize}
           isDragging={this.state.isDragging}
-          showAddSiteTile={forceToShowAddSiteTile}
           updateBeforeSortStart={this.updateBeforeSortStart}
           onSortEnd={this.onSortEnd}
           axis='xy'

@@ -53,7 +53,6 @@ export const AddSiteTile = styled<{}, 'button'>('button')`
 export interface ListProps {
   blockNumber: number
   isDragging: boolean
-  showAddSiteTile: boolean
 }
 
 export const List = styled<ListProps, 'div'>('div')`
@@ -71,12 +70,6 @@ export const List = styled<ListProps, 'div'>('div')`
   @media screen and (max-width: 390px) {
     grid-template-columns: repeat(${p => Math.min(p.blockNumber, 2).toString()}, 92px);
   }
-
-  ${p => p.showAddSiteTile && css`
-    ${AddSiteTile} {
-      visibility: visible;
-    }
-  `}
 
   ${p => !p.isDragging && css`
     &:hover {
