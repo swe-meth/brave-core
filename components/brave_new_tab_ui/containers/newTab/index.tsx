@@ -1107,7 +1107,7 @@ class NewTabPage extends React.Component<Props, State> {
             gridSitesData.shouldShowSiteRemovedNotification
             ? (
             <Page.GridItemNotification>
-              <SiteRemovalNotification actions={actions} />
+              <SiteRemovalNotification actions={actions} showRestoreAll={!newTabData.customLinksEnabled} />
             </Page.GridItemNotification>
             ) : null
           }
