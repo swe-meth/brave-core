@@ -33,6 +33,7 @@ class HashedNGrams : public Transformation {
   std::unique_ptr<data::Data> Apply(
       const std::unique_ptr<data::Data>& input_data) override;
 
+ private:
   std::unique_ptr<HashVectorizer> hash_vectorizer;
 };
 
