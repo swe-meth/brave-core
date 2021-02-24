@@ -106,7 +106,7 @@ export const StyledInput = styled<{}, 'input'>('input')`
   letter-spacing: 0.01em;
   text-align: left;
 
-  &:focus {
+  &:focus, :hover {
     border: 4px solid #A0A5EB;
     padding: 7px 15px;
   }
