@@ -20,7 +20,9 @@ bool ConversionQueueItemInfo::operator==(
          creative_set_id == rhs.creative_set_id &&
          creative_instance_id == rhs.creative_instance_id &&
          advertiser_id == rhs.advertiser_id &&
-         conversion_id == rhs.conversion_id && timestamp == rhs.timestamp;
+         conversion_id == rhs.conversion_id &&
+         advertiser_public_key == rhs.advertiser_public_key &&
+         timestamp == rhs.timestamp;
 }
 
 bool ConversionQueueItemInfo::operator!=(

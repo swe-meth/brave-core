@@ -72,6 +72,8 @@ TEST_F(BatAdsCreateConfirmationUrlRequestBuilderTest,
   expected_url_request->content_type = "application/json";
   expected_url_request->method = UrlRequestMethod::POST;
 
+  std::cout << "*** " << url_request->content << std::endl;
+
   EXPECT_TRUE(url_request.Equals(expected_url_request));
 }
 
@@ -100,6 +102,8 @@ TEST_F(BatAdsCreateConfirmationUrlRequestBuilderTest,
   expected_url_request->content_type = "application/json";
   expected_url_request->method = UrlRequestMethod::POST;
 
+  std::cout << "*** " << url_request->content << std::endl;
+
   EXPECT_TRUE(url_request.Equals(expected_url_request));
 }
 
@@ -126,6 +130,8 @@ TEST_F(BatAdsCreateConfirmationUrlRequestBuilderTest, BuildUrlForOtherCountry) {
       R"({"blindedPaymentToken":"PI3lFqpGVFKz4TH5yEwXI3R/QntmTpUgeBaK+STiBx8=","buildChannel":"release","creativeInstanceId":"546fe7b0-5047-4f28-a11c-81f14edcf0f6","experiment":{},"payload":{},"platform":"windows","type":"view"})";
   expected_url_request->content_type = "application/json";
   expected_url_request->method = UrlRequestMethod::POST;
+
+  std::cout << "*** " << url_request->content << std::endl;
 
   EXPECT_TRUE(url_request.Equals(expected_url_request));
 }
@@ -155,6 +161,8 @@ TEST_F(BatAdsCreateConfirmationUrlRequestBuilderTest,
   expected_url_request->content_type = "application/json";
   expected_url_request->method = UrlRequestMethod::POST;
 
+  std::cout << "*** " << url_request->content << std::endl;
+
   EXPECT_TRUE(url_request.Equals(expected_url_request));
 }
 
@@ -183,6 +191,8 @@ TEST_F(BatAdsCreateConfirmationUrlRequestBuilderTest,
   expected_url_request->content_type = "application/json";
   expected_url_request->method = UrlRequestMethod::POST;
 
+  std::cout << "*** " << url_request->content << std::endl;
+
   EXPECT_TRUE(url_request.Equals(expected_url_request));
 }
 
@@ -210,6 +220,8 @@ TEST_F(BatAdsCreateConfirmationUrlRequestBuilderTest,
       R"({"blindedPaymentToken":"PI3lFqpGVFKz4TH5yEwXI3R/QntmTpUgeBaK+STiBx8=","buildChannel":"beta","creativeInstanceId":"546fe7b0-5047-4f28-a11c-81f14edcf0f6","experiment":{},"payload":{},"platform":"windows","type":"view"})";
   expected_url_request->content_type = "application/json";
   expected_url_request->method = UrlRequestMethod::POST;
+
+  std::cout << "*** " << url_request->content << std::endl;
 
   EXPECT_TRUE(url_request.Equals(expected_url_request));
 }
