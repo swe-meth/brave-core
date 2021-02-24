@@ -10,12 +10,13 @@
 #include <string>
 #include <vector>
 
-#include "bat/ads/internal/ml/transformation/hash_vectorizer.h"
 #include "bat/ads/internal/ml/transformation/transformation.h"
 
 namespace ads {
 namespace ml {
 namespace transformation {
+
+class HashVectorizer;
 
 class HashedNGrams : public Transformation {
  public:

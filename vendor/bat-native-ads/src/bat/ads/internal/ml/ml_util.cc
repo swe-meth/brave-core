@@ -16,7 +16,7 @@
 namespace ads {
 namespace ml {
 
-std::map<std::string, double> Softmax(const std::map<std::string, double>& y) {
+PredictionMap Softmax(const PredictionMap& y) {
   double maximum = -std::numeric_limits<double>::infinity();
   for (auto const& x : y) {
     maximum = std::max(maximum, x.second);

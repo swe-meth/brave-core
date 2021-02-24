@@ -10,6 +10,7 @@
 
 #include "bat/ads/internal/ml/data/text_data.h"
 #include "bat/ads/internal/ml/data/vector_data.h"
+#include "bat/ads/internal/ml/transformation/hash_vectorizer.h"
 #include "bat/ads/internal/ml/transformation/hashed_ngrams.h"
 
 namespace ads {

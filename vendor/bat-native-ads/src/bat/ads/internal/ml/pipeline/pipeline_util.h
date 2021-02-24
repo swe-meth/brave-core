@@ -12,7 +12,6 @@
 #include "base/values.h"
 #include "bat/ads/internal/ml/ml_aliases.h"
 #include "bat/ads/internal/ml/model/linear/linear.h"
-#include "bat/ads/internal/ml/pipeline/pipeline_info.h"
 #include "bat/ads/internal/ml/transformation/hashed_ngrams.h"
 #include "bat/ads/internal/ml/transformation/lowercase.h"
 #include "bat/ads/internal/ml/transformation/normalization.h"
@@ -21,6 +20,8 @@
 namespace ads {
 namespace ml {
 namespace pipeline {
+
+struct PipelineInfo;
 
 base::Optional<TransformationVector> ParseTransformationsJSON(
     base::Value* transformations_value);

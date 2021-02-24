@@ -11,11 +11,14 @@
 #include <string>
 #include <vector>
 
-#include "bat/ads/internal/ml/data/vector_data.h"
-#include "bat/ads/internal/ml/transformation/transformation.h"
-
 namespace ads {
 namespace ml {
+
+namespace transformation {
+
+class Transformation;
+
+}  // namespace transformation
 
 using PredictionMap = std::map<std::string, double>;
 using TransformationPtr = std::unique_ptr<transformation::Transformation>;

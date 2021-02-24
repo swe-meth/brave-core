@@ -9,8 +9,10 @@
 #include <vector>
 
 #include "base/json/json_reader.h"
+#include "bat/ads/internal/ml/data/vector_data.h"
 #include "bat/ads/internal/ml/ml_aliases.h"
 #include "bat/ads/internal/ml/ml_util.h"
+#include "bat/ads/internal/ml/pipeline/pipeline_info.h"
 #include "bat/ads/internal/ml/pipeline/pipeline_util.h"
 
 namespace ads {

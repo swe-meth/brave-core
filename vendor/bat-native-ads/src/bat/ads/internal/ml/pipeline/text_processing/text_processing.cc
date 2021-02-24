@@ -6,9 +6,11 @@
 #include <algorithm>
 #include <memory>
 
+#include "bat/ads/internal/ml/data/text_data.h"
 #include "bat/ads/internal/ml/data/vector_data.h"
 #include "bat/ads/internal/ml/ml_aliases.h"
 #include "bat/ads/internal/ml/ml_util.h"
+#include "bat/ads/internal/ml/model/linear/linear.h"
 #include "bat/ads/internal/ml/pipeline/pipeline_info.h"
 #include "bat/ads/internal/ml/pipeline/pipeline_util.h"
 #include "bat/ads/internal/ml/pipeline/text_processing/text_processing.h"
@@ -70,7 +72,7 @@ bool TextProcessing::FromJson(const std::string& json) {
   return is_initialized_;
 }
 
-std::map<std::string, double> TextProcessing::Apply(
+PredictionMap TextProcessing::Apply(
     const std::unique_ptr<data::Data>& input_data) {
   data::VectorData vector_data;
   size_t transformation_count = transformations_.size();
@@ -92,8 +94,7 @@ std::map<std::string, double> TextProcessing::Apply(
   return linear_model_.TopPredictions(vector_data);
 }
 
-const std::map<std::string, double> TextProcessing::GetTopPredictions(
-    const std::string& html) {
+const PredictionMap TextProcessing::GetTopPredictions(const std::string& html) {
   data::TextData text_data(html);
   PredictionMap predictions =
       Apply(std::make_unique<data::TextData>(text_data));
@@ -108,8 +109,7 @@ const std::map<std::string, double> TextProcessing::GetTopPredictions(
   return rtn;
 }
 
-const std::map<std::string, double> TextProcessing::ClassifyPage(
-    const std::string& content) {
+const PredictionMap TextProcessing::ClassifyPage(const std::string& content) {
   if (!IsInitialized()) {
     return PredictionMap();
   }

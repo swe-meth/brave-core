@@ -20,7 +20,7 @@
 namespace ads {
 namespace ml {
 
-std::map<std::string, double> Softmax(const std::map<std::string, double>& y);
+PredictionMap Softmax(const PredictionMap& y);
 
 TransformationPtr GetTransformationCopy(const TransformationPtr& tr_ptr);
 
