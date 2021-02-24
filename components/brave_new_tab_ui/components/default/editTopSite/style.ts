@@ -120,6 +120,7 @@ export const StyledButtonsContainer = styled<{}, 'div'>('div')`
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: flex-end;
   margin-top: 24px;
   gap: 10px;
