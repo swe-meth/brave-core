@@ -81,11 +81,11 @@ export const TileActionsContainer = styled<{}, 'nav'>('nav')`
   visibility: hidden;
   transition: 0.15s opacity linear;
   position: absolute;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   z-index: 1;
-  top: -12px;
-  right: -12px;
+  top: -16px;
+  right: -16px;
   display: flex;
 `
 
@@ -137,16 +137,22 @@ export const TileAction = styled<{}, 'button'>('button')`
   width: 100%;
   border-radius: 50%;
   margin: 0;
-  padding: 0;
-  border: 0;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   outline: unset;
+  background-clip: padding-box;
+  border: 4px solid transparent;
 
-  &:focus {
+  &:focus-visible {
+    border: 4px solid rgba(255, 255, 255, 0.6);
+  }
+
+  &:active {
     background: #AEB1C2;
+    border: 4px solid transparent;
+    background-clip: padding-box;
   }
 `
 
