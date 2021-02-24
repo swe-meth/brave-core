@@ -60,15 +60,15 @@ export const List = styled<ListProps, 'div'>('div')`
   align-items: normal;
   height: 100%;
   display: grid;
-  grid-template-columns: repeat(${p => Math.min(p.blockNumber, 6).toString()}, 92px);
+  grid-template-columns: repeat(${p => Math.min(p.blockNumber, 6).toString()}, 86px);
   justify-content: var(--ntp-item-justify, start);
 
   @media screen and (max-width: 700px) {
-    grid-template-columns: repeat(${p => Math.min(p.blockNumber, 3).toString()}, 92px);
+    grid-template-columns: repeat(${p => Math.min(p.blockNumber, 3).toString()}, 86px);
   }
 
   @media screen and (max-width: 390px) {
-    grid-template-columns: repeat(${p => Math.min(p.blockNumber, 2).toString()}, 92px);
+    grid-template-columns: repeat(${p => Math.min(p.blockNumber, 2).toString()}, 86px);
   }
 
   ${p => !p.isDragging && css`
