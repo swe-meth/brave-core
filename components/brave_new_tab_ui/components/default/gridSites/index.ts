@@ -9,6 +9,21 @@ const isDarkTheme = (p: any) => {
   return p.theme.name === 'Brave Dark'
 }
 
+export const TileTitle = styled<{}, 'p'>('p')`
+  margin: 8px 0 0 0;
+  font-family: Poppins;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 17px;
+  max-width: 100%;
+  height: 17px;
+  color: white;
+  padding: 0 2px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`
+
 export const AddSiteTileImage = styled<{}, 'div'>('div')`
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(8px);
@@ -46,6 +61,10 @@ export const AddSiteTile = styled<{}, 'button'>('button')`
       height: 78px;
       background-clip: padding-box;
       border: 4px solid white;
+    }
+
+    ${TileTitle} {
+      margin: 0;
     }
   }
 `
@@ -175,21 +194,6 @@ export const TileFavicon = styled<{}, 'img'>('img')`
   object-fit: contain;
 `
 
-export const TileTitle = styled<{}, 'p'>('p')`
-  margin: 7px 0 0 0;
-  font-family: Poppins;
-  font-weight: 400;
-  font-size: 11px;
-  line-height: 17px;
-  max-width: 100%;
-  height: 17px;
-  color: white;
-  padding: 0 2px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-`
-
 interface TileProps {
   isDragging: boolean
   isMenuShowing: boolean
@@ -216,6 +220,10 @@ export const Tile = styled<TileProps, 'a'>('a')`
       height: 78px;
       background-clip: padding-box;
       border: 4px solid rgba(255, 255, 255, 0.6) ;
+    }
+
+    ${TileTitle} {
+      margin: 0;
     }
   }
 
