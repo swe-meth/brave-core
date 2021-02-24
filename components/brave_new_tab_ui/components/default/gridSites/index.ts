@@ -9,38 +9,52 @@ const isDarkTheme = (p: any) => {
   return p.theme.name === 'Brave Dark'
 }
 
+export const AddSiteTileImage = styled<{}, 'div'>('div')`
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border-radius: 8px;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
+`
+
+export const AddSiteTile = styled<{}, 'button'>('button')`
+  background: transparent;
+  width: 78px;
+  height: 110px;
+  cursor: pointer;
+  border: none;
+  margin: 0;
+  padding: 0;
+  outline: unset;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+
+  &:focus-visible, :focus {
+    ${AddSiteTileImage} {
+      width: 78px;
+      height: 78px;
+      background-clip: padding-box;
+      border: 4px solid white;
+    }
+  }
+`
+
 export interface ListProps {
   blockNumber: number
   isDragging: boolean
   showAddSiteTile: boolean
 }
-
-export const AddSiteTile = styled<{}, 'button'>('button')`
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(8px);
-  border-radius: 8px;
-  margin: 6px;
-  width: 80px;
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: 0.1s opacity linear;
-  opacity: 0;
-  visibility: hidden;
-  cursor: pointer;
-  border: none;
-  padding: 0;
-  outline: unset;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.4);
-  }
-
-  &:focus-visible, :focus {
-    border: 4px solid white;
-  }
-`
 
 export const List = styled<ListProps, 'div'>('div')`
   justify-self: start;
@@ -60,7 +74,6 @@ export const List = styled<ListProps, 'div'>('div')`
 
   ${p => p.showAddSiteTile && css`
     ${AddSiteTile} {
-      opacity: 1;
       visibility: visible;
     }
   `}
@@ -68,7 +81,6 @@ export const List = styled<ListProps, 'div'>('div')`
   ${p => !p.isDragging && css`
     &:hover {
       ${AddSiteTile} {
-        opacity: 1;
         visibility: visible;
       }
     }
@@ -193,7 +205,6 @@ interface TileProps {
 export const Tile = styled<TileProps, 'a'>('a')`
   position: relative;
   text-decoration: none;
-  margin: 6px;
   display: flex;
   flex-direction: column;
   justify-content: center;

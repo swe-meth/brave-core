@@ -5,8 +5,9 @@
 
 import * as React from 'react'
 import { SortableElement, SortableElementProps } from 'react-sortable-hoc'
-import { AddSiteTile } from '../../components/default'
 
+import { getLocale } from '../../../common/locale'
+import { AddSiteTile, AddSiteTileImage, TileTitle } from '../../components/default'
 // Icons
 import AddSiteTileIcon from '../../components/default/gridSites/assets/add-site-tile'
 
@@ -18,7 +19,12 @@ class AddSite extends React.PureComponent<Props, {}> {
   render () {
     return (
       <AddSiteTile onClick={this.props.showEditTopSite}>
-        <AddSiteTileIcon />
+        <AddSiteTileImage>
+          <AddSiteTileIcon/>
+        </AddSiteTileImage>
+        <TileTitle>
+          {getLocale('addTopSiteDialogTitle')}
+        </TileTitle>
       </AddSiteTile>
     )
   }
