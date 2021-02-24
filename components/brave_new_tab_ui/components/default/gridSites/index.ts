@@ -15,9 +15,8 @@ export interface ListProps {
   showAddSiteTile: boolean
 }
 
-export const AddSiteTile = styled<{}, 'div'>('div')`
-  box-shadow: 1px 1px 6px 2px rgba(0, 0, 0, 0.3);
-  background: rgba(255, 255, 255, 0.3);
+export const AddSiteTile = styled<{}, 'button'>('button')`
+  background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(8px);
   border-radius: 8px;
   margin: 6px;
@@ -30,6 +29,17 @@ export const AddSiteTile = styled<{}, 'div'>('div')`
   opacity: 0;
   visibility: hidden;
   cursor: pointer;
+  border: none;
+  padding: 0;
+  outline: unset;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
+
+  &:focus-visible, :focus {
+    border: 4px solid white;
+  }
 `
 
 export const List = styled<ListProps, 'div'>('div')`
