@@ -70,7 +70,21 @@ class TopSitesList extends React.PureComponent<Props, State> {
   render () {
     const { actions, gridSites, onShowEditTopSite, customLinksEnabled } = this.props
     const insertAddSiteTile = customLinksEnabled && gridSites.length !== MAX_GRID_SIZE
-    const maxGridSize = customLinksEnabled ? MAX_GRID_SIZE : (MAX_GRID_SIZE / 2)
+    let maxGridSize = customLinksEnabled ? MAX_GRID_SIZE : (MAX_GRID_SIZE / 2)
+
+    // In favorites mode, makes widget area fits to tops sites items count + 1 if
+    // items is less than 6. If items are more than 6, we don't need to care about
+    // empty space in second row.
+    // Plus one is for addSite tile.
+    if (customLinksEnabled && gridSites.length < 6) {
+      maxGridSize = gridSites.length + 1
+    }
+
+    // In frecency mode, makes widget area fits to top sites items.
+    if (!customLinksEnabled) {
+      maxGridSize = Math.min(gridSites.length, maxGridSize)
+    }
+
     return (
       <>
         <DynamicList
