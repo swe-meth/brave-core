@@ -14,7 +14,8 @@ import {
   TileAction,
   TileFavicon,
   TileMenu,
-  TileMenuItem
+  TileMenuItem,
+  TileTitle
 } from '../../components/default'
 
 // Icons
@@ -95,17 +96,20 @@ class TopSite extends React.PureComponent<Props, State> {
     }
   }
 
-  onIgnoredTopSite (site: NewTab.Site) {
+  onIgnoredTopSite (site: NewTab.Site, e: Event) {
+    e.preventDefault()
     this.setState({ showMenu: false })
     this.props.actions.tileRemoved(site.url)
   }
 
-  onEditTopSite (site: NewTab.Site) {
+  onEditTopSite (site: NewTab.Site, e: Event) {
+    e.preventDefault()
     this.setState({ showMenu: false })
     this.props.onShowEditTopSite(site)
   }
 
-  onShowTileMenu = () => {
+  onShowTileMenu = (e: Event) => {
+    e.preventDefault()
     this.setState({ showMenu: true })
   }
 
@@ -117,11 +121,12 @@ class TopSite extends React.PureComponent<Props, State> {
         tabIndex={0}
         isDragging={isDragging}
         isMenuShowing={this.state.showMenu}
+        href={siteData.url}
       >
         {
           !siteData.defaultSRTopSite
           ? <TileActionsContainer>
-              <TileAction onClick={this.onShowTileMenu}>
+              <TileAction onClick={this.onShowTileMenu.bind(this)}>
                 <EditIcon/>
               </TileAction>
             </TileActionsContainer>
@@ -135,11 +140,15 @@ class TopSite extends React.PureComponent<Props, State> {
             </TileMenuItem>
             <TileMenuItem onClick={this.onIgnoredTopSite.bind(this, siteData)}>
               <TrashIcon />
-              {getLocale('removeTileMenuItem')}
+              {getLocale('removeTileMenuItem')    }
             </TileMenuItem>
           </TileMenu>
         }
-        <a href={siteData.url}><TileFavicon src={generateGridSiteFavicon(siteData)} /></a>
+        <TileFavicon
+          draggable={false}
+          src={generateGridSiteFavicon(siteData)}
+        />
+        <TileTitle> {siteData.title} </TileTitle>
       </Tile>
     )
   }

@@ -84,8 +84,8 @@ export const TileActionsContainer = styled<{}, 'nav'>('nav')`
   width: 40px;
   height: 40px;
   z-index: 1;
-  top: -16px;
-  right: -16px;
+  top: -12px;
+  right: -12px;
   display: flex;
 `
 
@@ -104,7 +104,7 @@ export const TileMenu = styled<{}, 'div'>('div')`
   z-index: 2;
 `
 
-export const TileMenuItem = styled<{}, 'div'>('div')`
+export const TileMenuItem = styled<{}, 'button'>('button')`
   width: 100%;
   height: 30px;
   font-family: Poppins;
@@ -114,6 +114,9 @@ export const TileMenuItem = styled<{}, 'div'>('div')`
   line-height: 20px;
   letter-spacing: 0.01em;
   text-align: left;
+  margin: 0;
+  border: none;
+  outline: unset;
   padding: 4px 13px;
   background: inherit;
   display: flex;
@@ -123,7 +126,7 @@ export const TileMenuItem = styled<{}, 'div'>('div')`
   cursor: pointer;
   color: ${p => p.theme.color.contextMenuHoverForeground};
 
-  &:hover {
+  &:hover, :focus-visible {
     background-color: ${p => p.theme.color.contextMenuHoverBackground};
     color: ${p => p.theme.color.contextMenuHoverForeground};
   }
@@ -156,28 +159,61 @@ export const TileAction = styled<{}, 'button'>('button')`
   }
 `
 
+export const TileFavicon = styled<{}, 'img'>('img')`
+  background-color: #ffffff;
+  display: block;
+  padding: 16px;
+  width: 70px;
+  height: 70px;
+  box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  object-fit: contain;
+`
+
+export const TileTitle = styled<{}, 'p'>('p')`
+  margin: 7px 0 0 0;
+  font-family: Poppins;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 17px;
+  max-width: 100%;
+  height: 17px;
+  color: white;
+  padding: 0 2px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`
+
 interface TileProps {
   isDragging: boolean
   isMenuShowing: boolean
 }
 
-export const Tile = styled<TileProps, 'div'>('div')`
-  background-color: #ffffff;
+export const Tile = styled<TileProps, 'a'>('a')`
   position: relative;
-  user-select: none;
+  text-decoration: none;
   margin: 6px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  box-shadow: 1px 1px 6px 2px rgba(0,0,0,0.3);
-  border-radius: 8px;
-  width: 80px;
-  height: 80px;
-  font-size: 38px;
+  width: 78px;
+  height: 110px;
   cursor: pointer;
   // Menu goes behind in other Tiles when tils has z-index.
   // Give z-index while dragging to make dragging tile moves over other tiles.
   z-index: ${p => p.isDragging ? 3 : 'unset' }
+  outline: unset;
+
+  &:focus-visible, :active {
+    ${TileFavicon} {
+      width: 78px;
+      height: 78px;
+      background-clip: padding-box;
+      border: 4px solid rgba(255, 255, 255, 0.6) ;
+    }
+  }
 
   ${p => !p.isDragging && !p.isMenuShowing && css`
     &:hover {
@@ -194,11 +230,4 @@ export const Tile = styled<TileProps, 'div'>('div')`
       visibility: visible;
     }
   `}
-`
-
-export const TileFavicon = styled<{}, 'img'>('img')`
-  display: block;
-  height: 72px;
-  padding: 16px;
-  object-fit: contain;
 `
