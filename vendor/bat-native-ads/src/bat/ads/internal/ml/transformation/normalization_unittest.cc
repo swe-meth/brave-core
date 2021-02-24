@@ -32,34 +32,46 @@ class BatAdsNormalizationTest : public UnitTestBase {
 };
 
 TEST_F(BatAdsNormalizationTest, NormalizationTest) {
+  // Arrange
   const double kTolerance = 1e-7;
 
-  std::string test_string = "quite a small test string";
-  data::TextData text_data(test_string);
+  std::string kTestString = "quite a small test string";
+  data::TextData text_data(kTestString);
   std::unique_ptr<data::Data> data =
       std::make_unique<data::TextData>(text_data);
 
   transformation::HashedNGrams hashed_ngrams(10, std::vector<int>{3, 4});
+  transformation::Normalization normalization;
+
+  // Act
   data = hashed_ngrams.Apply(data);
 
-  transformation::Normalization normalization;
   data = normalization.Apply(data);
 
   ASSERT_EQ(data->GetType(), data::DataType::VECTOR_DATA);
 
   data::VectorData* norm_data = static_cast<data::VectorData*>(data.release());
 
+  std::vector<double> components;
   double s = 0.0;
   for (data::SparseVectorElement const& x : norm_data->GetRawData()) {
-    ASSERT_TRUE(x.second >= 0.0);
-    ASSERT_TRUE(x.second <= 1.0);
+    components.push_back(x.second);
     s += x.second * x.second;
   }
 
+  // Assert
+  for (double const& x : components) {
+    ASSERT_TRUE(x >= 0.0);
+    ASSERT_TRUE(x <= 1.0);
+  }
   EXPECT_TRUE(std::fabs(s - 1.0) < kTolerance);
 }
 
 TEST_F(BatAdsNormalizationTest, ChainingTest) {
+  // Arrange
+  const size_t kExpectedElementCount = 10;
+  const std::string kTestString = "TINY";
+
   TransformationVector chain;
 
   transformation::Lowercase lowercase;
@@ -73,23 +85,23 @@ TEST_F(BatAdsNormalizationTest, ChainingTest) {
   chain.push_back(
       std::make_unique<transformation::Normalization>(normalization));
 
-  std::string test_string = "TINY";
-  data::TextData text_data(test_string);
+  data::TextData text_data(kTestString);
   std::unique_ptr<data::Data> data =
       std::make_unique<data::TextData>(text_data);
+
+  // Act
   for (size_t i = 0; i < chain.size(); ++i) {
     data = chain[i]->Apply(data);
   }
 
   ASSERT_EQ(data->GetType(), data::DataType::VECTOR_DATA);
-
   data::VectorData* vect_data = static_cast<data::VectorData*>(data.get());
 
+  // Assert
   EXPECT_EQ(vect_data->GetDimensionCount(), kNumBuckets);
 
   // Hashes for [t, i, n, y, ti, in, ny, tin, iny, tiny] -- 10 in total
-  size_t expected_element_count = 10;
-  EXPECT_EQ(vect_data->GetRawData().size(), expected_element_count);
+  EXPECT_EQ(vect_data->GetRawData().size(), kExpectedElementCount);
 }
 
 }  // namespace ml

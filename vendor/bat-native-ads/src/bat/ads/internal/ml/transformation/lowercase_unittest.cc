@@ -25,22 +25,24 @@ class BatAdsLowercaseTest : public UnitTestBase {
 };
 
 TEST_F(BatAdsLowercaseTest, LowercaseTest) {
-  const std::string uppercase_str = "LOWER CASE";
-  const std::string lowercase_str = "lower case";
+  // Arrange
+  const std::string kUppercaseStr = "LOWER CASE";
+  const std::string kLowercaseStr = "lower case";
   const std::unique_ptr<data::Data> uppercase_data =
-      std::make_unique<data::TextData>(uppercase_str);
+      std::make_unique<data::TextData>(kUppercaseStr);
 
   transformation::Lowercase lowercase;
 
+  // Act
   const std::unique_ptr<data::Data> lowercase_data =
       lowercase.Apply(uppercase_data);
 
   ASSERT_EQ(lowercase_data->GetType(), data::DataType::TEXT_DATA);
-
   data::TextData* lowercase_text_data =
       static_cast<data::TextData*>(lowercase_data.get());
 
-  EXPECT_FALSE(lowercase_str.compare(lowercase_text_data->GetText()));
+  // Assert
+  EXPECT_FALSE(kLowercaseStr.compare(lowercase_text_data->GetText()));
 }
 
 }  // namespace ml
