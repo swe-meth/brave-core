@@ -1035,7 +1035,7 @@ class NewTabPage extends React.Component<Props, State> {
     let showTopSites = newTabData.showTopSites
     // In favorites mode, add site tile is visible by default if there is no
     // item. In frecency, top sites widget is hidden with empty tiles.
-    if (!newTabData.customLinksEnabled) {
+    if (showTopSites && !newTabData.customLinksEnabled) {
       showTopSites = this.props.gridSitesData.gridSites.length !== 0
     }
 
