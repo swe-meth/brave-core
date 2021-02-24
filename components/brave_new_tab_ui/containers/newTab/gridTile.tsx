@@ -108,7 +108,7 @@ class TopSite extends React.PureComponent<Props, State> {
     this.props.onShowEditTopSite(site)
   }
 
-  onShowTileMenu = (e: Event) => {
+  onShowTileMenu = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
     this.setState({ showMenu: true })
   }
@@ -126,7 +126,7 @@ class TopSite extends React.PureComponent<Props, State> {
         {
           !siteData.defaultSRTopSite
           ? <TileActionsContainer>
-              <TileAction onClick={this.onShowTileMenu.bind(this)}>
+              <TileAction onClick={this.onShowTileMenu}>
                 <EditIcon/>
               </TileAction>
             </TileActionsContainer>
@@ -140,7 +140,7 @@ class TopSite extends React.PureComponent<Props, State> {
             </TileMenuItem>
             <TileMenuItem onClick={this.onIgnoredTopSite.bind(this, siteData)}>
               <TrashIcon />
-              {getLocale('removeTileMenuItem')    }
+              {getLocale('removeTileMenuItem')}
             </TileMenuItem>
           </TileMenu>
         }
