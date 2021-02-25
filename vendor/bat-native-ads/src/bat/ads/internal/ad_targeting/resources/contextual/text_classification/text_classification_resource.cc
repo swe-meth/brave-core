@@ -42,7 +42,6 @@ void TextClassification::LoadForLocale(const std::string& locale) {
   LoadForId(iter->second);
 }
 
-
 void TextClassification::LoadForId(const std::string& id) {
   AdsClientHelper::Get()->LoadUserModelForId(id, [=](const Result result,
                                                      const std::string& json) {
