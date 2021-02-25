@@ -1206,13 +1206,15 @@ class NewTabPage extends React.Component<Props, State> {
           cardsHidden={this.allWidgetsHidden()}
           toggleCards={this.toggleAllCards}
         />
-        <EditTopSite
-          showEditTopSite={showEditTopSite}
-          targetTopSiteForEditing={targetTopSiteForEditing}
-          textDirection={newTabData.textDirection}
-          onClose={this.closeEditTopSite}
-          onSave={this.saveNewTopSite}
-        />
+        {
+          showEditTopSite ?
+            <EditTopSite
+              targetTopSiteForEditing={targetTopSiteForEditing}
+              textDirection={newTabData.textDirection}
+              onClose={this.closeEditTopSite}
+              onSave={this.saveNewTopSite}
+            /> : null
+        }
         <BAPDeprecationModal rewardsState={this.props.newTabData.rewardsState} />
       </Page.App>
     )
