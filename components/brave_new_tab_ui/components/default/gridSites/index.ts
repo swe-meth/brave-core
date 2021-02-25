@@ -6,7 +6,7 @@
 import styled, { css } from 'brave-ui/theme'
 
 export const TileTitle = styled<{}, 'p'>('p')`
-  margin: 8px 0 0 0;
+  margin: 0;
   font-family: Poppins;
   font-weight: 400;
   font-size: 11px;
@@ -47,20 +47,20 @@ export const AddSiteTile = styled<{}, 'button'>('button')`
   outline: unset;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   visibility: hidden;
+  gap: 8px;
 
   &:focus-visible, :focus {
+    gap: 4px;
+
     ${AddSiteTileImage} {
+      margin-top: -4px;
       width: 78px;
       height: 78px;
       background-clip: padding-box;
       border: 4px solid white;
-    }
-
-    ${TileTitle} {
-      margin: 0;
     }
   }
 `
@@ -204,7 +204,7 @@ export const Tile = styled<TileProps, 'a'>('a')`
   text-decoration: none;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   width: 78px;
   height: 110px;
@@ -213,17 +213,31 @@ export const Tile = styled<TileProps, 'a'>('a')`
   // Give z-index while dragging to make dragging tile moves over other tiles.
   z-index: ${p => p.isDragging ? 3 : 'unset' }
   outline: unset;
+  gap: 8px;
 
-  &:focus-visible, :active {
+  ${p => !p.isMenuShowing && css`
+    &:active {
+      gap: 4px;
+
+      ${TileFavicon} {
+        margin-top: -4px;
+        width: 78px;
+        height: 78px;
+        background-clip: padding-box;
+        border: 4px solid rgba(255, 255, 255, 0.6) ;
+      }
+    }
+  `}
+
+  &:focus-visible {
+    gap: 4px;
+
     ${TileFavicon} {
+      margin-top: -4px;
       width: 78px;
       height: 78px;
       background-clip: padding-box;
       border: 4px solid rgba(255, 255, 255, 0.6) ;
-    }
-
-    ${TileTitle} {
-      margin: 0;
     }
   }
 
