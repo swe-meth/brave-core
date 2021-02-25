@@ -19,16 +19,6 @@ import { Toggle } from '../../../components/toggle'
 
 import { getLocale } from '../../../../common/locale'
 
-import favoritesSelectedLight from './assets/favorites-selected.png'
-import favoritesUnselectedLight from './assets/favorites-unselected.png'
-import frecencySelectedLight from './assets/frecency-selected.png'
-import frecencyUnselectedLight from './assets/frecency-unselected.png'
-
-import favoritesSelectedDark from './assets/favorites-selected-dark.png'
-import favoritesUnselectedDark from './assets/favorites-unselected-dark.png'
-import frecencySelectedDark from './assets/frecency-selected-dark.png'
-import frecencyUnselectedDark from './assets/frecency-unselected-dark.png'
-
 interface Props {
   toggleShowTopSites: () => void
   showTopSites: boolean
@@ -72,8 +62,7 @@ class TopSitesSettings extends React.PureComponent<Props, {}> {
               selected={favoritesSelected}
             >
               <StyledTopSitesCustomizationImage
-                imgSrcLight={favoritesSelected ? favoritesSelectedLight : favoritesUnselectedLight}
-                imgSrcDark={favoritesSelected ? favoritesSelectedDark : favoritesUnselectedDark}
+                isFavorites={true}
                 selected={favoritesSelected}
               />
             </StyledTopSitesCustomizationImageBorder>
@@ -91,8 +80,7 @@ class TopSitesSettings extends React.PureComponent<Props, {}> {
               selected={frecencySelected}
             >
               <StyledTopSitesCustomizationImage
-                imgSrcLight={frecencySelected ? frecencySelectedLight : frecencyUnselectedLight}
-                imgSrcDark={frecencySelected ? frecencySelectedDark : frecencyUnselectedDark}
+                isFavorites={false}
                 selected={frecencySelected}
               />
             </StyledTopSitesCustomizationImageBorder>

@@ -5,12 +5,38 @@
 
 import styled, { css } from 'brave-ui/theme'
 
+import favoritesSelectedLight from './assets/favorites-selected.png'
+import favoritesUnselectedLight from './assets/favorites-unselected.png'
+import frecencySelectedLight from './assets/frecency-selected.png'
+import frecencyUnselectedLight from './assets/frecency-unselected.png'
+
+import favoritesSelectedDark from './assets/favorites-selected-dark.png'
+import favoritesUnselectedDark from './assets/favorites-unselected-dark.png'
+import frecencySelectedDark from './assets/frecency-selected-dark.png'
+import frecencyUnselectedDark from './assets/frecency-unselected-dark.png'
+
 interface Props {
   textDirection: string
 }
 
 const isDarkTheme = (p: any) => {
   return p.theme.name === 'Brave Dark'
+}
+
+const getTopSiteCustomizationImage = (dark: boolean, selected: boolean, favorites: boolean) => {
+  if (dark) {
+    if (selected) {
+      return favorites ? favoritesSelectedDark : frecencySelectedDark
+    } else {
+      return favorites ? favoritesUnselectedDark : frecencyUnselectedDark
+    }
+  } else {
+    if (selected) {
+      return favorites ? favoritesSelectedLight : frecencySelectedLight
+    } else {
+      return favorites ? favoritesUnselectedLight : frecencyUnselectedLight
+    }
+  }
 }
 
 export const SettingsMenu = styled<Props, 'div'>('div')`
@@ -507,8 +533,7 @@ export const StyledTopSitesCustomizationImageBorder = styled<CustomizationImageB
 `
 
 interface CustomizationImageProps {
-  imgSrcLight: string
-  imgSrcDark: string
+  isFavorites: boolean
   selected: boolean
 }
 
@@ -516,7 +541,7 @@ export const StyledTopSitesCustomizationImage = styled<CustomizationImageProps, 
   width: 100%;
   height: 100%;
   cursor: pointer;
-  content: url(${p => isDarkTheme(p) ? p.imgSrcDark : p.imgSrcLight});
+  content: url(${p => getTopSiteCustomizationImage(isDarkTheme(p), p.selected, p.isFavorites)});
 
   ${p => p.selected && css`
     background: ${p => isDarkTheme(p) ? '#525779' : '#F0F2FF'};
