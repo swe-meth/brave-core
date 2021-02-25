@@ -14,6 +14,7 @@
 #include "brave/browser/ntp_background_images/view_counter_service_factory.h"
 #include "brave/browser/profiles/profile_util.h"
 #include "brave/browser/ui/webui/new_tab_page/brave_new_tab_ui.h"
+#include "brave/browser/ui/webui/new_tab_page/brave_new_tab_ui_utils.h"
 #include "brave/common/pref_names.h"
 #include "brave/components/ntp_background_images/browser/ntp_background_images_data.h"
 #include "brave/components/ntp_background_images/browser/view_counter_service.h"
@@ -249,20 +250,22 @@ void InstantServiceMessageHandler::HandleEditTopSite(
   std::string url;
   if (!args->GetString(0, &url))
     return;
+  DCHECK(!url.empty());
 
   std::string new_url;
   if (!args->GetString(1, &new_url))
     return;
 
   std::string title;
-  if (!args->GetString(2, &title)) {
-    title = url;
-  }
+  if (!args->GetString(2, &title))
+    return;
 
-  // Normalize url if invalid.
-  // TODO(simonhong): It's very simple. Use more better way.
-  if (!new_url.empty() && !GURL(new_url).is_valid())
-    new_url = "https://" + new_url;
+  // |new_url| can be empty if user only want to change title.
+  if (!new_url.empty())
+    new_url = GetValidURLStringForTopSite(new_url);
+
+  if (title.empty())
+    title = new_url.empty() ? url : new_url;
 
   // when user modifies current top sites, change to favorite mode.
   auto pair = instant_service_->GetCurrentShortcutSettings();
@@ -280,16 +283,13 @@ void InstantServiceMessageHandler::HandleAddNewTopSite(
   std::string url;
   if (!args->GetString(0, &url))
     return;
+  DCHECK(!url.empty());
 
   std::string title;
-  if (!args->GetString(1, &title)) {
-    title = url;
-  }
+  if (!args->GetString(1, &title))
+    return;
 
-  // Normalize url if invalid.
-  // TODO(simonhong): It's very simple. Use more better way.
-  if (!GURL(url).is_valid())
-    url = "https://" + url;
+  url = GetValidURLStringForTopSite(url);
 
   // when user adds new top sites, change to favorite mode.
   auto pair = instant_service_->GetCurrentShortcutSettings();

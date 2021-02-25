@@ -10,6 +10,7 @@ source_set("unit_tests") {
     sources = [ "brave_new_tab_ui_unittest.cc" ]
 
     deps = [
+      "//brave/browser/ui",
       "//components/history/core/browser",
       "//components/ntp_tiles",
       "//testing/gtest",
