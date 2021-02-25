@@ -19,6 +19,7 @@ import org.chromium.base.supplier.OneshotSupplier;
 import org.chromium.chrome.R;
 import org.chromium.chrome.browser.ActivityTabProvider;
 import org.chromium.chrome.browser.BraveFeatureList;
+import org.chromium.chrome.browser.app.appmenu.AppMenuIconRowFooter;
 import org.chromium.chrome.browser.bookmarks.BookmarkBridge;
 import org.chromium.chrome.browser.compositor.layouts.OverviewModeBehavior;
 import org.chromium.chrome.browser.flags.ChromeFeatureList;
@@ -37,6 +38,7 @@ import org.chromium.ui.modaldialog.ModalDialogManager;
 
 public class BraveTabbedAppMenuPropertiesDelegate extends TabbedAppMenuPropertiesDelegate {
     private Menu mMenu;
+    AppMenuDelegate mAppMenuDelegate;
 
     public BraveTabbedAppMenuPropertiesDelegate(Context context,
             ActivityTabProvider activityTabProvider,
@@ -49,6 +51,8 @@ public class BraveTabbedAppMenuPropertiesDelegate extends TabbedAppMenuPropertie
         super(context, activityTabProvider, multiWindowModeStateDispatcher, tabModelSelector,
                 toolbarManager, decorView, appMenuDelegate, overviewModeBehaviorSupplier,
                 bookmarkBridgeSupplier, modalDialogManager);
+
+        mAppMenuDelegate = appMenuDelegate;
     }
 
     @Override
@@ -73,12 +77,26 @@ public class BraveTabbedAppMenuPropertiesDelegate extends TabbedAppMenuPropertie
         // Always hide share row menu item in app menu if it's not on tablet.
         if (!mIsTablet) menu.findItem(R.id.share_row_menu_id).setVisible(false);
 
-        menu.add(Menu.NONE, R.id.set_default_browser, 0, R.string.menu_set_default_browser);
+        MenuItem setAsDefault =
+                menu.add(Menu.NONE, R.id.set_default_browser, 0, R.string.menu_set_default_browser);
+        if (shouldShowIconBeforeItem()) {
+            setAsDefault.setIcon(
+                    AppCompatResources.getDrawable(mContext, R.drawable.brave_menu_set_as_default));
+        }
+
         if (ChromeFeatureList.isEnabled(BraveFeatureList.BRAVE_REWARDS)
                 && !BravePrefServiceBridge.getInstance().getSafetynetCheckFailed()) {
-            menu.add(Menu.NONE, R.id.brave_rewards_id, 0, R.string.menu_brave_rewards);
+            MenuItem rewards =
+                    menu.add(Menu.NONE, R.id.brave_rewards_id, 0, R.string.menu_brave_rewards);
+            if (shouldShowIconBeforeItem()) {
+                rewards.setIcon(
+                        AppCompatResources.getDrawable(mContext, R.drawable.brave_menu_rewards));
+            }
         }
-        menu.add(Menu.NONE, R.id.exit_id, 0, R.string.menu_exit);
+        MenuItem exit = menu.add(Menu.NONE, R.id.exit_id, 0, R.string.menu_exit);
+        if (shouldShowIconBeforeItem()) {
+            exit.setIcon(AppCompatResources.getDrawable(mContext, R.drawable.brave_menu_exit));
+        }
 
         if (BraveSetDefaultBrowserNotificationService.isBraveSetAsDefaultBrowser(mContext)) {
             menu.findItem(R.id.set_default_browser).setVisible(false);
@@ -120,6 +138,12 @@ public class BraveTabbedAppMenuPropertiesDelegate extends TabbedAppMenuPropertie
             return;
         }
         super.onFooterViewInflated(appMenuHandler, view);
+
+        if (view instanceof AppMenuIconRowFooter) {
+            ((AppMenuIconRowFooter) view)
+                    .initialize(appMenuHandler, mBookmarkBridge, mActivityTabProvider.get(),
+                            mAppMenuDelegate);
+        }
 
         // Hide bookmark button if bottom toolbar is enabled
         ImageButton bookmarkButton = view.findViewById(R.id.bookmark_this_page_id);

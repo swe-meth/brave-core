@@ -10,7 +10,8 @@ declare namespace IPFS {
     addressesConfig: AddressesConfig
     daemonStatus: DaemonStatus
     repoStats: RepoStats,
-    nodeInfo: NodeInfo
+    nodeInfo: NodeInfo,
+    garbageCollectionStatus: GarbageCollectionStatus,
   }
 
   export interface AddressesConfig {
@@ -22,6 +23,14 @@ declare namespace IPFS {
   export interface DaemonStatus {
     installed: bool
     launched: bool
+    restarting: bool
+    installing: bool
+  }
+
+  export interface GarbageCollectionStatus {
+    success: bool
+    error: string
+    started: bool
   }
 
   export interface RepoStats {

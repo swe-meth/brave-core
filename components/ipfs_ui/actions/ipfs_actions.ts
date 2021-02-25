@@ -45,3 +45,14 @@ export const onGetNodeInfo = (nodeInfo: IPFS.NodeInfo) =>
 
 export const launchDaemon = () => action(types.IPFS_LAUNCH_DAEMON)
 export const shutdownDaemon = () => action(types.IPFS_SHUTDOWN_DAEMON)
+export const restartDaemon = () => action(types.IPFS_RESTART_DAEMON)
+export const installDaemon = () => action(types.IPFS_INSTALL_DAEMON)
+export const openNodeWebUI = () => action(types.IPFS_OPEN_NODE_WEBUI)
+export const openPeersWebUI = () => action(types.IPFS_OPEN_PEERS_WEBUI)
+
+export const garbageCollection = () => action(types.IPFS_GARBAGE_COLLECTION)
+
+export const onGarbageCollection = (garbageCollectionStatus: IPFS.GarbageCollectionStatus) =>
+  action(types.IPFS_ON_GARBAGE_COLLECTION, {
+    garbageCollectionStatus
+  })

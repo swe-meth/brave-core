@@ -11,6 +11,7 @@
 #include "base/base64.h"
 #include "base/bind.h"
 #include "base/files/file_util.h"
+#include "base/strings/stringprintf.h"
 #include "base/task/post_task.h"
 #include "base/task_runner_util.h"
 #include "brave/components/brave_wallet/brave_wallet_constants.h"
@@ -53,6 +54,9 @@ BraveWalletService::BraveWalletService(
   // this point.
   RemoveUnusedWeb3ProviderContentScripts();
   extension_registry_observer_.Add(extensions::ExtensionRegistry::Get(context));
+
+  controller_ = std::make_unique<brave_wallet::EthJsonRpcController>(
+      context, brave_wallet::Network::kMainnet);
 }
 
 BraveWalletService::~BraveWalletService() {}
@@ -168,6 +172,10 @@ void BraveWalletService::SaveToPrefs(PrefService* prefs,
 void BraveWalletService::ResetCryptoWallets() {
   extensions::ExtensionPrefs::Get(context_)->DeleteExtensionPrefs(
       ethereum_remote_client_extension_id);
+}
+
+brave_wallet::EthJsonRpcController* BraveWalletService::controller() const {
+  return controller_.get();
 }
 
 // Generates a random 32 byte root seed and stores it in prefs

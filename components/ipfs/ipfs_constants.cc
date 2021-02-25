@@ -23,4 +23,8 @@ const char kRepoStatsPath[] = "/api/v0/repo/stat";
 const char kRepoStatsHumanReadableParamName[] = "human";
 const char kRepoStatsHumanReadableParamValue[] = "true";
 const char kNodeInfoPath[] = "/api/v0/id";
+const char kLocalhostIP[] = "127.0.0.1";
+const char kLocalhostDomain[] = "localhost";
+const char kGarbageCollectionPath[] = "/api/v0/repo/gc";
+
 }  // namespace ipfs

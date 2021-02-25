@@ -28,8 +28,7 @@ bool TextClassification::IsInitialized() const {
          text_processing_pipeline_->IsInitialized();
 }
 
-void TextClassification::LoadForLocale(
-    const std::string& locale) {
+void TextClassification::LoadForLocale(const std::string& locale) {
   const std::string language_code = brave_l10n::GetLanguageCode(locale);
 
   const auto iter = kTextClassificationLanguageCodes.find(language_code);
@@ -43,8 +42,8 @@ void TextClassification::LoadForLocale(
   LoadForId(iter->second);
 }
 
-void TextClassification::LoadForId(
-    const std::string& id) {
+
+void TextClassification::LoadForId(const std::string& id) {
   AdsClientHelper::Get()->LoadUserModelForId(id, [=](const Result result,
                                                      const std::string& json) {
     text_processing_pipeline_.reset(
@@ -62,8 +61,8 @@ void TextClassification::LoadForId(
       return;
     }
 
-    BLOG(1, "Successfully initialized " << id
-        << " text classification resource");
+    BLOG(1,
+         "Successfully initialized " << id << " text classification resource");
   });
 }
 

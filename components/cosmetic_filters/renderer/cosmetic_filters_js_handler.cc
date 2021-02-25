@@ -14,6 +14,7 @@
 #include "content/public/renderer/render_frame.h"
 #include "gin/arguments.h"
 #include "gin/function_template.h"
+#include "net/base/registry_controlled_domains/registry_controlled_domain.h"
 #include "third_party/blink/public/common/browser_interface_broker_proxy.h"
 #include "third_party/blink/public/web/blink.h"
 #include "third_party/blink/public/web/web_local_frame.h"
@@ -34,16 +35,9 @@ const char kPreInitScript[] =
             window.content_cosmetic = {};
           }
           %s
-          %s
         })();)";
 
-const char kScriptletInitScript[] =
-    R"(if (window.content_cosmetic.scriptlet == undefined) {
-         let text = %s;
-         window.content_cosmetic.scriptlet = `${text}`;
-       })";
-
-const char kNonScriptletInitScript[] =
+const char kCosmeticFilteringInitScript[] =
     R"(if (window.content_cosmetic.hide1pContent === undefined) {
         window.content_cosmetic.hide1pContent = %s;
        }
@@ -51,21 +45,48 @@ const char kNonScriptletInitScript[] =
          window.content_cosmetic.generichide = %s;
        })";
 
-const char kSelectorsInjectScript[] =
+const char kHideSelectorsInjectScript[] =
     R"((function() {
           let nextIndex =
               window.content_cosmetic.cosmeticStyleSheet.rules.length;
           const selectors = %s;
           selectors.forEach(selector => {
             if ((typeof selector === 'string') &&
-                !window.content_cosmetic.allSelectorsToRules.has(selector)) {
+                (window.content_cosmetic.hide1pContent ||
+                !window.content_cosmetic.allSelectorsToRules.has(selector))) {
               let rule = selector + '{display:none !important;}';
               window.content_cosmetic.cosmeticStyleSheet.insertRule(
                 `${rule}`, nextIndex);
-              window.content_cosmetic.allSelectorsToRules.set(
-                selector, nextIndex);
+              if (!window.content_cosmetic.hide1pContent) {
+                window.content_cosmetic.allSelectorsToRules.set(
+                  selector, nextIndex);
+                window.content_cosmetic.firstRunQueue.add(selector);
+              }
               nextIndex++;
-              window.content_cosmetic.firstRunQueue.add(selector);
+            }
+          });
+          if (!document.adoptedStyleSheets.includes(
+              window.content_cosmetic.cosmeticStyleSheet)) {
+            document.adoptedStyleSheets =
+              [window.content_cosmetic.cosmeticStyleSheet];
+          };
+        })();)";
+
+const char kForceHideSelectorsInjectScript[] =
+    R"((function() {
+          let nextIndex =
+              window.content_cosmetic.cosmeticStyleSheet.rules.length;
+          const selectors = %s;
+          selectors.forEach(selector => {
+            if (typeof selector === 'string') {
+              let rule = selector + '{display:none !important;}';
+              window.content_cosmetic.cosmeticStyleSheet.insertRule(
+                `${rule}`, nextIndex);
+              if (!window.content_cosmetic.hide1pContent) {
+                window.content_cosmetic.allSelectorsToRules.set(
+                  selector, nextIndex);
+              }
+              nextIndex++;
             }
           });
           if (!document.adoptedStyleSheets.includes(
@@ -81,7 +102,8 @@ const char kStyleSelectorsInjectScript[] =
               window.content_cosmetic.cosmeticStyleSheet.rules.length;
           const selectors = %s;
           for (let selector in selectors) {
-            if (!window.content_cosmetic.allSelectorsToRules.has(selector)) {
+            if (window.content_cosmetic.hide1pContent ||
+                !window.content_cosmetic.allSelectorsToRules.has(selector)) {
               let rule = selector + '{';
               selectors[selector].forEach(prop => {
                 if (!rule.endsWith('{')) {
@@ -92,8 +114,10 @@ const char kStyleSelectorsInjectScript[] =
               rule += '}';
               window.content_cosmetic.cosmeticStyleSheet.insertRule(
                 `${rule}`, nextIndex);
-              window.content_cosmetic.allSelectorsToRules.set(
-                selector, nextIndex);
+              if (!window.content_cosmetic.hide1pContent) {
+                window.content_cosmetic.allSelectorsToRules.set(
+                  selector, nextIndex);
+              }
               nextIndex++;
             };
           };
@@ -113,17 +137,19 @@ std::string LoadDataResource(const int id) {
   return resource_bundle.GetRawDataResource(id).as_string();
 }
 
-bool IsVettedSearchEngine(const std::string& host) {
-  for (size_t i = 0; i < g_vetted_search_engines->size(); i++) {
-    size_t found_pos = host.find((*g_vetted_search_engines)[i]);
-    if (found_pos != std::string::npos) {
-      size_t last_dot_pos = host.find(".", found_pos + 1);
-      if (last_dot_pos == std::string::npos) {
-        return false;
-      }
-      if (host.find(".", last_dot_pos + 1) == std::string::npos) {
+bool IsVettedSearchEngine(const GURL& url) {
+  std::string domain_and_registry =
+      net::registry_controlled_domains::GetDomainAndRegistry(
+          url, net::registry_controlled_domains::INCLUDE_PRIVATE_REGISTRIES);
+  size_t registry_len = net::registry_controlled_domains::GetRegistryLength(
+      url, net::registry_controlled_domains::EXCLUDE_UNKNOWN_REGISTRIES,
+      net::registry_controlled_domains::INCLUDE_PRIVATE_REGISTRIES);
+  if (domain_and_registry.length() > registry_len + 1) {
+    std::string host = domain_and_registry.substr(
+        0, domain_and_registry.length() - registry_len - 1);
+    for (size_t i = 0; i < g_vetted_search_engines->size(); i++) {
+      if ((*g_vetted_search_engines)[i] == host)
         return true;
-      }
     }
   }
 
@@ -139,7 +165,7 @@ CosmeticFiltersJSHandler::CosmeticFiltersJSHandler(
     const int32_t isolated_world_id)
     : render_frame_(render_frame),
       isolated_world_id_(isolated_world_id),
-      enabled_1st_party_cf_filtering_(false) {
+      enabled_1st_party_cf_(false) {
   if (g_observing_script->empty()) {
     *g_observing_script = LoadDataResource(kCosmeticFiltersGenerated[0].value);
   }
@@ -240,7 +266,7 @@ void CosmeticFiltersJSHandler::OnShouldDoCosmeticFiltering(
   if (!enabled || !EnsureConnected())
     return;
 
-  enabled_1st_party_cf_filtering_ = first_party_enabled;
+  enabled_1st_party_cf_ = first_party_enabled;
   cosmetic_filters_resources_->UrlCosmeticResources(
       url_.spec(),
       base::BindOnce(&CosmeticFiltersJSHandler::OnUrlCosmeticResources,
@@ -249,41 +275,30 @@ void CosmeticFiltersJSHandler::OnShouldDoCosmeticFiltering(
 
 void CosmeticFiltersJSHandler::OnUrlCosmeticResources(base::Value result) {
   base::DictionaryValue* resources_dict;
-  if (!result.GetAsDictionary(&resources_dict)) {
-    return;
-  }
-
-  std::string pre_init_script;
-  std::string scriptlet_init_script;
-  std::string non_scriptlet_init_script;
-  std::string json_to_inject;
-  base::Value* injected_script = resources_dict->FindPath("injected_script");
-  if (injected_script &&
-      base::JSONWriter::Write(*injected_script, &json_to_inject) &&
-      json_to_inject.length() > 1) {
-    scriptlet_init_script =
-        base::StringPrintf(kScriptletInitScript, json_to_inject.c_str());
-  }
-  if (render_frame_->IsMainFrame()) {
-    bool generichide = false;
-    resources_dict->GetBoolean("generichide", &generichide);
-    non_scriptlet_init_script =
-        base::StringPrintf(kNonScriptletInitScript,
-                           enabled_1st_party_cf_filtering_ ? "true" : "false",
-                           generichide ? "true" : "false");
-  }
-  pre_init_script =
-      base::StringPrintf(kPreInitScript, scriptlet_init_script.c_str(),
-                         non_scriptlet_init_script.c_str());
   blink::WebLocalFrame* web_frame = render_frame_->GetWebFrame();
-  if (web_frame->IsProvisional())
+  if (!result.GetAsDictionary(&resources_dict) || web_frame->IsProvisional())
     return;
-  web_frame->ExecuteScriptInIsolatedWorld(
-      isolated_world_id_, blink::WebString::FromUTF8(pre_init_script));
+
+  std::string scriptlet_script;
+  resources_dict->GetString("injected_script", &scriptlet_script);
+  // Execute scriptlets on all frames
+  if (!scriptlet_script.empty()) {
+    web_frame->ExecuteScript(blink::WebString::FromUTF8(scriptlet_script));
+  }
   if (!render_frame_->IsMainFrame())
     return;
 
   // Working on css rules, we do that on a main frame only
+  bool generichide = false;
+  resources_dict->GetBoolean("generichide", &generichide);
+  std::string cosmetic_filtering_init_script = base::StringPrintf(
+      kCosmeticFilteringInitScript, enabled_1st_party_cf_ ? "true" : "false",
+      generichide ? "true" : "false");
+  std::string pre_init_script = base::StringPrintf(
+      kPreInitScript, cosmetic_filtering_init_script.c_str());
+
+  web_frame->ExecuteScriptInIsolatedWorld(
+      isolated_world_id_, blink::WebString::FromUTF8(pre_init_script));
   web_frame->ExecuteScriptInIsolatedWorld(
       isolated_world_id_, blink::WebString::FromUTF8(*g_observing_script));
 
@@ -292,10 +307,14 @@ void CosmeticFiltersJSHandler::OnUrlCosmeticResources(base::Value result) {
 
 void CosmeticFiltersJSHandler::CSSRulesRoutine(
     base::DictionaryValue* resources_dict) {
-  if (url_.is_empty() || !url_.is_valid() ||
-      IsVettedSearchEngine(url_.host())) {
+  // Trivially, don't make exceptions for malformed URLs.
+  if (url_.is_empty() || !url_.is_valid())
     return;
-  }
+
+  // Otherwise, if its a vetted engine AND we're not in aggressive
+  // mode, also don't do cosmetic filtering.
+  if (!enabled_1st_party_cf_ && IsVettedSearchEngine(url_))
+    return;
 
   blink::WebLocalFrame* web_frame = render_frame_->GetWebFrame();
   base::ListValue* cf_exceptions_list;
@@ -305,7 +324,16 @@ void CosmeticFiltersJSHandler::CSSRulesRoutine(
     }
   }
   base::ListValue* hide_selectors_list;
-  if (resources_dict->GetList("hide_selectors", &hide_selectors_list)) {
+  if (!resources_dict->GetList("hide_selectors", &hide_selectors_list)) {
+    hide_selectors_list = nullptr;
+  }
+  base::ListValue* force_hide_selectors_list;
+  if (!resources_dict->GetList("force_hide_selectors",
+                               &force_hide_selectors_list)) {
+    force_hide_selectors_list = nullptr;
+  }
+
+  if (hide_selectors_list && hide_selectors_list->GetSize() != 0) {
     std::string json_selectors;
     if (!base::JSONWriter::Write(*hide_selectors_list, &json_selectors) ||
         json_selectors.empty()) {
@@ -313,11 +341,22 @@ void CosmeticFiltersJSHandler::CSSRulesRoutine(
     }
     // Building a script for stylesheet modifications
     std::string new_selectors_script =
-        base::StringPrintf(kSelectorsInjectScript, json_selectors.c_str());
-    if (hide_selectors_list->GetSize() != 0) {
-      web_frame->ExecuteScriptInIsolatedWorld(
-          isolated_world_id_, blink::WebString::FromUTF8(new_selectors_script));
+        base::StringPrintf(kHideSelectorsInjectScript, json_selectors.c_str());
+    web_frame->ExecuteScriptInIsolatedWorld(
+        isolated_world_id_, blink::WebString::FromUTF8(new_selectors_script));
+  }
+
+  if (force_hide_selectors_list && force_hide_selectors_list->GetSize() != 0) {
+    std::string json_selectors;
+    if (!base::JSONWriter::Write(*force_hide_selectors_list, &json_selectors) ||
+        json_selectors.empty()) {
+      json_selectors = "[]";
     }
+    // Building a script for stylesheet modifications
+    std::string new_selectors_script = base::StringPrintf(
+        kForceHideSelectorsInjectScript, json_selectors.c_str());
+    web_frame->ExecuteScriptInIsolatedWorld(
+        isolated_world_id_, blink::WebString::FromUTF8(new_selectors_script));
   }
 
   base::DictionaryValue* style_selectors_dictionary = nullptr;
@@ -337,17 +376,25 @@ void CosmeticFiltersJSHandler::CSSRulesRoutine(
     }
   }
 
-  if (!enabled_1st_party_cf_filtering_) {
+  if (!enabled_1st_party_cf_) {
     web_frame->ExecuteScriptInIsolatedWorld(
         isolated_world_id_, blink::WebString::FromUTF8(*g_observing_script));
   }
 }
 
 void CosmeticFiltersJSHandler::OnHiddenClassIdSelectors(base::Value result) {
-  base::ListValue* selectors_list;
-  if (IsVettedSearchEngine(url_.host()) || !result.GetAsList(&selectors_list)) {
+  // If its a vetted engine AND we're not in aggressive
+  // mode, don't do cosmetic filtering.
+  if (!enabled_1st_party_cf_ && IsVettedSearchEngine(url_))
     return;
-  }
+
+  // We expect a List value from adblock service. That is
+  // an extra check to be sure that adblock file exist and gives us
+  // rules that we expect
+  base::ListValue* selectors_list;
+  if (!result.GetAsList(&selectors_list))
+    return;
+
   blink::WebLocalFrame* web_frame = render_frame_->GetWebFrame();
   std::string json_selectors;
   if (!base::JSONWriter::Write(*selectors_list, &json_selectors) ||
@@ -356,13 +403,13 @@ void CosmeticFiltersJSHandler::OnHiddenClassIdSelectors(base::Value result) {
   }
   // Building a script for stylesheet modifications
   std::string new_selectors_script =
-      base::StringPrintf(kSelectorsInjectScript, json_selectors.c_str());
+      base::StringPrintf(kHideSelectorsInjectScript, json_selectors.c_str());
   if (selectors_list->GetSize() != 0) {
     web_frame->ExecuteScriptInIsolatedWorld(
         isolated_world_id_, blink::WebString::FromUTF8(new_selectors_script));
   }
 
-  if (!enabled_1st_party_cf_filtering_) {
+  if (!enabled_1st_party_cf_) {
     web_frame->ExecuteScriptInIsolatedWorld(
         isolated_world_id_, blink::WebString::FromUTF8(*g_observing_script));
   }

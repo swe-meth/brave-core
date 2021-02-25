@@ -12,6 +12,7 @@
 #include "base/time/time_override.h"
 #include "bat/ledger/internal/uphold/uphold_util.h"
 #include "brave/browser/brave_rewards/rewards_service_factory.h"
+#include "brave/browser/extensions/api/brave_action_api.h"
 #include "brave/common/brave_paths.h"
 #include "brave/components/brave_rewards/browser/rewards_service_impl.h"
 #include "brave/components/brave_rewards/browser/test/common/rewards_browsertest_context_helper.h"
@@ -21,6 +22,7 @@
 #include "brave/components/brave_rewards/browser/test/common/rewards_browsertest_promotion.h"
 #include "brave/components/brave_rewards/browser/test/common/rewards_browsertest_response.h"
 #include "brave/components/brave_rewards/browser/test/common/rewards_browsertest_util.h"
+#include "brave/components/brave_rewards/common/pref_names.h"
 #include "chrome/browser/ui/views/frame/browser_view.h"
 #include "chrome/test/base/in_process_browser_test.h"
 #include "chrome/test/base/testing_profile.h"
@@ -36,10 +38,11 @@ namespace {
 
 base::Time GetDate(int year, int month, int day_of_month) {
   base::Time time;
-  DCHECK(base::Time::FromUTCExploded(
+  bool ok = base::Time::FromUTCExploded(
       base::Time::Exploded{
           .year = year, .month = month, .day_of_month = day_of_month},
-      &time));
+      &time);
+  DCHECK(ok);
   return time;
 }
 
@@ -482,8 +485,7 @@ IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, BAPCutoffBefore) {
 
   {
     base::subtle::ScopedTimeClockOverrides time_override(
-        []() { return GetDate(2021, 3, 13) - base::TimeDelta::FromSeconds(1); },
-        nullptr, nullptr);
+        []() { return GetDate(2021, 3, 12); }, nullptr, nullptr);
     ASSERT_EQ(FetchBalance(), 30.0);
   }
 }
@@ -503,6 +505,54 @@ IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, BAPCutoffAfter) {
         []() { return GetDate(2021, 3, 13); }, nullptr, nullptr);
     ASSERT_EQ(FetchBalance(), 0.0);
   }
+}
+
+IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, BAPPopup) {
+  // Open the rewards popup.
+  content::WebContents* popup_contents = context_helper_->OpenRewardsPopup();
+  ASSERT_TRUE(popup_contents);
+
+  // Attempt to open the BAP deprecation popup at the same time. The rewards
+  // panel popup should close. If both popups are shown at the same time, this
+  // test will crash on exit.
+  std::string error;
+  bool popup_shown = extensions::BraveActionAPI::ShowActionUI(
+      browser(), brave_rewards_extension_id,
+      std::make_unique<std::string>("brave_rewards_panel.html#bap-deprecation"),
+      &error);
+  EXPECT_TRUE(popup_shown);
+}
+
+IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, BAPReporting) {
+  rewards_browsertest_util::StartProcess(rewards_service_);
+  rewards_browsertest_util::CreateWallet(rewards_service_);
+  rewards_service_->FetchPromotions();
+  promotion_->WaitForPromotionInitialization();
+  promotion_->ClaimPromotionViaCode();
+
+  rewards_browsertest_util::WaitForLedgerStop(rewards_service_);
+
+  rewards_browsertest_util::StartProcess(rewards_service_);
+  auto* prefs = browser()->profile()->GetPrefs();
+  rewards_browsertest_util::WaitForLedgerStop(rewards_service_);
+
+  EXPECT_FALSE(prefs->GetBoolean(brave_rewards::prefs::kBAPReported));
+
+  prefs->SetInteger(country_codes::kCountryIDAtInstall, 19024);
+
+  base::RunLoop run_loop;
+  PrefChangeRegistrar prefs_listener;
+  prefs_listener.Init(browser()->profile()->GetPrefs());
+  prefs_listener.Add(brave_rewards::prefs::kBAPReported,
+                     base::BindLambdaForTesting(
+                         [&run_loop](const std::string&) { run_loop.Quit(); }));
+
+  // Start the ledger process and wait for pref to be set, indicating that the
+  // reporting completed successfully.
+  rewards_browsertest_util::StartProcess(rewards_service_);
+  run_loop.Run();
+
+  EXPECT_TRUE(prefs->GetBoolean(brave_rewards::prefs::kBAPReported));
 }
 
 }  // namespace rewards_browsertest

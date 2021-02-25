@@ -60,14 +60,7 @@ namespace {
 typedef WebUIController* (*WebUIFactoryFunction)(WebUI* web_ui,
                                                  const GURL& url);
 
-// Template for defining WebUIFactoryFunction.
-template<class T>
 WebUIController* NewWebUI(WebUI* web_ui, const GURL& url) {
-  return new T(web_ui);
-}
-
-template<>
-WebUIController* NewWebUI<BasicUI>(WebUI* web_ui, const GURL& url) {
   auto host = url.host_piece();
   if (host == kAdblockHost) {
     return new BraveAdblockUI(web_ui, url.host());
@@ -133,9 +126,13 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
 #endif
       url.host_piece() == kWelcomeHost ||
       url.host_piece() == chrome::kChromeUIWelcomeURL ||
+#if !defined(OS_ANDROID)
+      // On Android New Tab is a native page implemented in Java, so no need in
+      // WebUI.
       url.host_piece() == chrome::kChromeUINewTabHost ||
+#endif  // !defined(OS_ANDROID)
       url.host_piece() == chrome::kChromeUISettingsHost) {
-    return &NewWebUI<BasicUI>;
+    return &NewWebUI;
   }
 
   return nullptr;

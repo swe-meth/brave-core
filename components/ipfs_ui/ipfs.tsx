@@ -47,10 +47,6 @@ window.cr.define('ipfs', function () {
 
   function initialize () {
     getDaemonStatus()
-    getConnectedPeers()
-    getAddressesConfig()
-    getRepoStats()
-    getNodeInfo()
     render(
       <Provider store={store}>
         <ThemeProvider theme={Theme}>
@@ -74,6 +70,12 @@ window.cr.define('ipfs', function () {
   function onGetDaemonStatus (daemonStatus: IPFS.DaemonStatus) {
     const actions = bindActionCreators(ipfsActions, store.dispatch.bind(store))
     actions.onGetDaemonStatus(daemonStatus)
+    if (daemonStatus.launched) {
+      getConnectedPeers()
+      getAddressesConfig()
+      getRepoStats()
+      getNodeInfo()
+    }
   }
 
   function onGetRepoStats (repoStats: IPFS.RepoStats) {
@@ -86,13 +88,19 @@ window.cr.define('ipfs', function () {
     actions.onGetNodeInfo(nodeInfo)
   }
 
+  function onGarbageCollection (garbageCollectionStatus: IPFS.GarbageCollectionStatus) {
+    const actions = bindActionCreators(ipfsActions, store.dispatch.bind(store))
+    actions.onGarbageCollection(garbageCollectionStatus)
+  }
+
   return {
     initialize,
     onGetConnectedPeers,
     onGetAddressesConfig,
     onGetDaemonStatus,
     onGetRepoStats,
-    onGetNodeInfo
+    onGetNodeInfo,
+    onGarbageCollection
   }
 })
 

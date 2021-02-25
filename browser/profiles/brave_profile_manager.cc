@@ -15,9 +15,6 @@
 #include "brave/browser/profiles/profile_util.h"
 #include "brave/common/pref_names.h"
 #include "brave/components/brave_ads/browser/ads_service_factory.h"
-#include "brave/components/brave_shields/browser/ad_block_regional_service.h"
-#include "brave/components/brave_shields/browser/ad_block_service.h"
-#include "brave/components/brave_shields/browser/brave_shields_util.h"
 #include "brave/components/brave_wallet/buildflags/buildflags.h"
 #include "brave/components/content_settings/core/browser/brave_content_settings_pref_provider.h"
 #include "brave/components/ipfs/buildflags/buildflags.h"
@@ -171,7 +168,8 @@ void BraveProfileManager::MigrateProfileNames() {
             entry->GetName(),
             /*include_check_for_legacy_profile_name=*/false)) {
       auto icon_index = entry->GetAvatarIconIndex();
-      entry->SetLocalProfileName(storage.ChooseNameForNewProfile(icon_index));
+      entry->SetLocalProfileName(storage.ChooseNameForNewProfile(icon_index),
+                                 /*is_default_name=*/true);
     }
   }
 #endif

@@ -126,6 +126,12 @@ base::FilePath IpfsService::GetIpfsExecutablePath() {
                               : base::FilePath();
 }
 
+void IpfsService::OnInstallationEvent(ComponentUpdaterEvents event) {
+  for (auto& observer : observers_) {
+    observer.OnInstallationEvent(event);
+  }
+}
+
 void IpfsService::OnExecutableReady(const base::FilePath& path) {
   if (path.empty())
     return;
@@ -185,7 +191,8 @@ base::FilePath IpfsService::GetConfigFilePath() const {
 
 void IpfsService::NotifyDaemonLaunchCallbacks(bool result) {
   while (!pending_launch_callbacks_.empty()) {
-    std::move(pending_launch_callbacks_.front()).Run(result);
+    if (pending_launch_callbacks_.front())
+      std::move(pending_launch_callbacks_.front()).Run(result);
     pending_launch_callbacks_.pop();
   }
 }
@@ -234,7 +241,8 @@ std::unique_ptr<network::SimpleURLLoader> IpfsService::CreateURLLoader(
 
 void IpfsService::GetConnectedPeers(GetConnectedPeersCallback callback) {
   if (!IsDaemonLaunched()) {
-    std::move(callback).Run(false, std::vector<std::string>{});
+    if (callback)
+      std::move(callback).Run(false, std::vector<std::string>{});
     return;
   }
 
@@ -265,16 +273,22 @@ void IpfsService::OnGetConnectedPeers(
     response_code = url_loader->ResponseInfo()->headers->response_code();
   url_loaders_.erase(iter);
 
-  if (error_code != net::OK || response_code != net::HTTP_OK) {
+  std::vector<std::string> peers;
+  bool success = (error_code == net::OK && response_code == net::HTTP_OK);
+  if (!success) {
     VLOG(1) << "Fail to get connected peers, error_code = " << error_code
             << " response_code = " << response_code;
-    std::move(callback).Run(false, std::vector<std::string>{});
-    return;
   }
 
-  std::vector<std::string> peers;
-  bool success = IPFSJSONParser::GetPeersFromJSON(*response_body, &peers);
-  std::move(callback).Run(success, peers);
+  if (success)
+    success = IPFSJSONParser::GetPeersFromJSON(*response_body, &peers);
+
+  if (callback)
+    std::move(callback).Run(success, peers);
+
+  for (auto& observer : observers_) {
+    observer.OnGetConnectedPeers(success, peers);
+  }
 }
 
 void IpfsService::GetAddressesConfig(GetAddressesConfigCallback callback) {
@@ -327,17 +341,19 @@ bool IpfsService::IsDaemonLaunched() const {
 
 void IpfsService::LaunchDaemon(LaunchDaemonCallback callback) {
   if (IsDaemonLaunched()) {
-    std::move(callback).Run(true);
+    if (callback)
+      std::move(callback).Run(true);
     return;
   }
 
   // Wait if previous launch request in progress.
   if (!pending_launch_callbacks_.empty()) {
-    pending_launch_callbacks_.push(std::move(callback));
+    if (callback)
+      pending_launch_callbacks_.push(std::move(callback));
     return;
   }
-
-  pending_launch_callbacks_.push(std::move(callback));
+  if (callback)
+    pending_launch_callbacks_.push(std::move(callback));
   base::FilePath path(GetIpfsExecutablePath());
   if (path.empty()) {
     // Daemon will be launched later in OnExecutableReady.
@@ -356,7 +372,8 @@ void IpfsService::ShutdownDaemon(ShutdownDaemonCallback callback) {
     observer.OnIpfsShutdown();
   }
 
-  std::move(callback).Run(true);
+  if (callback)
+    std::move(callback).Run(true);
 }
 
 void IpfsService::GetConfig(GetConfigCallback callback) {
@@ -500,6 +517,49 @@ void IpfsService::OnNodeInfo(SimpleURLLoaderList::iterator iter,
   bool success =
       IPFSJSONParser::GetNodeInfoFromJSON(*response_body, &node_info);
   std::move(callback).Run(success, node_info);
+}
+
+void IpfsService::RunGarbageCollection(GarbageCollectionCallback callback) {
+  if (!IsDaemonLaunched()) {
+    std::move(callback).Run(false, std::string());
+    return;
+  }
+
+  GURL gurl = server_endpoint_.Resolve(ipfs::kGarbageCollectionPath);
+
+  auto url_loader = CreateURLLoader(gurl);
+  auto iter = url_loaders_.insert(url_loaders_.begin(), std::move(url_loader));
+
+  iter->get()->DownloadToStringOfUnboundedSizeUntilCrashAndDie(
+      url_loader_factory_.get(),
+      base::BindOnce(&IpfsService::OnGarbageCollection, base::Unretained(this),
+                     std::move(iter), std::move(callback)));
+}
+
+void IpfsService::OnGarbageCollection(
+    SimpleURLLoaderList::iterator iter,
+    GarbageCollectionCallback callback,
+    std::unique_ptr<std::string> response_body) {
+  auto* url_loader = iter->get();
+  int error_code = url_loader->NetError();
+  int response_code = -1;
+  if (url_loader->ResponseInfo() && url_loader->ResponseInfo()->headers)
+    response_code = url_loader->ResponseInfo()->headers->response_code();
+  url_loaders_.erase(iter);
+
+  bool success = (error_code == net::OK && response_code == net::HTTP_OK);
+  if (!success) {
+    VLOG(1) << "Fail to run garbage collection, error_code = " << error_code
+            << " response_code = " << response_code;
+  }
+
+  std::string error;
+  if (success) {
+    const std::string& body = *response_body;
+    if (!body.empty())
+      success = IPFSJSONParser::GetGarbageCollectionFromJSON(body, &error);
+  }
+  std::move(callback).Run(success && error.empty(), error);
 }
 
 }  // namespace ipfs

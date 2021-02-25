@@ -166,6 +166,7 @@ RegisterPolymerTemplateModifications({
     // Move Appearance item
     const appearanceBrowserEl = getMenuElement(templateContent, '/appearance')
     getStartedEl.insertAdjacentElement('afterend', appearanceBrowserEl)
+
     // Add New Tab item
     const newTabEl = createMenuElement(
       loadTimeData.getString('braveNewTab'),
@@ -216,6 +217,23 @@ RegisterPolymerTemplateModifications({
       'extensions',
     )
     searchEl.insertAdjacentElement('afterend', extensionEl)
+
+    const walletEl = createMenuElement(
+      loadTimeData.getString('braveWallet'),
+      '/wallet',
+      'brave_settings:wallet',
+      'wallet',
+    )
+    extensionEl.insertAdjacentElement('afterend', walletEl)
+
+    const ipfsEl = createMenuElement(
+      loadTimeData.getString('braveIPFS'),
+      '/ipfs',
+      'brave_settings:ipfs',
+      'ipfs',
+    )
+    walletEl.insertAdjacentElement('afterend', ipfsEl)
+
     // Move autofill to advanced
     const autofillEl = getMenuElement(templateContent, '/autofill')
     const languagesEl = getMenuElement(templateContent, '/languages')

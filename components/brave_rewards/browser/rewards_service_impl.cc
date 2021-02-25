@@ -51,6 +51,7 @@
 #include "brave/components/brave_rewards/browser/static_values.h"
 #include "brave/components/brave_rewards/browser/switches.h"
 #include "brave/components/brave_rewards/common/pref_names.h"
+#include "brave/components/brave_rewards/resources/grit/brave_rewards_resources.h"
 #include "brave/components/services/bat_ledger/public/cpp/ledger_client_mojo_bridge.h"
 #include "brave/grit/brave_generated_resources.h"
 #include "chrome/browser/bitmap_fetcher/bitmap_fetcher_service_factory.h"
@@ -61,6 +62,7 @@
 #include "components/country_codes/country_codes.h"
 #include "components/favicon/core/favicon_service.h"
 #include "components/favicon_base/favicon_types.h"
+#include "components/grit/brave_components_resources.h"
 #include "components/os_crypt/os_crypt.h"
 #include "components/prefs/pref_service.h"
 #include "content/public/browser/browser_task_traits.h"
@@ -78,13 +80,6 @@
 #include "url/gurl.h"
 #include "url/url_canon_stdstring.h"
 #include "url/url_util.h"
-
-#if defined(BRAVE_CHROMIUM_BUILD)
-#include "brave/components/brave_rewards/resources/grit/brave_rewards_resources.h"
-#include "components/grit/brave_components_resources.h"
-#else
-#include "components/grit/components_resources.h"
-#endif
 
 #if BUILDFLAG(ENABLE_GREASELION)
 #include "brave/components/greaselion/browser/greaselion_service.h"
@@ -1494,13 +1489,17 @@ bool RewardsServiceImpl::GetBooleanOption(const std::string& name) const {
       base::Time::Exploded cutoff_exploded{
           .year = 2021, .month = 3, .day_of_month = 13};
       base::Time cutoff;
-      DCHECK(base::Time::FromUTCExploded(cutoff_exploded, &cutoff));
-      if (base::Time::Now() >= cutoff) {
+      bool ok = base::Time::FromUTCExploded(cutoff_exploded, &cutoff);
+      DCHECK(ok);
+      if (ok && base::Time::Now() >= cutoff) {
         return true;
       }
     }
     return false;
   }
+
+  if (name == ledger::option::kShouldReportBAPAmount)
+    return OnlyAnonWallet();
 
   const auto it = kBoolOptions.find(name);
   DCHECK(it != kBoolOptions.end());
@@ -1935,6 +1934,11 @@ void RewardsServiceImpl::GetPublisherInfo(
     const std::string& publisher_key,
     GetPublisherInfoCallback callback) {
   if (!Connected()) {
+    if (!IsRewardsEnabled()) {
+      std::move(callback).Run(ledger::type::Result::LEDGER_ERROR, nullptr);
+      return;
+    }
+
     StartProcess(
         base::BindOnce(
             &RewardsServiceImpl::OnStartProcessForGetPublisherInfo,
@@ -1997,6 +2001,11 @@ void RewardsServiceImpl::SavePublisherInfo(
     ledger::type::PublisherInfoPtr publisher_info,
     SavePublisherInfoCallback callback) {
   if (!Connected()) {
+    if (!IsRewardsEnabled()) {
+      std::move(callback).Run(ledger::type::Result::LEDGER_ERROR);
+      return;
+    }
+
     StartProcess(
         base::BindOnce(
             &RewardsServiceImpl::OnStartProcessForSavePublisherInfo,
@@ -3499,6 +3508,20 @@ void RewardsServiceImpl::SetAdsEnabled(const bool is_enabled) {
   CreateWallet(base::BindOnce(
       &RewardsServiceImpl::OnWalletCreatedForSetAdsEnabled,
       AsWeakPtr()));
+}
+
+bool RewardsServiceImpl::IsRewardsEnabled() const {
+  if (profile_->GetPrefs()->GetBoolean(prefs::kEnabled))
+    return true;
+
+  if (profile_->GetPrefs()->GetBoolean(prefs::kAutoContributeEnabled))
+    return true;
+
+  auto* ads_service = brave_ads::AdsServiceFactory::GetForProfile(profile_);
+  if (ads_service && ads_service->IsEnabled())
+    return true;
+
+  return false;
 }
 
 void RewardsServiceImpl::OnStartProcessForSetAdsEnabled(

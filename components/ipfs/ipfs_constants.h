@@ -22,6 +22,9 @@ extern const char kRepoStatsPath[];
 extern const char kRepoStatsHumanReadableParamName[];
 extern const char kRepoStatsHumanReadableParamValue[];
 extern const char kNodeInfoPath[];
+extern const char kLocalhostIP[];
+extern const char kLocalhostDomain[];
+extern const char kGarbageCollectionPath[];
 
 enum class IPFSResolveMethodTypes {
   IPFS_ASK,
