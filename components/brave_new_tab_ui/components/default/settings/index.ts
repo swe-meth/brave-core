@@ -554,10 +554,12 @@ export const StyledTopSitesCustomizationOptionTitle = styled<{}, 'div'>('div')`
   font-size: 13px;
   line-height: 20px;
   margin-bottom: 2px;
+  text-align: left;
 `
 
 export const StyledTopSitesCustomizationOptionDesc = styled<{}, 'div'>('div')`
   font-weight: 400;
   font-size: 11px;
   line-height: 17px;
+  text-align: left;
 `

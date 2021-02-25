@@ -6,10 +6,6 @@
 import styled from 'brave-ui/theme'
 import Button, { Props as ButtonProps } from 'brave-ui/components/buttonsIndicators/button'
 
-const isDarkTheme = (p: any) => {
-  return p.theme.name === 'Brave Dark'
-}
-
 interface StyledDialogWrapperProps {
   textDirection: string
 }
@@ -47,7 +43,11 @@ export const DialogTitle = styled<{}, 'div'>('div')`
   font-weight: 600;
   font-size: 15px;
   line-height: 20px;
-  color: ${p => isDarkTheme(p) ? '#F0F2FF' : '#212529'};
+  color: #212529;
+
+  @media (prefers-color-scheme: dark) {
+    color: #F0F2FF;
+  }
 `
 
 export const CloseButton = styled('button')`
@@ -77,7 +77,10 @@ export const CloseButton = styled('button')`
     box-shadow: 0 0 0 4px rgba(255, 255, 255, .6);
   }
 
-  color: ${p => isDarkTheme(p) ? '#C2C4CF' : '#495057'};
+  color: #495057;
+  @media (prefers-color-scheme: dark) {
+    color: #C2C4CF;
+  }
 `
 
 export const StyledInputLabel = styled<{}, 'div'>('div')`
@@ -85,7 +88,10 @@ export const StyledInputLabel = styled<{}, 'div'>('div')`
   font-weight: 500;
   font-size: 13px;
   line-height: 16px;
-  color: ${p => isDarkTheme(p) ? '#C2C4CF' : '#495057'};
+  color: #495057;
+  @media (prefers-color-scheme: dark) {
+    color: #C2C4CF;
+  }
 `
 
 export const StyledInput = styled<{}, 'input'>('input')`
@@ -93,11 +99,8 @@ export const StyledInput = styled<{}, 'input'>('input')`
   margin-top: 6px;
   width: 389px;
   height: 40px;
-  background: ${p => isDarkTheme(p) ? '#1E2029' : 'white'};
   padding: 10px 18px;
   border-radius: 4px;
-  border: 1px solid ${p => isDarkTheme(p) ? '#5E6175' : '#AEB1C2'};
-  color: ${p => isDarkTheme(p) ? '#C2C4CF' : '#495057'};
   font-family: Poppins;
   font-size: 13px;
   font-style: normal;
@@ -105,6 +108,15 @@ export const StyledInput = styled<{}, 'input'>('input')`
   line-height: 20px;
   letter-spacing: 0.01em;
   text-align: left;
+
+  background: white;
+  border: 1px solid #AEB1C2;
+  color: #495057;
+  @media (prefers-color-scheme: dark) {
+    background: #1E2029;
+    border: 1px solid #5E6175;
+    color: #C2C4CF;
+  }
 
   &:focus, :hover {
     border: 4px solid #A0A5EB;

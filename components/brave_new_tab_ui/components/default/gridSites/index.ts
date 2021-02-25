@@ -5,10 +5,6 @@
 
 import styled, { css } from 'brave-ui/theme'
 
-const isDarkTheme = (p: any) => {
-  return p.theme.name === 'Brave Dark'
-}
-
 export const TileTitle = styled<{}, 'p'>('p')`
   margin: 8px 0 0 0;
   font-family: Poppins;
@@ -120,12 +116,16 @@ export const TileMenu = styled<{}, 'div'>('div')`
   min-width: 185px;
   height: 72px;
   padding: 8px 0;
-  background: ${p => isDarkTheme(p) ? '#3B3E4F' : '#FFF'};
   display: flex;
   flex-direction: column;
   border-radius: 4px;
   box-shadow: 0px 0px 16px 0px rgba(0, 0, 0, 0.3);
   z-index: 2;
+
+  background: white;
+  @media (prefers-color-scheme: dark) {
+    background: #3B3E4F;
+  }
 `
 
 export const TileMenuItem = styled<{}, 'button'>('button')`
