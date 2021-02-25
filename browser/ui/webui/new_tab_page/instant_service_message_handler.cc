@@ -270,10 +270,17 @@ void InstantServiceMessageHandler::HandleEditTopSite(
   // when user modifies current top sites, change to favorite mode.
   auto pair = instant_service_->GetCurrentShortcutSettings();
   const bool custom_links_enabled = !pair.first;
-  if (!custom_links_enabled)
+  if (!custom_links_enabled) {
     instant_service_->ToggleMostVisitedOrCustomLinks();
 
-  instant_service_->UpdateCustomLink(GURL(url), GURL(new_url), title);
+    // When user tries to edit from frecency mode, we just try to add modified
+    // item to favorites. If modified url is already existed in favorites,
+    // nothing happened.
+    instant_service_->AddCustomLink(new_url.empty() ? GURL(url) : GURL(new_url),
+                                    title);
+  } else {
+    instant_service_->UpdateCustomLink(GURL(url), GURL(new_url), title);
+  }
 }
 
 void InstantServiceMessageHandler::HandleAddNewTopSite(
