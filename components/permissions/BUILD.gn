@@ -1,5 +1,9 @@
 source_set("permissions") {
   sources = [
+    "permission_lifetime_manager.cc",
+    "permission_lifetime_manager.h",
+    "permission_lifetime_pref_names.cc",
+    "permission_lifetime_pref_names.h",
     "permission_lifetime_utils.cc",
     "permission_lifetime_utils.h",
   ]
