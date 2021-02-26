@@ -1089,7 +1089,7 @@ class NewTabPage extends React.Component<Props, State> {
               <Page.GridItemTopSites>
                 <TopSitesGrid
                   actions={actions}
-                  paddingType={'right'}
+                  paddingType={'none'}
                   customLinksEnabled={newTabData.customLinksEnabled}
                   onShowEditTopSite={this.showEditTopSite}
                   widgetTitle={getLocale('topSitesTitle')}

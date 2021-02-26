@@ -77,6 +77,7 @@ export const List = styled<ListProps, 'div'>('div')`
   display: grid;
   grid-template-columns: repeat(${p => Math.min(p.blockNumber, 6).toString()}, 86px);
   justify-content: var(--ntp-item-justify, start);
+  padding: 24px 56px 24px 24px;
 
   @media screen and (max-width: 700px) {
     grid-template-columns: repeat(${p => Math.min(p.blockNumber, 3).toString()}, 86px);
