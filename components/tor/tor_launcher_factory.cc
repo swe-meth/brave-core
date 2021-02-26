@@ -272,7 +272,11 @@ void TorLauncherFactory::OnTorControlPrerequisitesReady(
   DCHECK_CURRENTLY_ON(BrowserThread::UI);
   if (ready) {
     control_->Start(std::move(cookie), port);
-    std::move(tor_file_watcher_).DeleteSoon();
+    // these break if you uncomment them
+    // tor_file_watcher_->DeleteSoon();
+    // std::move(tor_file_watcher)->DeleteSoon();
+    // (*tor_file_watcher_.release()).DeleteSoon();
+    std::move(*tor_file_watcher_.release()).DeleteSoon();
   } else {
     tor_file_watcher_->StartWatching(
         base::BindOnce(&TorLauncherFactory::OnTorControlPrerequisitesReady,

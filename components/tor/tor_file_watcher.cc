@@ -61,13 +61,6 @@ void TorFileWatcher::StartWatching(WatchCallback callback) {
                                 weak_ptr_factory_.GetWeakPtr()));
 }
 
-void TorFileWatcher::DeleteSoon() const & {
-  static_assert(!sizeof(*this),
-      "DeleteSoon() may only be invoked on a non-const "
-      "rvalue, i.e. std::move(tor_file_watcher).Run().");
-  NOTREACHED();
-}
-
 void TorFileWatcher::DeleteSoon() && {
   watch_task_runner_->DeleteSoon(FROM_HERE, this);
 }

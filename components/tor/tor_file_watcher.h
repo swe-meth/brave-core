@@ -25,17 +25,40 @@ namespace tor {
 FORWARD_DECLARE_TEST(TorFileWatcherTest, EatControlCookie);
 FORWARD_DECLARE_TEST(TorFileWatcherTest, EatControlPort);
 
-class TorFileWatcher {
+template <typename T>
+class DeleteSoonHelper {
+ public:
+  constexpr DeleteSoonHelper() = default;
+  DeleteSoonHelper(std::nullptr_t) = delete;
+
+  DeleteSoonHelper(const DeleteSoonHelper&) = delete;
+  DeleteSoonHelper& operator=(const DeleteSoonHelper&) = delete;
+
+  DeleteSoonHelper(DeleteSoonHelper&&) noexcept = default;
+  DeleteSoonHelper& operator=(DeleteSoonHelper&&) noexcept = default;
+
+  void DeleteSoon() const & {
+    static_assert(!sizeof(*this),
+                  "DeleteSoonHelper::Run() may only be invoked on a non-const "
+                  "rvalue, i.e. std::move(*obj.release()).DeleteSoon().");
+    NOTREACHED();
+  }
+
+  virtual void DeleteSoon() && = 0;
+};
+
+class TorFileWatcher : public DeleteSoonHelper<TorFileWatcher> {
  public:
   using WatchCallback = base::OnceCallback<
       void(bool success, std::vector<uint8_t> cookie, int port)>;
+
   explicit TorFileWatcher(const base::FilePath& watch_dir_path);
+
   virtual ~TorFileWatcher();
 
   void StartWatching(WatchCallback);
 
-  void DeleteSoon() const & ;
-  void DeleteSoon() && ;
+  void DeleteSoon() && override;
 
  private:
   // friend class TorFileWatcherTest;
