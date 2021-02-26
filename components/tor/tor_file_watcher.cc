@@ -57,15 +57,27 @@ void TorFileWatcher::StartWatching(WatchCallback callback) {
   DCHECK_CALLED_ON_VALID_SEQUENCE(owner_sequence_checker_);
   watch_callback_ = std::move(callback);
   watch_task_runner_->PostTask(
-      FROM_HERE,
-      base::BindOnce(&TorFileWatcher::StartWatchingOnTaskRunner, this));
+      FROM_HERE, base::BindOnce(&TorFileWatcher::StartWatchingOnTaskRunner,
+                                weak_ptr_factory_.GetWeakPtr()));
+}
+
+void TorFileWatcher::DeleteSoon() const & {
+  static_assert(!sizeof(*this),
+      "DeleteSoon() may only be invoked on a non-const "
+      "rvalue, i.e. std::move(tor_file_watcher).Run().");
+  NOTREACHED();
+}
+
+void TorFileWatcher::DeleteSoon() && {
+  watch_task_runner_->DeleteSoon(FROM_HERE, this);
 }
 
 void TorFileWatcher::StartWatchingOnTaskRunner() {
   DCHECK_CALLED_ON_VALID_SEQUENCE(watch_sequence_checker_);
-  if (!watcher_->Watch(
-          watch_dir_path_, base::FilePathWatcher::Type::kNonRecursive,
-          base::BindRepeating(&TorFileWatcher::OnWatchDirChanged, this))) {
+  if (!watcher_->Watch(watch_dir_path_,
+                       base::FilePathWatcher::Type::kNonRecursive,
+                       base::BindRepeating(&TorFileWatcher::OnWatchDirChanged,
+                                           weak_ptr_factory_.GetWeakPtr()))) {
     // Never mind -- destroy the watcher and stop everything else.
     VLOG(0) << "tor: failed to watch directory";
     OnWatchDirChanged(base::FilePath(), true);
@@ -135,9 +147,9 @@ void TorFileWatcher::Poll() {
     return PollDone();
   }
 
-  owner_task_runner_->PostTask(FROM_HERE,
-                               base::BindOnce(std::move(watch_callback_), true,
-                                              std::move(cookie), port));
+  owner_task_runner_->PostTask(
+      FROM_HERE, base::BindOnce(std::move(watch_callback_), true,
+                                std::move(cookie), port));
 }
 
 // PollDone()
@@ -154,8 +166,9 @@ void TorFileWatcher::PollDone() {
   if (repoll_) {
     VLOG(2) << "tor: retrying control connection";
     repoll_ = false;
-    watch_task_runner_->PostTask(FROM_HERE,
-                                 base::BindOnce(&TorFileWatcher::Poll, this));
+    watch_task_runner_->PostTask(
+        FROM_HERE,
+        base::BindOnce(&TorFileWatcher::Poll, weak_ptr_factory_.GetWeakPtr()));
   } else {
     VLOG(2) << "tor: control connection not yet ready";
     polling_ = false;

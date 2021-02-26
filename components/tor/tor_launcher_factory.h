@@ -100,7 +100,7 @@ class TorLauncherFactory : public tor::TorControl::Delegate {
 
   scoped_refptr<tor::TorControl> control_;
 
-  scoped_refptr<tor::TorFileWatcher> tor_file_watcher_;
+  std::unique_ptr<tor::TorFileWatcher> tor_file_watcher_;
 
   base::WeakPtrFactory<TorLauncherFactory> weak_ptr_factory_;
 

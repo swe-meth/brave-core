@@ -115,7 +115,8 @@ void TorLauncherFactory::OnTorLogLoaded(
 void TorLauncherFactory::LaunchTorInternal() {
   DCHECK_CURRENTLY_ON(BrowserThread::UI);
 
-  tor_file_watcher_ = new tor::TorFileWatcher(config_.tor_watch_path);
+  tor_file_watcher_ =
+      std::make_unique<tor::TorFileWatcher>(config_.tor_watch_path);
 
   if (tor_launcher_.is_bound()) {
     auto config = tor::mojom::TorConfig::New(config_);
@@ -271,9 +272,8 @@ void TorLauncherFactory::OnTorControlPrerequisitesReady(
   DCHECK_CURRENTLY_ON(BrowserThread::UI);
   if (ready) {
     control_->Start(std::move(cookie), port);
-    tor_file_watcher_.reset();
+    std::move(tor_file_watcher_).DeleteSoon();
   } else {
-    tor_file_watcher_ = new tor::TorFileWatcher(config_.tor_watch_path);
     tor_file_watcher_->StartWatching(
         base::BindOnce(&TorLauncherFactory::OnTorControlPrerequisitesReady,
                        weak_ptr_factory_.GetWeakPtr()));
