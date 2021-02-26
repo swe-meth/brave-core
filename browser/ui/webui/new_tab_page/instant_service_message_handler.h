@@ -41,6 +41,8 @@ class InstantServiceMessageHandler : public content::WebUIMessageHandler,
   void HandleEditTopSite(const base::ListValue* args);
   void HandleAddNewTopSite(const base::ListValue* args);
 
+  int GetCustomLinksNum() const;
+
   GURL last_blacklisted_;
   // Weak pointer.
   Profile* profile_;

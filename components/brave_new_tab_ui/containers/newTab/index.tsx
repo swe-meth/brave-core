@@ -1030,7 +1030,7 @@ class NewTabPage extends React.Component<Props, State> {
     const hasImage = this.imageSource !== undefined
     const isShowingBrandedWallpaper = newTabData.brandedWallpaperData ? true : false
     const cryptoContent = this.renderCryptoContent()
-    const showAddNewSiteMenuItem = newTabData.customLinksNum !== MAX_GRID_SIZE
+    const showAddNewSiteMenuItem = newTabData.customLinksNum < MAX_GRID_SIZE
 
     let showTopSites = newTabData.showTopSites
     // In favorites mode, add site tile is visible by default if there is no

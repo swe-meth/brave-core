@@ -134,17 +134,31 @@ void InstantServiceMessageHandler::MostVisitedInfoChanged(
   result.SetBoolKey("custom_links_enabled", !info.use_most_visited);
   result.SetKey("tiles", std::move(tiles));
   result.SetBoolKey("visible", info.is_visible);
-  auto most_visited_sites =
-      ChromeMostVisitedSitesFactory::NewForProfile(profile_);
-  result.SetIntKey(
-      "custom_links_num",
-      most_visited_sites ? most_visited_sites->GetCustomLinkNum() : 0);
+  result.SetIntKey("custom_links_num", GetCustomLinksNum());
   top_site_tiles_ = std::move(result);
 
   // Notify listeners of this update (ex: new tab page)
   if (IsJavascriptAllowed()) {
     FireWebUIListener("most-visited-info-changed", top_site_tiles_);
   }
+}
+
+int InstantServiceMessageHandler::GetCustomLinksNum() const {
+  // Calculate the number of tiles that can be visible in favorites mode.
+  int custom_links_num = 0;
+  auto most_visited_sites =
+      ChromeMostVisitedSitesFactory::NewForProfile(profile_);
+  if (most_visited_sites) {
+    custom_links_num += most_visited_sites->GetCustomLinkNum();
+  }
+
+  // In NTP SR mode, SR tiles are also shown in tiles.
+  auto* service = ViewCounterServiceFactory::GetForProfile(profile_);
+  if (service) {
+    custom_links_num += service->GetTopSitesVectorForWebUI().size();
+  }
+
+  return custom_links_num;
 }
 
 void InstantServiceMessageHandler::HandleUpdateMostVisitedInfo(

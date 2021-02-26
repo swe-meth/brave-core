@@ -69,7 +69,7 @@ class TopSitesList extends React.PureComponent<Props, State> {
 
   render () {
     const { actions, gridSites, onShowEditTopSite, customLinksEnabled } = this.props
-    const insertAddSiteTile = customLinksEnabled && gridSites.length !== MAX_GRID_SIZE
+    const insertAddSiteTile = customLinksEnabled && gridSites.length < MAX_GRID_SIZE
     let maxGridSize = customLinksEnabled ? MAX_GRID_SIZE : (MAX_GRID_SIZE / 2)
 
     // In favorites mode, makes widget area fits to tops sites items count + 1 if
