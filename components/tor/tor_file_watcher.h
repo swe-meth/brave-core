@@ -37,14 +37,26 @@ class DeleteSoonHelper {
   DeleteSoonHelper(DeleteSoonHelper&&) noexcept = default;
   DeleteSoonHelper& operator=(DeleteSoonHelper&&) noexcept = default;
 
-  void DeleteSoon() const & {
-    static_assert(!sizeof(*this),
-                  "DeleteSoonHelper::Run() may only be invoked on a non-const "
-                  "rvalue, i.e. std::move(*obj.release()).DeleteSoon().");
+  ~DeleteSoonHelper() { DCHECK(delete_soon_called); }
+
+  void DeleteSoon() const& {
+    static_assert(
+        !sizeof(*this),
+        "DeleteSoonHelper::DeleteSoon() may only be invoked on a non-const "
+        "rvalue, i.e. std::move(*obj.release()).DeleteSoon().");
     NOTREACHED();
   }
 
-  virtual void DeleteSoon() && = 0;
+  void DeleteSoon() && {
+    delete_soon_called = true;
+    DeleteSoonImpl();
+  }
+
+ protected:
+  virtual void DeleteSoonImpl() = 0;
+
+ private:
+  bool delete_soon_called = false;
 };
 
 class TorFileWatcher : public DeleteSoonHelper<TorFileWatcher> {
@@ -58,7 +70,7 @@ class TorFileWatcher : public DeleteSoonHelper<TorFileWatcher> {
 
   void StartWatching(WatchCallback);
 
-  void DeleteSoon() && override;
+  void DeleteSoonImpl() override;
 
  private:
   // friend class TorFileWatcherTest;

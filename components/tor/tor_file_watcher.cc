@@ -61,7 +61,7 @@ void TorFileWatcher::StartWatching(WatchCallback callback) {
                                 weak_ptr_factory_.GetWeakPtr()));
 }
 
-void TorFileWatcher::DeleteSoon() && {
+void TorFileWatcher::DeleteSoonImpl() {
   watch_task_runner_->DeleteSoon(FROM_HERE, this);
 }
 
