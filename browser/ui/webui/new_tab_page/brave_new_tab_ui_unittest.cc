@@ -21,10 +21,26 @@ TEST(BraveNewTabUITest, ConstantsTest) {
 }
 
 TEST(BraveNewTabUITest, TopSiteURLValidation) {
-  EXPECT_EQ("https://", GetValidURLStringForTopSite(""));
-  EXPECT_EQ("https://a", GetValidURLStringForTopSite("a"));
-  EXPECT_EQ("https://a", GetValidURLStringForTopSite("https://a"));
-  EXPECT_EQ("http://a", GetValidURLStringForTopSite("http://a"));
-  EXPECT_EQ("https://www.a.com",
-            GetValidURLStringForTopSite("https://www.a.com"));
+  std::string url = "a";
+  EXPECT_TRUE(GetValidURLStringForTopSite(&url));
+  EXPECT_EQ("https://a", url);
+
+  url = "http://a";
+  EXPECT_TRUE(GetValidURLStringForTopSite(&url));
+  EXPECT_EQ("http://a", url);
+
+  url = "https://a";
+  EXPECT_TRUE(GetValidURLStringForTopSite(&url));
+  EXPECT_EQ("https://a", url);
+
+  url = "https://www.a.com";
+  EXPECT_TRUE(GetValidURLStringForTopSite(&url));
+  EXPECT_EQ("https://www.a.com", url);
+
+  // Check failed to make vaile url.
+  url = "!@";
+  EXPECT_FALSE(GetValidURLStringForTopSite(&url));
+
+  url = "";
+  EXPECT_FALSE(GetValidURLStringForTopSite(&url));
 }

@@ -7,6 +7,16 @@
 
 #include "url/gurl.h"
 
-std::string GetValidURLStringForTopSite(const std::string& url) {
-  return GURL(url).is_valid() ? url : "https://" + url;
+bool GetValidURLStringForTopSite(std::string* url) {
+  if (GURL(*url).is_valid())
+    return true;
+
+  // fixup if passed |url| is not valid.
+  const std::string new_url = "https://" + *url;
+  if (GURL(new_url).is_valid()) {
+    *url = new_url;
+    return true;
+  }
+
+  return false;
 }

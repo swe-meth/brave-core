@@ -9,6 +9,8 @@
 #include <string>
 
 // Simply append `https://` scheme to |url| if |url| is not valid.
-std::string GetValidURLStringForTopSite(const std::string& url);
+// Retruns true if |url| is valid or fixed |url| is valid.
+// Fixed url is passed via |url|.
+bool GetValidURLStringForTopSite(std::string* url);
 
 #endif  // BRAVE_BROWSER_UI_WEBUI_NEW_TAB_PAGE_BRAVE_NEW_TAB_UI_UTILS_H_

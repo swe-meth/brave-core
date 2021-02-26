@@ -261,8 +261,9 @@ void InstantServiceMessageHandler::HandleEditTopSite(
     return;
 
   // |new_url| can be empty if user only want to change title.
-  if (!new_url.empty())
-    new_url = GetValidURLStringForTopSite(new_url);
+  // Stop editing if we can't make |new_url| valid.
+  if (!new_url.empty() && !GetValidURLStringForTopSite(&new_url))
+    return;
 
   if (title.empty())
     title = new_url.empty() ? url : new_url;
@@ -296,7 +297,9 @@ void InstantServiceMessageHandler::HandleAddNewTopSite(
   if (!args->GetString(1, &title))
     return;
 
-  url = GetValidURLStringForTopSite(url);
+  // Stop adding if we can't make |url| valid.
+  if (!GetValidURLStringForTopSite(&url))
+    return;
 
   // when user adds new top sites, change to favorite mode.
   auto pair = instant_service_->GetCurrentShortcutSettings();
