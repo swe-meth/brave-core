@@ -23,9 +23,9 @@ std::string GetTopSegmentFromPageProbabilities(
 
   const auto iter =
       std::max_element(probabilities.begin(), probabilities.end(),
-                       [](const SegmentProbabilityPair& a,
-                          const SegmentProbabilityPair& b) -> bool {
-                         return a.second < b.second;
+                       [](const SegmentProbabilityPair& lhs,
+                          const SegmentProbabilityPair& rhs) -> bool {
+                         return lhs.second < rhs.second;
                        });
 
   return iter->first;
