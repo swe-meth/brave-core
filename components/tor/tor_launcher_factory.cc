@@ -10,6 +10,8 @@
 #include "base/bind.h"
 #include "base/files/file_util.h"
 #include "base/task/post_task.h"
+#include "base/threading/sequenced_task_runner_handle.h"
+#include "brave/base/callback_helper.h"
 #include "brave/components/tor/service_sandbox_type.h"
 #include "brave/components/tor/tor_launcher_observer.h"
 #include "components/grit/brave_components_strings.h"
@@ -202,9 +204,10 @@ void TorLauncherFactory::OnTorLaunched(bool result, int64_t pid) {
     LOG(ERROR) << "Tor Launching Failed(" << pid << ")";
     return;
   }
-  tor_file_watcher_->StartWatching(
+  tor_file_watcher_->StartWatching(base::BindOnceCallbackToSequence(
+      base::SequencedTaskRunnerHandle::Get(),
       base::BindOnce(&TorLauncherFactory::OnTorControlPrerequisitesReady,
-                     weak_ptr_factory_.GetWeakPtr(), pid));
+                     weak_ptr_factory_.GetWeakPtr(), pid)));
 }
 
 void TorLauncherFactory::OnTorControlReady() {
@@ -282,9 +285,10 @@ void TorLauncherFactory::OnTorControlPrerequisitesReady(
     control_->Start(std::move(cookie), port);
     std::move(*tor_file_watcher_.release()).DeleteSoon();
   } else {
-    tor_file_watcher_->StartWatching(
+    tor_file_watcher_->StartWatching(base::BindOnceCallbackToSequence(
+        base::SequencedTaskRunnerHandle::Get(),
         base::BindOnce(&TorLauncherFactory::OnTorControlPrerequisitesReady,
-                       weak_ptr_factory_.GetWeakPtr(), pid));
+                       weak_ptr_factory_.GetWeakPtr(), pid)));
   }
 }
 

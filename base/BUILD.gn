@@ -4,7 +4,12 @@
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
 source_set("base") {
-  sources = [ "delete_soon_helper.h" ]
+  sources = [
+    "callback_helper.h",
+    "delete_soon_helper.h",
+  ]
+
+  deps = [ "//base" ]
 }
 
 source_set("base_unittests") {
