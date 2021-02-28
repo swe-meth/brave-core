@@ -7,7 +7,7 @@
 
 #include <string>
 
-#include "bat/ads/internal/account/confirmations/confirmation_info.h"
+#include "bat/ads/confirmation_type.h"
 #include "bat/ads/internal/database/tables/conversion_queue_database_table.h"
 #include "bat/ads/internal/logging.h"
 #include "bat/ads/internal/tokens/redeem_unblinded_token/user_data/confirmation_build_channel_dto_user_data.h"
@@ -20,7 +20,9 @@ namespace ads {
 namespace dto {
 namespace user_data {
 
-void Build(const ConfirmationInfo& confirmation, Callback callback) {
+void Build(const std::string& creative_instance_id,
+           const ConfirmationType& confirmation_type,
+           Callback callback) {
   base::DictionaryValue user_data;
 
   const base::DictionaryValue platform_user_data = GetPlatform();
@@ -35,25 +37,33 @@ void Build(const ConfirmationInfo& confirmation, Callback callback) {
   const base::DictionaryValue experiment_user_data = GetExperiment();
   user_data.MergeDictionary(&experiment_user_data);
 
-  if (confirmation.type != ConfirmationType::kConversion) {
-    callback(user_data);
+  if (confirmation_type != ConfirmationType::kConversion) {
+    callback(user_data.Clone());
     return;
   }
 
   database::table::ConversionQueue database_table;
   database_table.GetForCreativeInstanceId(
-      confirmation.creative_instance_id,
-      [=, &user_data](const Result result,
+      creative_instance_id,
+      [=, user_data = user_data.Clone()](const Result result,
                       const std::string& creative_instance_id,
                       const ConversionQueueItemList& conversion_queue_items) {
+        // |base::DictionaryValue*| Needs to be const
+        const base::DictionaryValue* user_data_dictionary = nullptr;
+        user_data.GetAsDictionary(&user_data_dictionary);
+
+        if (!user_data_dictionary || !user_data_dictionary->is_dict()) {
+          BLOG(1, "Invalid confirmation user data");
+          return;
+        }
+
         if (result != Result::SUCCESS) {
           BLOG(1, "Failed to get conversion queue");
-          callback(user_data);
           return;
         }
 
         if (conversion_queue_items.empty()) {
-          callback(user_data);
+          BLOG(1, "Conversion queue is empty");
           return;
         }
 
@@ -63,9 +73,10 @@ void Build(const ConfirmationInfo& confirmation, Callback callback) {
         const base::DictionaryValue conversion_user_data =
             GetConversion(conversion_queue_item);
 
-        user_data.MergeDictionary(&conversion_user_data);
+        // |user_data_dictionary| mustn't be const
+        user_data_dictionary->MergeDictionary(&conversion_user_data);
 
-        callback(user_data);
+        callback(user_data_dictionary->Clone());
       });
 }
 
