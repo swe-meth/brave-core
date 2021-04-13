@@ -154,7 +154,7 @@ void BraveToolbarView::Init() {
                                       ui::EF_MIDDLE_MOUSE_BUTTON);
   DCHECK(location_bar_);
   AddChildViewAt(bookmark_, GetIndexOf(location_bar_));
-  bookmark_->UpdateImage();
+  bookmark_->UpdateImageAndText();
 
 #if BUILDFLAG(ENABLE_SPEEDREADER)
   // Speedreader.
@@ -168,7 +168,7 @@ void BraveToolbarView::Init() {
 
   if (speedreader_) {
     AddChildViewAt(speedreader_, GetIndexOf(location_bar_));
-    speedreader_->UpdateImage();
+    speedreader_->UpdateImageAndText();
   }
 #endif
 
@@ -201,9 +201,9 @@ void BraveToolbarView::OnThemeChanged() {
     return;
 
   if (display_mode_ == DisplayMode::NORMAL && bookmark_)
-    bookmark_->UpdateImage();
+    bookmark_->UpdateImageAndText();
   if (display_mode_ == DisplayMode::NORMAL && speedreader_)
-    speedreader_->UpdateImage();
+    speedreader_->UpdateImageAndText();
 }
 
 void BraveToolbarView::OnProfileAdded(const base::FilePath& profile_path) {
@@ -218,9 +218,9 @@ void BraveToolbarView::OnProfileWasRemoved(const base::FilePath& profile_path,
 void BraveToolbarView::LoadImages() {
   ToolbarView::LoadImages();
   if (bookmark_)
-    bookmark_->UpdateImage();
+    bookmark_->UpdateImageAndText();
   if (speedreader_)
-    speedreader_->UpdateImage();
+    speedreader_->UpdateImageAndText();
 }
 
 void BraveToolbarView::Update(content::WebContents* tab) {
