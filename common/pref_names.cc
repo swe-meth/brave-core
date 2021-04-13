@@ -36,6 +36,7 @@ const char kUseAlternativeSearchEngineProvider[] =
 const char kAlternativeSearchEngineProviderInTor[] =
     "brave.alternate_private_search_engine_in_tor";
 const char kLocationBarIsWide[] = "brave.location_bar_is_wide";
+const char kBookmarkButtonIsVisible[] = "brave.bookmark_button_is_visible";
 const char kReferralDownloadID[] = "brave.referral.download_id";
 const char kReferralTimestamp[] = "brave.referral.timestamp";
 const char kReferralAttemptTimestamp[] =
@@ -48,8 +49,7 @@ const char kHTTPSEVerywhereControlType[] = "brave.https_everywhere_default";
 const char kNoScriptControlType[] = "brave.no_script_default";
 const char kShieldsAdvancedViewEnabled[] =
     "brave.shields.advanced_view_enabled";
-const char kShieldsStatsBadgeVisible[] =
-    "brave.shields.stats_badge_visible";
+const char kShieldsStatsBadgeVisible[] = "brave.shields.stats_badge_visible";
 const char kAdControlType[] = "brave.ad_default";
 const char kGoogleLoginControlType[] = "brave.google_login_default";
 const char kFBEmbedControlType[] = "brave.fb_embed_default";
@@ -87,8 +87,6 @@ const char kBraveSuggestedSiteSuggestionsEnabled[] =
 const char kBraveDarkMode[] = "brave.dark_mode";
 const char kOtherBookmarksMigrated[] = "brave.other_bookmarks_migrated";
 const char kBraveShieldsSettingsVersion[] = "brave.shields_settings_version";
-const char kDefaultBrowserPromptEnabled[] =
-    "brave.default_browser_prompot_enabled";
 #if !BUILDFLAG(USE_GCM_FROM_PLATFORM)
 const char kBraveGCMChannelStatus[] = "brave.gcm.channel_status";
 #endif

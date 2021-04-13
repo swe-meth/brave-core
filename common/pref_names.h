@@ -31,6 +31,7 @@ extern const char kAlternativeSearchEngineProviderInTor[];
 extern const char kBraveThemeType[];
 extern const char kUseOverriddenBraveThemeType[];
 extern const char kLocationBarIsWide[];
+extern const char kBookmarkButtonIsVisible[];
 extern const char kReferralDownloadID[];
 extern const char kReferralTimestamp[];
 extern const char kReferralAttemptTimestamp[];
@@ -74,7 +75,6 @@ extern const char kOtherBookmarksMigrated[];
 extern const char kBraveShieldsSettingsVersion[];
 extern const char kBinanceAccessToken[];
 extern const char kBinanceRefreshToken[];
-extern const char kDefaultBrowserPromptEnabled[];
 #if !BUILDFLAG(USE_GCM_FROM_PLATFORM)
 extern const char kBraveGCMChannelStatus[];
 #endif
