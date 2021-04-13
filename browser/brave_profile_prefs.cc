@@ -19,8 +19,7 @@
 #include "brave/components/brave_rewards/common/pref_names.h"
 #include "brave/components/brave_shields/browser/brave_shields_web_contents_observer.h"
 #include "brave/components/brave_sync/brave_sync_prefs.h"
-#include "brave/components/brave_wallet/browser/brave_wallet_utils.h"
-#include "brave/components/brave_wallet/common/buildflags/buildflags.h"
+#include "brave/components/brave_wallet/buildflags/buildflags.h"
 #include "brave/components/brave_wayback_machine/buildflags.h"
 #include "brave/components/brave_webtorrent/browser/buildflags/buildflags.h"
 #include "brave/components/crypto_dot_com/browser/buildflags/buildflags.h"
@@ -61,8 +60,8 @@
 #endif
 
 #if BUILDFLAG(BRAVE_WALLET_ENABLED)
-#include "brave/components/brave_wallet/browser/brave_wallet_constants.h"
-#include "brave/components/brave_wallet/browser/pref_names.h"
+#include "brave/components/brave_wallet/brave_wallet_constants.h"
+#include "brave/components/brave_wallet/pref_names.h"
 #endif
 
 #if BUILDFLAG(IPFS_ENABLED)
@@ -139,6 +138,7 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
 
   // appearance
   registry->RegisterBooleanPref(kLocationBarIsWide, false);
+  registry->RegisterBooleanPref(kBookmarkButtonIsVisible, true);
   registry->RegisterBooleanPref(brave_rewards::prefs::kHideButton, false);
   registry->RegisterBooleanPref(kMRUCyclingEnabled, false);
 
@@ -197,10 +197,6 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
   // Translate is not available on Android
   registry->SetDefaultPrefValue(prefs::kOfferTranslateEnabled,
                                 base::Value(false));
-  // Explicitly disable safe browsing extended reporting by default in case they
-  // change it in upstream.
-  registry->SetDefaultPrefValue(prefs::kSafeBrowsingScoutReportingEnabled,
-                                base::Value(false));
 #endif
 
   // Hangouts
@@ -252,9 +248,6 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
   registry->SetDefaultPrefValue(prefs::kCloudPrintSubmitEnabled,
                                 base::Value(false));
 
-  // Disable default webstore icons in topsites or apps.
-  registry->SetDefaultPrefValue(prefs::kHideWebStoreIcon, base::Value(true));
-
   // Importer: selected data types
   registry->RegisterBooleanPref(kImportDialogExtensions, true);
   registry->RegisterBooleanPref(kImportDialogPayments, true);
@@ -273,11 +266,8 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
       brave_l10n::LocaleHelper::GetInstance()->GetLocale();
   const std::string language_code = brave_l10n::GetLanguageCode(locale);
   const bool is_english_language = language_code == "en";
-  const bool is_japanese_language = language_code == "ja";
-  const bool brave_today_enabled_default = is_english_language ||
-      is_japanese_language;
-  registry->RegisterBooleanPref(kNewTabPageShowToday,
-      brave_today_enabled_default);
+  registry->RegisterBooleanPref(kNewTabPageShowToday, is_english_language);
+
   registry->RegisterBooleanPref(kNewTabPageShowRewards, true);
   registry->RegisterBooleanPref(kNewTabPageShowBinance, true);
   registry->RegisterBooleanPref(kNewTabPageShowTogether, false);
@@ -300,9 +290,7 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
   registry->RegisterStringPref(kBraveWalletEncryptedSeed, "");
   registry->RegisterIntegerPref(
       kBraveWalletWeb3Provider,
-      static_cast<int>(brave_wallet::IsNativeWalletEnabled()
-                           ? BraveWalletWeb3ProviderTypes::BRAVE_WALLET
-                           : BraveWalletWeb3ProviderTypes::ASK));
+      static_cast<int>(BraveWalletWeb3ProviderTypes::ASK));
   registry->RegisterBooleanPref(kLoadCryptoWalletsOnStartup, false);
   registry->RegisterBooleanPref(kOptedIntoCryptoWallets, false);
 #endif

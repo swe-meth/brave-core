@@ -136,6 +136,11 @@ void BraveToolbarView::Init() {
       kLocationBarIsWide, profile->GetPrefs(),
       base::Bind(&BraveToolbarView::OnLocationBarIsWideChanged,
                  base::Unretained(this)));
+  // track changes in bookmark button visibility setting
+  bookmark_button_is_visible_.Init(
+      kBookmarkButtonIsVisible, profile->GetPrefs(),
+      base::Bind(&BraveToolbarView::OnBookmarkButtonIsVisibleChanged,
+                 base::Unretained(this)));
 
   const auto callback = [](Browser* browser, int command,
                            const ui::Event& event) {
@@ -149,7 +154,7 @@ void BraveToolbarView::Init() {
                                       ui::EF_MIDDLE_MOUSE_BUTTON);
   DCHECK(location_bar_);
   AddChildViewAt(bookmark_, GetIndexOf(location_bar_));
-  bookmark_->UpdateImageAndText();
+  bookmark_->UpdateImage();
 
 #if BUILDFLAG(ENABLE_SPEEDREADER)
   // Speedreader.
@@ -163,7 +168,7 @@ void BraveToolbarView::Init() {
 
   if (speedreader_) {
     AddChildViewAt(speedreader_, GetIndexOf(location_bar_));
-    speedreader_->UpdateImageAndText();
+    speedreader_->UpdateImage();
   }
 #endif
 
@@ -182,6 +187,13 @@ void BraveToolbarView::OnLocationBarIsWideChanged() {
   SchedulePaint();
 }
 
+void BraveToolbarView::OnBookmarkButtonIsVisibleChanged() {
+  DCHECK_EQ(DisplayMode::NORMAL, display_mode_);
+
+  Layout();
+  SchedulePaint();
+}
+
 void BraveToolbarView::OnThemeChanged() {
   ToolbarView::OnThemeChanged();
 
@@ -189,9 +201,9 @@ void BraveToolbarView::OnThemeChanged() {
     return;
 
   if (display_mode_ == DisplayMode::NORMAL && bookmark_)
-    bookmark_->UpdateImageAndText();
+    bookmark_->UpdateImage();
   if (display_mode_ == DisplayMode::NORMAL && speedreader_)
-    speedreader_->UpdateImageAndText();
+    speedreader_->UpdateImage();
 }
 
 void BraveToolbarView::OnProfileAdded(const base::FilePath& profile_path) {
@@ -206,9 +218,9 @@ void BraveToolbarView::OnProfileWasRemoved(const base::FilePath& profile_path,
 void BraveToolbarView::LoadImages() {
   ToolbarView::LoadImages();
   if (bookmark_)
-    bookmark_->UpdateImageAndText();
+    bookmark_->UpdateImage();
   if (speedreader_)
-    speedreader_->UpdateImageAndText();
+    speedreader_->UpdateImage();
 }
 
 void BraveToolbarView::Update(content::WebContents* tab) {

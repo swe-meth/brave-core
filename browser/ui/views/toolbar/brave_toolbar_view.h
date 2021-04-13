@@ -28,6 +28,7 @@ class BraveToolbarView : public ToolbarView,
   void OnThemeChanged() override;
   void OnEditBookmarksEnabledChanged();
   void OnLocationBarIsWideChanged();
+  void OnBookmarkButtonIsVisibleChanged();
   void ShowBookmarkBubble(const GURL& url,
                           bool already_bookmarked,
                           bookmarks::BookmarkBubbleObserver* observer) override;
@@ -40,7 +41,7 @@ class BraveToolbarView : public ToolbarView,
   // ProfileAttributesStorage::Observer:
   void OnProfileAdded(const base::FilePath& profile_path) override;
   void OnProfileWasRemoved(const base::FilePath& profile_path,
-      const base::string16& profile_name) override;
+                           const base::string16& profile_name) override;
 
   BookmarkButton* bookmark_ = nullptr;
   // Tracks the preference to determine whether bookmark editing is allowed.
@@ -49,6 +50,7 @@ class BraveToolbarView : public ToolbarView,
   SpeedreaderButton* speedreader_ = nullptr;
 
   BooleanPrefMember location_bar_is_wide_;
+  BooleanPrefMember bookmark_button_is_visible_;
   // Whether this toolbar has been initialized.
   bool brave_initialized_ = false;
   // Tracks profile count to determine whether profile switcher should be shown.
